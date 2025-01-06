@@ -148,6 +148,10 @@ void Application::show_robot_ai_inspector() {
                     load_lua_robot_ai(lua_ai->get_source_path());
             }
 
+            if (ImGui::Button("Deload")) {
+                m_robot_ai = nullptr;
+                m_simulation_view->set_robot_ai(nullptr);
+            }
 
             if (m_robot_ai_watcher->check())
                 ImGui::TextColored({1.0f, 1.0f, 0.0f, 1.0f}, ICON_FA_TRIANGLE_EXCLAMATION " The robot AI script has been modified. Reload it to apply the changes.");
