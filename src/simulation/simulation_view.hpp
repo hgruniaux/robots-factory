@@ -28,6 +28,7 @@ private:
     void restart_if_needed();
 
 private:
+    std::string m_world_description_path;
     std::shared_ptr<Robot> m_robot;
     std::shared_ptr<RobotAI> m_robot_ai;
     Renderer2D m_renderer;

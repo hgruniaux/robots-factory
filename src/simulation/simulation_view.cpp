@@ -2,6 +2,8 @@
 
 #include "IconsFontAwesome6.h"
 #include <imgui.h>
+#include <imgui_stdlib.h>
+#include <tinyfiledialogs.h>
 
 void SimulationView::set_robot(const std::shared_ptr<Robot> &robot) {
     m_robot = robot;
@@ -46,7 +48,7 @@ void SimulationView::show() {
 }
 
 void SimulationView::start() {
-    m_simulation = std::make_unique<Simulation>(m_robot, m_robot_ai);
+    m_simulation = std::make_unique<Simulation>(m_robot, m_robot_ai, m_world_description_path);
     m_time_since_last_step = 0.0f;
 }
 
@@ -94,8 +96,18 @@ void SimulationView::show_toolbar() {
     if (m_simulation == nullptr) {
         if (ImGui::Button(ICON_FA_PLAY))
             start();
-
         ImGui::SetItemTooltip("Start the simulation");
+
+        ImGui::SameLine();
+
+        ImGui::InputTextWithHint("##world_description", "Path to world description", &m_world_description_path);
+        ImGui::SameLine();
+        if (ImGui::Button("...")) {
+            const char *filter_patterns[] = {"*.json", "*.yml", "*.yaml"};
+            const char *world_path = tinyfd_openFileDialog("Open world description", m_world_description_path.c_str(), std::size(filter_patterns), filter_patterns, nullptr, 0);
+            if (world_path != nullptr)
+                m_world_description_path = world_path;
+        }
     } else {
         if (is_paused()) {
             if (ImGui::Button(ICON_FA_PLAY))

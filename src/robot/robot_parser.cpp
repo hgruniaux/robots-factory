@@ -53,11 +53,11 @@ std::shared_ptr<Robot> parse_robot(const std::string &path) {
             SPDLOG_TRACE("Successfully loaded robot '{}' at '{}'", robot->get_name(), path);
 
         return robot;
-    } catch (const YAML::BadFile &e) {
-        SPDLOG_ERROR("Failed to load robot file '{}'", path);
-        return nullptr;
-    } catch (const YAML::Exception &e) {
-        SPDLOG_ERROR("Failed to parse robot file '{}' at {}:{}: {}", path, e.mark.line + 1, e.mark.column + 1, e.what());
+    } catch (const YAML::Exception &err) {
+        if (err.mark.is_null())
+            SPDLOG_ERROR("Failed to load robot description\n{}: {}", path, err.what());
+        else
+            SPDLOG_ERROR("Failed to load robot description\n{}:{}:{}: {}", path, err.mark.line, err.mark.column, err.what());
         return nullptr;
     }
 }

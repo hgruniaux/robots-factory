@@ -9,7 +9,7 @@
 
 class Simulation {
 public:
-    explicit Simulation(const std::shared_ptr<Robot> &robot, const std::shared_ptr<RobotAI> &robot_ai = nullptr);
+    explicit Simulation(const std::shared_ptr<Robot> &robot, const std::shared_ptr<RobotAI> &robot_ai = nullptr, const std::string &world_description = "");
     ~Simulation();
 
     // The robot and its AI being simulated.
@@ -28,9 +28,11 @@ public:
     void draw(Renderer2D &renderer);
 
 private:
+    static constexpr glm::vec2 DEFAULT_GRAVITY = {0.0f, -9.80665f};
+
     std::shared_ptr<RobotAI> m_robot_ai;
     std::shared_ptr<Robot> m_robot;
-    b2World m_world{b2Vec2(0.f, -9.80665f)};
+    std::unique_ptr<b2World> m_world;
     std::unique_ptr<PhysicsRobot> m_physics_robot;
     float m_elapsed_time = 0.0f;
 

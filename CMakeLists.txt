@@ -47,6 +47,9 @@ add_executable(robots src/main.cpp
         src/application.cpp
         src/file_watcher.hpp
         src/file_watcher.cpp
+        src/parts/accuracy.hpp
+        src/simulation/world_description.hpp
+        src/simulation/world_description.cpp
 )
 target_include_directories(robots PRIVATE src)
 
