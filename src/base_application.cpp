@@ -26,7 +26,7 @@ bool BaseApplication::init() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, true);
-    m_window = glfwCreateWindow(1280, 720, "Hello, World!", nullptr, nullptr);
+    m_window = glfwCreateWindow(1280, 720, "Robots Factory ;)", nullptr, nullptr);
     if (!m_window) {
         SPDLOG_CRITICAL("Failed to create window");
         shutdown();
