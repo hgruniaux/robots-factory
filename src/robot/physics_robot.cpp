@@ -55,6 +55,188 @@ b2Joint *PhysicsRobot::get_physics_joint(Joint *part) const {
     return it->second;
 }
 
+b2Body *PhysicsRobot::get_physics_body_by_name(const std::string &name) const {
+    auto *part = m_robot->get_part_by_name(name);
+    if (part == nullptr)
+        return nullptr;
+    return get_physics_body(part);
+}
+
+b2Joint *PhysicsRobot::get_physics_joint_by_name(const std::string &name) const {
+    auto *part = m_robot->get_part_by_name<Joint>(name);
+    if (part == nullptr)
+        return nullptr;
+    return get_physics_joint(part);
+}
+
+bool PhysicsRobot::has_collision() const {
+    for (const auto &[part, body]: m_bodies) {
+        for (b2ContactEdge *edge = body->GetContactList(); edge != nullptr; edge = edge->next) {
+            if (edge->contact->IsTouching())
+                return true;
+        }
+    }
+
+    return false;
+}
+
+bool PhysicsRobot::has_collision(Part *part) const {
+    b2Body *body = get_physics_body(part);
+    if (body == nullptr)
+        return false;
+
+    for (b2ContactEdge *edge = body->GetContactList(); edge != nullptr; edge = edge->next) {
+        if (edge->contact->IsTouching())
+            return true;
+    }
+
+    return true;
+}
+
+bool PhysicsRobot::has_collision_by_name(const std::string &name) const {
+    auto *part = m_robot->get_part_by_name(name);
+    if (part == nullptr) {
+        SPDLOG_WARN("Part '{}' not found.", name);
+        return false;
+    }
+
+    return has_collision(part);
+}
+
+float PhysicsRobot::get_sensor_value(const std::string &name) const {
+    auto *joint = m_robot->get_part_by_name<Joint>(name);
+    if (joint == nullptr) {
+        SPDLOG_WARN("Joint part '{}' not found.", name);
+        return 0.f;
+    }
+
+    b2Joint *physics_joint = m_joints.at(joint);
+    assert(physics_joint != nullptr);
+
+    float true_value;
+    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
+        true_value = glm::degrees(revolute_joint->GetJointAngle());
+    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
+        true_value = prismatic_joint->GetJointTranslation();
+    } else {
+        SPDLOG_WARN("Unsupported joint type (cannot be a sensor).");
+        return 0.f;
+    }
+
+    // Apply noise if requested to the true value.
+    if (joint->has_accuracy_info() && m_noisy)
+        return joint->get_accuracy_info().apply(true_value);
+    else
+        return true_value;
+}
+
+bool PhysicsRobot::is_motor_enabled(const std::string &name) const {
+    b2Joint *joint = get_physics_joint_by_name(name);
+    if (joint == nullptr) {
+        SPDLOG_WARN("Joint part '{}' not found.", name);
+        return false;
+    }
+
+    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
+        return revolute_joint->IsMotorEnabled();
+    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
+        return prismatic_joint->IsMotorEnabled();
+    }
+
+    SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    return false;
+}
+
+void PhysicsRobot::set_motor_enabled(const std::string &name, bool enabled) {
+    b2Joint *joint = get_physics_joint_by_name(name);
+    if (joint == nullptr) {
+        SPDLOG_WARN("Joint part '{}' not found.", name);
+        return;
+    }
+
+    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
+        revolute_joint->EnableMotor(enabled);
+    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
+        prismatic_joint->EnableMotor(enabled);
+    } else {
+        SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    }
+}
+
+float PhysicsRobot::get_motor_speed(const std::string &name) const {
+    b2Joint *joint = get_physics_joint_by_name(name);
+    if (joint == nullptr) {
+        SPDLOG_WARN("Joint part '{}' not found.", name);
+        return 0.f;
+    }
+
+    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
+        return glm::degrees(revolute_joint->GetMotorSpeed());
+    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
+        return prismatic_joint->GetMotorSpeed();
+    }
+
+    SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    return 0.f;
+}
+
+glm::vec2 PhysicsRobot::get_motor_speed_range(const std::string &name) const {
+    Joint *joint = m_robot->get_part_by_name<Joint>(name);
+    if (joint == nullptr) {
+        SPDLOG_WARN("Joint part '{}' not found.", name);
+        return {0.f, 0.f};
+    }
+
+    if (auto *revolute_joint = dynamic_cast<RevoluteJoint *>(joint); revolute_joint != nullptr) {
+        return {revolute_joint->get_min_motor_speed(), revolute_joint->get_max_motor_speed()};
+    } else if (auto *prismatic_joint = dynamic_cast<PrismaticJoint *>(joint); prismatic_joint != nullptr) {
+        return {prismatic_joint->get_min_motor_speed(), prismatic_joint->get_max_motor_speed()};
+    } else {
+        SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+        return {0.f, 0.f};
+    }
+}
+
+float PhysicsRobot::get_motor_max_force(const std::string &name) const {
+    b2Joint *joint = get_physics_joint_by_name(name);
+    if (joint == nullptr) {
+        SPDLOG_WARN("Joint part '{}' not found.", name);
+        return 0.f;
+    }
+
+    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
+        return revolute_joint->GetMaxMotorTorque();
+    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
+        return prismatic_joint->GetMaxMotorForce();
+    }
+
+    SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    return 0.f;
+}
+
+void PhysicsRobot::set_motor_speed(const std::string &name, float value) {
+    auto *joint = m_robot->get_part_by_name<Joint>(name);
+    if (joint == nullptr) {
+        SPDLOG_WARN("Joint part '{}' not found.", name);
+        return;
+    }
+
+    b2Joint *physics_joint = m_joints[joint];
+    assert(physics_joint != nullptr);
+
+    // Clamp the motor speed to the allowed range.
+    const auto &range = get_motor_speed_range(name);
+    value = std::clamp(value, range.x, range.y);
+
+    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
+        revolute_joint->SetMotorSpeed(glm::radians(value));
+    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
+        prismatic_joint->SetMotorSpeed(value);
+    } else {
+        SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    }
+}
+
 void PhysicsRobot::clear() {
     // Destroy all the Box2D bodies and joints.
 

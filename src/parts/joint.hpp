@@ -1,5 +1,6 @@
 #pragma once
 
+#include "accuracy.hpp"
 #include "part.hpp"
 
 /**
@@ -23,6 +24,12 @@ public:
     [[nodiscard]] const glm::vec2 &get_local_anchor_b() const { return m_local_anchor_b; }
     void set_local_anchor_b(const glm::vec2 &local_anchor_b) { m_local_anchor_b = local_anchor_b; }
 
+    // The accuracy information of the joint.
+    [[nodiscard]] bool has_accuracy_info() const { return m_has_accuracy_info; }
+    [[nodiscard]] const AccuracyInfo &get_accuracy_info() const { return m_accuracy_info; }
+    [[nodiscard]] AccuracyInfo &get_accuracy_info() { return m_accuracy_info; }
+
+    // If the two connected parts of the joint should collide.
     [[nodiscard]] bool should_collide() const { return m_should_collide; }
     void set_should_collide(bool should) { m_should_collide = should; }
 
@@ -42,6 +49,8 @@ protected:
 private:
     std::string m_part_a, m_part_b;
     glm::vec2 m_local_anchor_a, m_local_anchor_b;
+    AccuracyInfo m_accuracy_info;
+    bool m_has_accuracy_info = false;
     bool m_should_collide;
 };// class Joint
 

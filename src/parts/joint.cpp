@@ -43,7 +43,13 @@ bool Joint::show_inspector() {
 
         changed |= ImGui::Checkbox("Should collide", &m_should_collide);
         ImGui::SetItemTooltip("Whether the connected parts should collide with each other.");
+
+        changed |= ImGui::Checkbox(ICON_FA_INFO " Has accuracy info", &m_has_accuracy_info);
+        ImGui::SetItemTooltip("Whether the joint has accuracy information.");
     }
+
+    if (m_has_accuracy_info)
+        changed |= m_accuracy_info.show_inspector();
 
     return changed;
 }
@@ -124,6 +130,11 @@ void Joint::load(const YAML::Node &node) {
 
     if (node["should_collide"])
         m_should_collide = node["should_collide"].as<bool>();
+
+    if (node["accuracy_info"]) {
+        m_has_accuracy_info = true;
+        m_accuracy_info.load(node["accuracy_info"]);
+    }
 }
 
 void Joint::save(YAML::Emitter &emitter) const {
@@ -138,6 +149,12 @@ void Joint::save(YAML::Emitter &emitter) const {
     to_yaml(emitter, m_local_anchor_b);
 
     emitter << YAML::Key << "should_collide" << YAML::Value << m_should_collide;
+
+    if (m_has_accuracy_info) {
+        emitter << YAML::Key << "accuracy_info" << YAML::Value << YAML::BeginMap;
+        m_accuracy_info.save(emitter);
+        emitter << YAML::EndMap;
+    }
 }
 
 /*
