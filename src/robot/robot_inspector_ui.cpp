@@ -255,7 +255,6 @@ bool RobotInspectorUI::show_add_part_menu() {
 
         if (ImGui::BeginMenu(ICON_FA_RULER " Sensors")) {
             MENU_ITEM(AngleSensor, "Angle sensor");
-            MENU_ITEM(Accelerometer, "Accelerometer");
             MENU_ITEM(DistanceSensor, "Distance sensor");
             MENU_ITEM(ContactSensor, "Contact sensor");
             ImGui::EndMenu();

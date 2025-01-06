@@ -10,7 +10,7 @@ public:
 };// class Sensor
 
 /**
- * A sensor that detects an angle (like a rotary encoder).
+ * A sensor that detects a global angle (relative to the world, like a gyroscope).
  */
 class AngleSensor final : public Sensor {
 public:
@@ -32,30 +32,6 @@ private:
     float m_min_angle = 0.0f;
     float m_max_angle = 360.0f;
 };// class AngleSensor
-
-/**
- * A sensor that detects acceleration (like an accelerometer).
- */
-class Accelerometer final : public Sensor {
-public:
-    DECLARE_PART(Accelerometer, ICON_FA_COMPASS);
-
-    // The minimum and maximum acceleration (in m/s²) the sensor can detect.
-    // The acceleration is measured in the x and y axes.
-    // The default values are {-INFINITY, -INFINITY} and {INFINITY, INFINITY}.
-    [[nodiscard]] glm::vec2 get_min_acceleration() const { return m_min_acceleration; }
-    [[nodiscard]] glm::vec2 get_max_acceleration() const { return m_max_acceleration; }
-    void set_min_acceleration(const glm::vec2 &min_acceleration) { m_min_acceleration = min_acceleration; }
-    void set_max_acceleration(const glm::vec2 &max_acceleration) { m_max_acceleration = max_acceleration; }
-
-    bool show_inspector() override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
-
-private:
-    glm::vec2 m_min_acceleration = {-INFINITY, -INFINITY};
-    glm::vec2 m_max_acceleration = {INFINITY, INFINITY};
-};// class Accelerometer
 
 /**
  * A sensor that detects distance in a given direction (like a IR distance sensor).

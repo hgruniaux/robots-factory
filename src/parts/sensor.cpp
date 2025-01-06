@@ -41,59 +41,6 @@ void AngleSensor::save(YAML::Emitter &emitter) const {
 }
 
 /*
- * The Accelerometer class
- */
-
-bool Accelerometer::show_inspector() {
-    bool changed = Sensor::show_inspector();
-
-    if (ImGui::CollapsingHeader("Accelerometer")) {
-        ImGui::Text("Acceleration (in m/s²):");
-        changed |= ImGui::DragFloat2("Min", &m_min_acceleration[0], 0.1f, -INFINITY, INFINITY, "%.2f", ImGuiSliderFlags_AlwaysClamp);
-        changed |= ImGui::DragFloat2("Max", &m_max_acceleration[0], 0.1f, -INFINITY, INFINITY, "%.2f", ImGuiSliderFlags_AlwaysClamp);
-
-        // Enforce constraints if required.
-        for (int i = 0; i < 2; i++) {
-            m_max_acceleration[i] = std::max(m_min_acceleration[i], m_max_acceleration[i]);
-        }
-    }
-
-    return changed;
-}
-
-void Accelerometer::load(const YAML::Node &node) {
-    Sensor::load(node);
-
-    if (node["min_acceleration"]) {
-        if (node["min_acceleration"].IsScalar()) {
-            const auto value = node["min_acceleration"].as<float>();
-            m_min_acceleration = {value, value};
-        } else {
-            from_yaml(node["min_acceleration"], m_min_acceleration);
-        }
-    }
-
-    if (node["max_acceleration"]) {
-        if (node["max_acceleration"].IsScalar()) {
-            const auto value = node["max_acceleration"].as<float>();
-            m_max_acceleration = {value, value};
-        } else {
-            from_yaml(node["max_acceleration"], m_max_acceleration);
-        }
-    }
-}
-
-void Accelerometer::save(YAML::Emitter &emitter) const {
-    Sensor::save(emitter);
-
-    emitter << YAML::Key << "min_acceleration" << YAML::Value;
-    to_yaml(emitter, m_min_acceleration);
-
-    emitter << YAML::Key << "max_acceleration" << YAML::Value;
-    to_yaml(emitter, m_max_acceleration);
-}
-
-/*
  * The DistanceSensor class
  */
 
