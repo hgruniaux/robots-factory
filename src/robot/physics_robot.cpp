@@ -113,7 +113,10 @@ void PhysicsRobot::build_shape_part(const BuildContext &ctx, Shape *part) {
     m_bodies[part] = body;
 
     b2FixtureDef fixture_def;
-    fixture_def.density = 1.0f;
+    fixture_def.density = part->get_density();
+    fixture_def.friction = part->get_friction();
+    fixture_def.restitution = part->get_restitution();
+    fixture_def.restitutionThreshold = part->get_restitution_threshold();
     fixture_def.userData.pointer = reinterpret_cast<uintptr_t>(part);
 
     if (auto *shape = dynamic_cast<CircleShape *>(part); shape != nullptr) {

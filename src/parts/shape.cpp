@@ -16,8 +16,16 @@ bool Shape::show_inspector() {
     if (ImGui::CollapsingHeader("Shape")) {
         changed |= ImGui::ColorEdit4("Color", &m_color[0]);
         ImGui::SetItemTooltip("The color of the shape. Only used for rendering.");
-        changed |= ImGui::DragFloat("Mass (in kg)", &m_mass);
-        ImGui::SetItemTooltip("The mass of the shape in kilograms.");
+        changed |= ImGui::DragFloat("Density (in kg/m²)", &m_density, 0.01f, 0.0f, INFINITY);
+        ImGui::SetItemTooltip("The density of the shape in kg/m².");
+        changed |= ImGui::DragFloat("Friction", &m_friction, 0.01f, 0.0f, INFINITY);
+        ImGui::SetItemTooltip("The friction of the shape.");
+        changed |= ImGui::DragFloat("Restitution", &m_restitution, 0.01f, 0.0f, 1.0f);
+        ImGui::SetItemTooltip("The restitution of the shape.");
+        changed |= ImGui::DragFloat("Restitution threshold", &m_restitution_threshold, 0.01f, 0.0f, INFINITY);
+        ImGui::SetItemTooltip("The restitution threshold of the shape.");
+
+        check_constraints();
     }
 
     return changed;
@@ -28,6 +36,16 @@ void Shape::load(const YAML::Node &node) {
 
     if (node["color"])
         from_yaml(node["color"], m_color);
+    if (node["density"])
+        m_density = node["density"].as<float>();
+    if (node["friction"])
+        m_friction = node["friction"].as<float>();
+    if (node["restitution"])
+        m_restitution = node["restitution"].as<float>();
+    if (node["restitution_threshold"])
+        m_restitution_threshold = node["restitution_threshold"].as<float>();
+
+    check_constraints();
 }
 
 void Shape::save(YAML::Emitter &emitter) const {
@@ -35,16 +53,22 @@ void Shape::save(YAML::Emitter &emitter) const {
 
     emitter << YAML::Key << "color" << YAML::Value;
     to_yaml(emitter, m_color);
+    emitter << YAML::Key << "density" << YAML::Value << m_density;
+    emitter << YAML::Key << "friction" << YAML::Value << m_friction;
+    emitter << YAML::Key << "restitution" << YAML::Value << m_restitution;
+    emitter << YAML::Key << "restitution_threshold" << YAML::Value << m_restitution_threshold;
+}
+
+void Shape::check_constraints() {
+    m_density = std::max(m_density, 0.f);
+    m_friction = std::max(m_friction, 0.f);
+    m_restitution = std::clamp(m_restitution, 0.f, 1.f);
+    m_restitution_threshold = std::max(m_restitution_threshold, 0.f);
 }
 
 /*
  * The CircleShape class
  */
-
-glm::vec2 CircleShape::get_mass_center() const {
-    // We suppose uniform mass distribution.
-    return glm::vec2{0.f, 0.f};
-}
 
 bool CircleShape::show_inspector() {
     bool changed = Shape::show_inspector();
@@ -91,11 +115,6 @@ void CircleShape::check_constraints() {
 /*
  * The RectangleShape class
  */
-
-glm::vec2 RectangleShape::get_mass_center() const {
-    // We suppose uniform mass distribution.
-    return m_size / 2.f;
-}
 
 bool RectangleShape::show_inspector() {
     bool changed = Shape::show_inspector();
@@ -216,16 +235,12 @@ void PolygonShape::save(YAML::Emitter &emitter) const {
     emitter << YAML::EndSeq;
 }
 
-glm::vec2 PolygonShape::get_mass_center() const {
-    // We suppose uniform mass distribution.
+void PolygonShape::center_vertices() {
     glm::vec2 center = {0.f, 0.f};
     for (auto vertex: m_vertices)
         center += vertex;
-    return center / (float) m_vertices.size();
-}
+    center /= (float) m_vertices.size();
 
-void PolygonShape::center_vertices() {
-    glm::vec2 center = get_mass_center();
     for (auto &vertex: m_vertices)
         vertex -= center;
 }
