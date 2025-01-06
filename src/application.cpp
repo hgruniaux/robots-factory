@@ -122,6 +122,12 @@ void Application::show_new_robot_modal() {
             m_robot->set_source_file(path);
             m_robot_inspector_ui->set_robot(m_robot);
             m_simulation_view->set_robot(m_robot);
+
+            // Unload the current robot AI
+            m_robot_ai = nullptr;
+            m_simulation_view->set_robot_ai(nullptr);
+
+            m_simulation_view->pause();
             ImGui::CloseCurrentPopup();
         }
 
@@ -148,7 +154,8 @@ void Application::show_robot_ai_inspector() {
                     load_lua_robot_ai(lua_ai->get_source_path());
             }
 
-            if (ImGui::Button("Deload")) {
+            ImGui::SameLine();
+            if (ImGui::Button("Unload")) {
                 m_robot_ai = nullptr;
                 m_simulation_view->set_robot_ai(nullptr);
             }
@@ -185,6 +192,14 @@ void Application::load_robot(const std::string &path) {
     m_robot = robot;
     m_robot_inspector_ui->set_robot(m_robot);
     m_simulation_view->set_robot(m_robot);
+
+    // Unload the current robot AI
+    m_robot_ai = nullptr;
+    m_simulation_view->set_robot_ai(nullptr);
+
+    // Pause the simulation
+    m_simulation_view->pause();
+
     SPDLOG_INFO("Robot loaded successfully");
 }
 
@@ -256,6 +271,9 @@ void Application::load_lua_robot_ai(const std::string &path) {
             load_lua_robot_ai(path);
         }
     });
+
+    // Pause the simulation
+    m_simulation_view->pause();
 
     SPDLOG_INFO("Lua robot AI loaded successfully");
 }
