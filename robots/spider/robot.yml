@@ -1,0 +1,97 @@
+meta:
+  name: spider
+parts:
+  - kind: RectangleShape
+    name: body
+    position: [-0.00488766702, 0.565671563]
+    angle: 0.339874774
+    color: [1, 1, 1, 1]
+    size: [0.5, 0.0599999987]
+  - kind: RectangleShape
+    name: thighL
+    position: [-0.338595867, 0.602701485]
+    angle: 71.369873
+    color: [1, 1, 1, 1]
+    size: [0.0299999993, 0.300000012]
+  - kind: RectangleShape
+    name: thighR
+    position: [0.327009827, 0.610313475]
+    angle: 111.170265
+    color: [1, 1, 1, 1]
+    size: [0.0299999993, 0.300000012]
+  - kind: RectangleShape
+    name: calfR
+    position: [0.487631679, 0.490781367]
+    angle: 16.653986
+    color: [1, 1, 1, 1]
+    size: [0.0199999996, 0.400000006]
+  - kind: RectangleShape
+    name: calfL
+    position: [-0.518708169, 0.484540373]
+    angle: -22.9911957
+    color: [1, 1, 1, 1]
+    size: [0.0199999996, 0.400000006]
+  - kind: RevoluteJoint
+    name: hipL
+    position: [0, 0]
+    angle: 0
+    part_a: body
+    part_b: thighL
+    local_anchor_a: [-0.219999999, 0]
+    local_anchor_b: [0, -0.119999997]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -15
+    max_motor_speed: 15
+    max_motor_torque: 100
+  - kind: RevoluteJoint
+    name: hipR
+    position: [0, 0]
+    angle: 0
+    part_a: body
+    part_b: thighR
+    local_anchor_a: [0.219999999, 0]
+    local_anchor_b: [0, 0.119999997]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -15
+    max_motor_speed: 15
+    max_motor_torque: 100
+  - kind: RevoluteJoint
+    name: kneeL
+    position: [0, 0]
+    angle: 0
+    part_a: thighL
+    part_b: calfL
+    local_anchor_a: [0, 0.119999997]
+    local_anchor_b: [0, 0.170000002]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -15
+    max_motor_speed: 15
+    max_motor_torque: 100
+  - kind: RevoluteJoint
+    name: kneeR
+    position: [0, 0]
+    angle: 0
+    part_a: thighR
+    part_b: calfR
+    local_anchor_a: [0, -0.119999997]
+    local_anchor_b: [0, 0.170000002]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -15
+    max_motor_speed: 15
+    max_motor_torque: 100
