@@ -1,0 +1,91 @@
+meta:
+  name: Arm 4-DOF
+parts:
+  - kind: RectangleShape
+    name: arm1
+    position: [0.14302437, 0.139799953]
+    angle: 44.346817
+    color: [0.936430335, 0.120814927, 0.0961615667, 1]
+    size: [0.5, 0.100000001]
+  - kind: RectangleShape
+    name: arm2
+    position: [0.485084265, 0.299217522]
+    angle: 5.62907934
+    color: [0.63854295, 0.877750635, 0.13091144, 1]
+    size: [0.5, 0.100000001]
+  - kind: RectangleShape
+    name: arm3
+    position: [0.656832576, 0.516964972]
+    angle: 97.8416672
+    color: [0, 0.684596539, 1, 1]
+    size: [0.5, 0.100000001]
+  - kind: RectangleShape
+    name: arm4
+    position: [0.80928582, 0.627382696]
+    angle: 333.987946
+    color: [1, 0, 0.894865513, 1]
+    size: [0.5, 0.100000001]
+  - kind: RevoluteJoint
+    name: joint0
+    position: [0, 0]
+    angle: 0
+    part_a: "@ground@"
+    part_b: arm1
+    local_anchor_a: [0, 0]
+    local_anchor_b: [-0.200000003, 0]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -30
+    max_motor_speed: 30
+    max_motor_torque: 20
+  - kind: RevoluteJoint
+    name: joint1
+    position: [0, 0]
+    angle: 0
+    part_a: arm1
+    part_b: arm2
+    local_anchor_a: [0.200000003, 0]
+    local_anchor_b: [-0.200000003, 0]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -30
+    max_motor_speed: 30
+    max_motor_torque: 20
+  - kind: RevoluteJoint
+    name: joint2
+    position: [0, 0]
+    angle: 0
+    part_a: arm2
+    part_b: arm3
+    local_anchor_a: [0.200000003, 0]
+    local_anchor_b: [-0.200000003, 0]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -30
+    max_motor_speed: 30
+    max_motor_torque: 20
+  - kind: RevoluteJoint
+    name: joint3
+    position: [0, 0]
+    angle: 0
+    part_a: arm3
+    part_b: arm4
+    local_anchor_a: [0.200000003, 0]
+    local_anchor_b: [-0.200000003, 0]
+    should_collide: false
+    lower_angle: 0
+    upper_angle: 0
+    limit_enabled: false
+    is_motor: true
+    min_motor_speed: -30
+    max_motor_speed: 30
+    max_motor_torque: 20
