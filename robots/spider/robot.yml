@@ -3,8 +3,8 @@ meta:
 parts:
   - kind: RectangleShape
     name: body
-    position: [0.0885109901, 0.715631306]
-    angle: 0.0369364023
+    position: [0.0885110125, 0.715635002]
+    angle: 0.0366810597
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -13,8 +13,8 @@ parts:
     size: [0.5, 0.119999997]
   - kind: RectangleShape
     name: thighL
-    position: [-0.186687052, 0.608942747]
-    angle: 62.6126404
+    position: [-0.186692059, 0.608945489]
+    angle: 62.6112099
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -23,8 +23,8 @@ parts:
     size: [0.300000012, 0.0299999993]
   - kind: RectangleShape
     name: thighR
-    position: [0.377331197, 0.61748153]
-    angle: 304.999084
+    position: [0.377337992, 0.617476106]
+    angle: 304.998749
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -33,8 +33,8 @@ parts:
     size: [0.300000012, 0.0299999993]
   - kind: RectangleShape
     name: calfR
-    position: [0.490080446, 0.354954064]
-    angle: 284.972931
+    position: [0.490083694, 0.354947418]
+    angle: 284.971924
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -43,8 +43,8 @@ parts:
     size: [0.400000006, 0.0199999996]
   - kind: RectangleShape
     name: calfL
-    position: [-0.242658123, 0.332417727]
-    angle: 89.7372437
+    position: [-0.242663443, 0.332398593]
+    angle: 89.741066
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -64,8 +64,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -15
-    max_motor_speed: 15
+    min_motor_speed: -180
+    max_motor_speed: 180
     max_motor_torque: 100
   - kind: RevoluteJoint
     name: hipR
@@ -80,8 +80,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -15
-    max_motor_speed: 15
+    min_motor_speed: -180
+    max_motor_speed: 180
     max_motor_torque: 100
   - kind: RevoluteJoint
     name: kneeL
@@ -96,8 +96,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -15
-    max_motor_speed: 15
+    min_motor_speed: -180
+    max_motor_speed: 180
     max_motor_torque: 100
   - kind: RevoluteJoint
     name: kneeR
@@ -112,8 +112,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -15
-    max_motor_speed: 15
+    min_motor_speed: -180
+    max_motor_speed: 180
     max_motor_torque: 100
   - kind: AngleSensor
     name: gyroscope

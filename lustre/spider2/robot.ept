@@ -4,6 +4,24 @@ fun abs(x : float) returns (r : float);
 let
     r = (if (x >=. 0.0) then x else -.x);
 tel
+fun min(x : float ; y : float) returns (r : float);
+let
+    r = if x <=. y then x else y
+tel
+
+fun modulo(x : float ; y : float) returns (r : float);
+var r1 : float;
+let
+    r1 = if x <. 0.0 then x +. y else (if x >=. y then x -. y else x);
+    r = if r1 <. 0.0 then r1 +. y else (if r1 >=. y then r1 -. y else r1);
+tel
+
+fun setMotor(current : float; goal : float ; maxi : float) returns (power : float);
+var delta : float;
+let 
+    delta = modulo(goal -. current, 360.0);
+    power = if delta <. 180.0 then min(abs(delta),maxi) else -.min(abs(delta), maxi);
+tel
 
 
 node robot(dt : float;
@@ -22,21 +40,23 @@ let
     automaton
         state On_the_ground
             do
-                hipLspeed = hipLangle -. 30.0;
-                hipRspeed = hipRangle -. 30.0;
-                kneeLspeed = kneeLangle -. 30.0;
-                kneeRspeed = kneeRangle -. 30.0;
+                hipLspeed = setMotor(hipLangle, -.40.0, 10.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 10.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 10.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 10.0);
 
             (* until false -> (abs(gyroscope-.(pre gyroscope)) <=. 0.1) then In_the_sky *)
-            until false then In_the_sky
+            until hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Jump
         
         state Jump
             do
-                hipLspeed = 1.1;
-                hipRspeed = 1.1;
-                kneeLspeed = 1.1;
-                kneeRspeed = 1.1;
-            until false then Jump
+                hipLspeed = setMotor(hipLangle, 90.0, 180.0);
+                hipRspeed = setMotor(hipRangle, -.90.0, 180.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 180.0);
+                kneeRspeed = setMotor(kneeRangle, 100.0, 180.0);
+
+
+            until false then In_the_sky
         state In_the_sky
             do
                 hipLspeed = 1.1;

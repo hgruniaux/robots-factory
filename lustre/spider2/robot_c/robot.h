@@ -1,4 +1,4 @@
-/* --- Generated the 7/1/2025 at 13:1 --- */
+/* --- Generated the 7/1/2025 at 16:4 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -11,6 +11,25 @@ typedef struct Robot__abs_out {
 } Robot__abs_out;
 
 void Robot__abs_step(float x, Robot__abs_out* _out);
+
+typedef struct Robot__min_out {
+  float r;
+} Robot__min_out;
+
+void Robot__min_step(float x, float y, Robot__min_out* _out);
+
+typedef struct Robot__modulo_out {
+  float r;
+} Robot__modulo_out;
+
+void Robot__modulo_step(float x, float y, Robot__modulo_out* _out);
+
+typedef struct Robot__setMotor_out {
+  float power;
+} Robot__setMotor_out;
+
+void Robot__setMotor_step(float current, float goal, float maxi,
+                          Robot__setMotor_out* _out);
 
 typedef struct Robot__robot_mem {
   Robot__st ck;
