@@ -1,4 +1,4 @@
-/* --- Generated the 7/1/2025 at 17:12 --- */
+/* --- Generated the 7/1/2025 at 17:25 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -130,39 +130,34 @@ void Robot__setMotorFast_step(float current, float goal, float maxi,
 
 void Robot__robot_reset(Robot__robot_mem* self) {
   self->pnr = false;
-  self->ck = Robot__St_On_the_ground;
+  self->ck = Robot__St_In_the_sky;
 }
 
 void Robot__robot_step(float dt, float hipLangle, float hipRangle,
                        float kneeLangle, float kneeRangle, float gyroscope,
                        float calfLdistance, float calfRdistance,
+                       int footLcontact, int footRcontact,
                        Robot__robot_out* _out, Robot__robot_mem* self) {
   Robot__setMotorFast_out Robot__setMotorFast_out_st;
   Robot__setMotor_out Robot__setMotor_out_st;
   
+  float v_24;
+  float v_23;
+  float v_22;
+  float v_21;
   int v_20;
   int v_19;
   int v;
-  float v_27;
-  float v_26;
-  float v_25;
-  float v_24;
-  int v_23;
-  int v_22;
-  int v_21;
-  int v_34;
-  int v_33;
-  int v_32;
   int v_31;
   int v_30;
   int v_29;
   int v_28;
-  int nr_St_In_the_sky;
-  Robot__st ns_St_In_the_sky;
-  float kneeRspeed_St_In_the_sky;
-  float kneeLspeed_St_In_the_sky;
-  float hipRspeed_St_In_the_sky;
-  float hipLspeed_St_In_the_sky;
+  int v_27;
+  int v_26;
+  int v_25;
+  int v_34;
+  int v_33;
+  int v_32;
   int nr_St_Jump;
   Robot__st ns_St_Jump;
   float kneeRspeed_St_Jump;
@@ -175,11 +170,47 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   float kneeLspeed_St_On_the_ground;
   float hipRspeed_St_On_the_ground;
   float hipLspeed_St_On_the_ground;
+  int nr_St_In_the_sky;
+  Robot__st ns_St_In_the_sky;
+  float kneeRspeed_St_In_the_sky;
+  float kneeLspeed_St_In_the_sky;
+  float hipRspeed_St_In_the_sky;
+  float hipLspeed_St_In_the_sky;
   Robot__st ns;
   int r;
   int nr;
   r = self->pnr;
   switch (self->ck) {
+    case Robot__St_In_the_sky:
+      Robot__setMotorFast_step(kneeRangle, -80.000000, 100.000000,
+                               &Robot__setMotorFast_out_st);
+      kneeRspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
+      Robot__setMotorFast_step(kneeLangle, 80.000000, 100.000000,
+                               &Robot__setMotorFast_out_st);
+      kneeLspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
+      Robot__setMotorFast_step(hipRangle, 30.000000, 100.000000,
+                               &Robot__setMotorFast_out_st);
+      hipRspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
+      Robot__setMotorFast_step(hipLangle, -30.000000, 100.000000,
+                               &Robot__setMotorFast_out_st);
+      hipLspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
+      v_33 = (calfRdistance<=0.040000);
+      v_32 = (calfLdistance<=0.040000);
+      v_34 = (v_32&&v_33);
+      if (v_34) {
+        nr_St_In_the_sky = true;
+        ns_St_In_the_sky = Robot__St_On_the_ground;
+      } else {
+        nr_St_In_the_sky = false;
+        ns_St_In_the_sky = Robot__St_In_the_sky;
+      };
+      _out->hipLspeed = hipLspeed_St_In_the_sky;
+      _out->hipRspeed = hipRspeed_St_In_the_sky;
+      _out->kneeLspeed = kneeLspeed_St_In_the_sky;
+      _out->kneeRspeed = kneeRspeed_St_In_the_sky;
+      ns = ns_St_In_the_sky;
+      nr = nr_St_In_the_sky;
+      break;
     case Robot__St_On_the_ground:
       Robot__setMotor_step(kneeRangle, -100.000000, 60.000000,
                            &Robot__setMotor_out_st);
@@ -194,17 +225,17 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
                            &Robot__setMotor_out_st);
       hipLspeed_St_On_the_ground = Robot__setMotor_out_st.power;
       _out->hipLspeed = hipLspeed_St_On_the_ground;
-      v_28 = (_out->hipLspeed<=1.000000);
+      v_25 = (_out->hipLspeed<=1.000000);
       _out->hipRspeed = hipRspeed_St_On_the_ground;
-      v_29 = (_out->hipRspeed<=1.000000);
-      v_30 = (v_28&&v_29);
+      v_26 = (_out->hipRspeed<=1.000000);
+      v_27 = (v_25&&v_26);
       _out->kneeLspeed = kneeLspeed_St_On_the_ground;
-      v_31 = (_out->kneeLspeed<=1.000000);
-      v_32 = (v_30&&v_31);
+      v_28 = (_out->kneeLspeed<=1.000000);
+      v_29 = (v_27&&v_28);
       _out->kneeRspeed = kneeRspeed_St_On_the_ground;
-      v_33 = (_out->kneeRspeed<=1.000000);
-      v_34 = (v_32&&v_33);
-      if (v_34) {
+      v_30 = (_out->kneeRspeed<=1.000000);
+      v_31 = (v_29&&v_30);
+      if (v_31) {
         nr_St_On_the_ground = true;
         ns_St_On_the_ground = Robot__St_Jump;
       } else {
@@ -215,14 +246,14 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       nr = nr_St_On_the_ground;
       break;
     case Robot__St_Jump:
-      v_26 = (kneeRangle+hipRangle);
-      v_27 = (v_26+gyroscope);
-      Robot__setMotorFast_step(v_27, -90.000000, 1000.000000,
+      v_23 = (kneeRangle+hipRangle);
+      v_24 = (v_23+gyroscope);
+      Robot__setMotorFast_step(v_24, -90.000000, 1000.000000,
                                &Robot__setMotorFast_out_st);
       kneeRspeed_St_Jump = Robot__setMotorFast_out_st.power;
-      v_24 = (kneeLangle+hipLangle);
-      v_25 = (v_24+gyroscope);
-      Robot__setMotorFast_step(v_25, 90.000000, 1000.000000,
+      v_21 = (kneeLangle+hipLangle);
+      v_22 = (v_21+gyroscope);
+      Robot__setMotorFast_step(v_22, 90.000000, 1000.000000,
                                &Robot__setMotorFast_out_st);
       kneeLspeed_St_Jump = Robot__setMotorFast_out_st.power;
       Robot__setMotorFast_step(hipRangle, -90.000000, 1000.000000,
@@ -231,10 +262,10 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       Robot__setMotorFast_step(hipLangle, 90.000000, 1000.000000,
                                &Robot__setMotorFast_out_st);
       hipLspeed_St_Jump = Robot__setMotorFast_out_st.power;
-      v_22 = (calfRdistance>=0.040000);
-      v_21 = (calfLdistance>=0.040000);
-      v_23 = (v_21&&v_22);
-      if (v_23) {
+      v_19 = (calfRdistance>=0.040000);
+      v = (calfLdistance>=0.040000);
+      v_20 = (v&&v_19);
+      if (v_20) {
         nr_St_Jump = true;
         ns_St_Jump = Robot__St_In_the_sky;
       } else {
@@ -247,36 +278,6 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       _out->kneeRspeed = kneeRspeed_St_Jump;
       ns = ns_St_Jump;
       nr = nr_St_Jump;
-      break;
-    case Robot__St_In_the_sky:
-      Robot__setMotor_step(kneeRangle, -100.000000, 60.000000,
-                           &Robot__setMotor_out_st);
-      kneeRspeed_St_In_the_sky = Robot__setMotor_out_st.power;
-      Robot__setMotor_step(kneeLangle, 100.000000, 60.000000,
-                           &Robot__setMotor_out_st);
-      kneeLspeed_St_In_the_sky = Robot__setMotor_out_st.power;
-      Robot__setMotor_step(hipRangle, 40.000000, 60.000000,
-                           &Robot__setMotor_out_st);
-      hipRspeed_St_In_the_sky = Robot__setMotor_out_st.power;
-      Robot__setMotor_step(hipLangle, -40.000000, 60.000000,
-                           &Robot__setMotor_out_st);
-      hipLspeed_St_In_the_sky = Robot__setMotor_out_st.power;
-      v_19 = (calfRdistance<=0.040000);
-      v = (calfLdistance<=0.040000);
-      v_20 = (v&&v_19);
-      if (v_20) {
-        nr_St_In_the_sky = true;
-        ns_St_In_the_sky = Robot__St_On_the_ground;
-      } else {
-        nr_St_In_the_sky = false;
-        ns_St_In_the_sky = Robot__St_In_the_sky;
-      };
-      _out->hipLspeed = hipLspeed_St_In_the_sky;
-      _out->hipRspeed = hipRspeed_St_In_the_sky;
-      _out->kneeLspeed = kneeLspeed_St_In_the_sky;
-      _out->kneeRspeed = kneeRspeed_St_In_the_sky;
-      ns = ns_St_In_the_sky;
-      nr = nr_St_In_the_sky;
       break;
     default:
       break;
