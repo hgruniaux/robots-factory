@@ -33,10 +33,10 @@ public:
         Robot__robot_step(dt, hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, calfLdistance, calfRdistance, &out, &m_memory);
 
         fmt::print("@@@@ STEP");
-        fmt::print("hipLangle: {}\n", hipLangle);
-        fmt::print("hipRangle: {}\n", hipRangle);
-        fmt::print("kneeLangle: {}\n", kneeLangle);
-        fmt::print("kneeRangle: {}\n", kneeRangle);
+        fmt::print("hipLangle: {}", hipLangle);
+        fmt::print("hipRangle: {}", hipRangle);
+        fmt::print("kneeLangle: {}", kneeLangle);
+        fmt::print("kneeRangle: {}", kneeRangle);
 
         // Output parameters
         physics_robot->set_motor_speed("hipL", out.hipLspeed);
