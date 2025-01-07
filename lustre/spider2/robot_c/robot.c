@@ -1,4 +1,4 @@
-/* --- Generated the 7/1/2025 at 17:25 --- */
+/* --- Generated the 7/1/2025 at 17:35 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -155,8 +155,6 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   int v_27;
   int v_26;
   int v_25;
-  int v_34;
-  int v_33;
   int v_32;
   int nr_St_Jump;
   Robot__st ns_St_Jump;
@@ -182,22 +180,20 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   r = self->pnr;
   switch (self->ck) {
     case Robot__St_In_the_sky:
-      Robot__setMotorFast_step(kneeRangle, -80.000000, 100.000000,
-                               &Robot__setMotorFast_out_st);
-      kneeRspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
-      Robot__setMotorFast_step(kneeLangle, 80.000000, 100.000000,
-                               &Robot__setMotorFast_out_st);
-      kneeLspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
-      Robot__setMotorFast_step(hipRangle, 30.000000, 100.000000,
-                               &Robot__setMotorFast_out_st);
-      hipRspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
-      Robot__setMotorFast_step(hipLangle, -30.000000, 100.000000,
-                               &Robot__setMotorFast_out_st);
-      hipLspeed_St_In_the_sky = Robot__setMotorFast_out_st.power;
-      v_33 = (calfRdistance<=0.040000);
-      v_32 = (calfLdistance<=0.040000);
-      v_34 = (v_32&&v_33);
-      if (v_34) {
+      Robot__setMotor_step(kneeRangle, -80.000000, 60.000000,
+                           &Robot__setMotor_out_st);
+      kneeRspeed_St_In_the_sky = Robot__setMotor_out_st.power;
+      Robot__setMotor_step(kneeLangle, 80.000000, 60.000000,
+                           &Robot__setMotor_out_st);
+      kneeLspeed_St_In_the_sky = Robot__setMotor_out_st.power;
+      Robot__setMotor_step(hipRangle, 30.000000, 60.000000,
+                           &Robot__setMotor_out_st);
+      hipRspeed_St_In_the_sky = Robot__setMotor_out_st.power;
+      Robot__setMotor_step(hipLangle, -30.000000, 60.000000,
+                           &Robot__setMotor_out_st);
+      hipLspeed_St_In_the_sky = Robot__setMotor_out_st.power;
+      v_32 = (footLcontact&&footRcontact);
+      if (v_32) {
         nr_St_In_the_sky = true;
         ns_St_In_the_sky = Robot__St_On_the_ground;
       } else {
@@ -248,22 +244,22 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
     case Robot__St_Jump:
       v_23 = (kneeRangle+hipRangle);
       v_24 = (v_23+gyroscope);
-      Robot__setMotorFast_step(v_24, -90.000000, 1000.000000,
+      Robot__setMotorFast_step(v_24, -90.000000, 200.000000,
                                &Robot__setMotorFast_out_st);
       kneeRspeed_St_Jump = Robot__setMotorFast_out_st.power;
       v_21 = (kneeLangle+hipLangle);
       v_22 = (v_21+gyroscope);
-      Robot__setMotorFast_step(v_22, 90.000000, 1000.000000,
+      Robot__setMotorFast_step(v_22, 90.000000, 200.000000,
                                &Robot__setMotorFast_out_st);
       kneeLspeed_St_Jump = Robot__setMotorFast_out_st.power;
-      Robot__setMotorFast_step(hipRangle, -90.000000, 1000.000000,
+      Robot__setMotorFast_step(hipRangle, -90.000000, 200.000000,
                                &Robot__setMotorFast_out_st);
       hipRspeed_St_Jump = Robot__setMotorFast_out_st.power;
-      Robot__setMotorFast_step(hipLangle, 90.000000, 1000.000000,
+      Robot__setMotorFast_step(hipLangle, 90.000000, 200.000000,
                                &Robot__setMotorFast_out_st);
       hipLspeed_St_Jump = Robot__setMotorFast_out_st.power;
-      v_19 = (calfRdistance>=0.040000);
-      v = (calfLdistance>=0.040000);
+      v_19 = !(footRcontact);
+      v = !(footLcontact);
       v_20 = (v&&v_19);
       if (v_20) {
         nr_St_Jump = true;

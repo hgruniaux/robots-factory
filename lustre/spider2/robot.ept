@@ -49,11 +49,11 @@ let
     automaton
         state In_the_sky
             do
-                hipLspeed = setMotorFast(hipLangle, -.30.0, 100.0);
-                hipRspeed = setMotorFast(hipRangle, 30.0, 100.0);
-                kneeLspeed = setMotorFast(kneeLangle, 80.0, 100.0);
-                kneeRspeed = setMotorFast(kneeRangle, -.80.0, 100.0);
-            until calfLdistance <=. 0.04 and calfRdistance <=. 0.04 then On_the_ground
+                hipLspeed = setMotor(hipLangle, -.30.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 30.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 80.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.80.0, 60.0);
+            until footLcontact and footRcontact then On_the_ground
  
         state On_the_ground
             do
@@ -65,10 +65,10 @@ let
         
         state Jump
             do
-                hipLspeed = setMotorFast(hipLangle, 90.0, 1000.0);
-                hipRspeed = setMotorFast(hipRangle, -.90.0, 1000.0);
-                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 1000.0);
-                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 1000.0);
-            until calfLdistance >=. 0.04 and calfRdistance >=. 0.04 then In_the_sky
+                hipLspeed = setMotorFast(hipLangle, 90.0, 200.0);
+                hipRspeed = setMotorFast(hipRangle, -.90.0, 200.0);
+                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 200.0);
+                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 200.0);
+            until not footLcontact and not footRcontact then In_the_sky
    end;
 tel
