@@ -3,54 +3,54 @@ meta:
 parts:
   - kind: RectangleShape
     name: body
-    position: [-0.00492494367, 0.56589371]
-    angle: 0.458559155
+    position: [0.0885109901, 0.715631306]
+    angle: 0.0369364023
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
     restitution: 0
     restitution_threshold: 1
-    size: [0.5, 0.0599999987]
+    size: [0.5, 0.119999997]
   - kind: RectangleShape
     name: thighL
-    position: [-0.338589996, 0.60258621]
-    angle: 71.3102493
+    position: [-0.186687052, 0.608942747]
+    angle: 62.6126404
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
     restitution: 0
     restitution_threshold: 1
-    size: [0.0299999993, 0.300000012]
+    size: [0.300000012, 0.0299999993]
   - kind: RectangleShape
     name: thighR
-    position: [0.327213824, 0.610354722]
-    angle: 110.844673
+    position: [0.377331197, 0.61748153]
+    angle: 304.999084
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
     restitution: 0
     restitution_threshold: 1
-    size: [0.0299999993, 0.300000012]
+    size: [0.300000012, 0.0299999993]
   - kind: RectangleShape
     name: calfR
-    position: [0.487516344, 0.490018427]
-    angle: 16.4557495
+    position: [0.490080446, 0.354954064]
+    angle: 284.972931
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
     restitution: 0
     restitution_threshold: 1
-    size: [0.0199999996, 0.400000006]
+    size: [0.400000006, 0.0199999996]
   - kind: RectangleShape
     name: calfL
-    position: [-0.518689215, 0.484554827]
-    angle: -23.00103
+    position: [-0.242658123, 0.332417727]
+    angle: 89.7372437
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
     restitution: 0
     restitution_threshold: 1
-    size: [0.0199999996, 0.400000006]
+    size: [0.400000006, 0.0199999996]
   - kind: RevoluteJoint
     name: hipL
     position: [0, 0]
@@ -58,7 +58,7 @@ parts:
     part_a: body
     part_b: thighL
     local_anchor_a: [-0.219999999, 0]
-    local_anchor_b: [0, -0.119999997]
+    local_anchor_b: [0.119999997, 0]
     should_collide: false
     lower_angle: 0
     upper_angle: 0
@@ -74,7 +74,7 @@ parts:
     part_a: body
     part_b: thighR
     local_anchor_a: [0.219999999, 0]
-    local_anchor_b: [0, 0.119999997]
+    local_anchor_b: [-0.119999997, 0]
     should_collide: false
     lower_angle: 0
     upper_angle: 0
@@ -89,8 +89,8 @@ parts:
     angle: 0
     part_a: thighL
     part_b: calfL
-    local_anchor_a: [0, 0.119999997]
-    local_anchor_b: [0, 0.170000002]
+    local_anchor_a: [-0.119999997, 0]
+    local_anchor_b: [0.170000002, 0]
     should_collide: false
     lower_angle: 0
     upper_angle: 0
@@ -105,8 +105,8 @@ parts:
     angle: 0
     part_a: thighR
     part_b: calfR
-    local_anchor_a: [0, -0.119999997]
-    local_anchor_b: [0, 0.170000002]
+    local_anchor_a: [0.119999997, 0]
+    local_anchor_b: [-0.170000002, 0]
     should_collide: false
     lower_angle: 0
     upper_angle: 0
@@ -128,7 +128,7 @@ parts:
     position: [0, 0]
     angle: 270
     part: calfR
-    local_anchor: [0, -0.200000003]
+    local_anchor: [0, -0.189999998]
     min_distance: 0
     max_distance: .inf
   - kind: DistanceSensor
@@ -136,6 +136,6 @@ parts:
     position: [0, 0]
     angle: 270
     part: calfL
-    local_anchor: [0, -0.200000003]
+    local_anchor: [0, -0.189999998]
     min_distance: 0
     max_distance: .inf

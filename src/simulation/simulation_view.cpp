@@ -172,6 +172,5 @@ void SimulationView::restart_if_needed() {
     if (m_simulation == nullptr)
         return;
 
-    if (m_simulation->get_robot() != m_robot || m_simulation->get_robot_ai() != m_robot_ai)
-        start();
+    start();
 }
