@@ -193,10 +193,10 @@ float PhysicsRobot::get_sensor_value(Joint *joint) const {
     assert(physics_joint != nullptr);
 
     float true_value;
-    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
-        true_value = glm::degrees(revolute_joint->GetJointAngle());
-    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
-        true_value = prismatic_joint->GetJointTranslation();
+    if (physics_joint->GetType() == e_revoluteJoint) {
+        true_value = glm::degrees(static_cast<b2RevoluteJoint *>(physics_joint)->GetJointAngle());
+    } else if (physics_joint->GetType() == e_prismaticJoint) {
+        true_value = static_cast<b2PrismaticJoint *>(physics_joint)->GetJointTranslation();
     } else {
         SPDLOG_WARN("Unsupported joint type (cannot be a sensor) for '{}'.", joint->get_name());
         return 0.f;
@@ -216,13 +216,13 @@ bool PhysicsRobot::is_motor_enabled(const std::string &name) const {
         return false;
     }
 
-    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
-        return revolute_joint->IsMotorEnabled();
-    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
-        return prismatic_joint->IsMotorEnabled();
+    if (joint->GetType() == e_revoluteJoint) {
+        return static_cast<b2RevoluteJoint *>(joint)->IsMotorEnabled();
+    } else if (joint->GetType() == e_prismaticJoint) {
+        return static_cast<b2PrismaticJoint *>(joint)->IsMotorEnabled();
     }
 
-    SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    SPDLOG_WARN("Unsupported joint type (cannot be a motor) for '{}'.", name);
     return false;
 }
 
@@ -233,12 +233,12 @@ void PhysicsRobot::set_motor_enabled(const std::string &name, bool enabled) {
         return;
     }
 
-    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
-        revolute_joint->EnableMotor(enabled);
-    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
-        prismatic_joint->EnableMotor(enabled);
+    if (joint->GetType() == e_revoluteJoint) {
+        static_cast<b2RevoluteJoint *>(joint)->EnableMotor(enabled);
+    } else if (joint->GetType() == e_prismaticJoint) {
+        static_cast<b2PrismaticJoint *>(joint)->EnableMotor(enabled);
     } else {
-        SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+        SPDLOG_WARN("Unsupported joint type (cannot be a motor) for '{}'.", name);
     }
 }
 
@@ -249,29 +249,30 @@ float PhysicsRobot::get_motor_speed(const std::string &name) const {
         return 0.f;
     }
 
-    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
-        return glm::degrees(revolute_joint->GetMotorSpeed());
-    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
-        return prismatic_joint->GetMotorSpeed();
+    if (joint->GetType() == e_revoluteJoint) {
+        return glm::degrees(static_cast<b2RevoluteJoint *>(joint)->GetMotorSpeed());
+    } else if (joint->GetType() == e_prismaticJoint) {
+        return static_cast<b2PrismaticJoint *>(joint)->GetMotorSpeed();
     }
 
-    SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    SPDLOG_WARN("Unsupported joint type (cannot be a motor) for '{}'.", name);
     return 0.f;
 }
 
 glm::vec2 PhysicsRobot::get_motor_speed_range(const std::string &name) const {
-    Joint *joint = m_robot->get_part_by_name<Joint>(name);
+    auto *joint = m_robot->get_part_by_name<Joint>(name);
     if (joint == nullptr) {
         SPDLOG_WARN("Joint part '{}' not found.", name);
         return {0.f, 0.f};
     }
 
+    // FIXME: avoid using dynamic_cast
     if (auto *revolute_joint = dynamic_cast<RevoluteJoint *>(joint); revolute_joint != nullptr) {
         return {revolute_joint->get_min_motor_speed(), revolute_joint->get_max_motor_speed()};
     } else if (auto *prismatic_joint = dynamic_cast<PrismaticJoint *>(joint); prismatic_joint != nullptr) {
         return {prismatic_joint->get_min_motor_speed(), prismatic_joint->get_max_motor_speed()};
     } else {
-        SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+        SPDLOG_WARN("Unsupported joint type (cannot be a motor) for '{}'.", name);
         return {0.f, 0.f};
     }
 }
@@ -283,13 +284,13 @@ float PhysicsRobot::get_motor_max_force(const std::string &name) const {
         return 0.f;
     }
 
-    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
-        return revolute_joint->GetMaxMotorTorque();
-    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
-        return prismatic_joint->GetMaxMotorForce();
+    if (joint->GetType() == e_revoluteJoint) {
+        return static_cast<b2RevoluteJoint *>(joint)->GetMaxMotorTorque();
+    } else if (joint->GetType() == e_prismaticJoint) {
+        return static_cast<b2PrismaticJoint *>(joint)->GetMaxMotorForce();
     }
 
-    SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+    SPDLOG_WARN("Unsupported joint type (cannot be a motor) for '{}'.", name);
     return 0.f;
 }
 
@@ -307,12 +308,12 @@ void PhysicsRobot::set_motor_speed(const std::string &name, float value) {
     const auto &range = get_motor_speed_range(name);
     value = std::clamp(value, range.x, range.y);
 
-    if (auto *revolute_joint = dynamic_cast<b2RevoluteJoint *>(joint); revolute_joint != nullptr) {
-        revolute_joint->SetMotorSpeed(glm::radians(value));
-    } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
-        prismatic_joint->SetMotorSpeed(value);
+    if (physics_joint->GetType() == e_revoluteJoint) {
+        static_cast<b2RevoluteJoint *>(physics_joint)->SetMotorSpeed(glm::radians(value));
+    } else if (physics_joint->GetType() == e_prismaticJoint) {
+        static_cast<b2PrismaticJoint *>(physics_joint)->SetMotorSpeed(value);
     } else {
-        SPDLOG_WARN("Unsupported joint type (cannot be a motor).");
+        SPDLOG_WARN("Unsupported joint type (cannot be a motor) for '{}'.", name);
     }
 }
 

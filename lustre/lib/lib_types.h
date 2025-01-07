@@ -1,0 +1,4 @@
+#ifndef LUSTRE_LIB_TYPES_H
+#define LUSTRE_LIB_TYPES_H
+
+#endif//LUSTRE_LIB_TYPES_H

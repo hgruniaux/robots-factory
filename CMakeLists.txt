@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG)
 
-add_executable(robots src/main.cpp
+add_library(robots_core SHARED
         src/robot/robot_parser.cpp
         src/robot/robot_parser.cpp
         src/robot/robot_parser.hpp
@@ -45,37 +45,43 @@ add_executable(robots src/main.cpp
         src/robot/lua_robot_ai.hpp
         src/application.hpp
         src/application.cpp
-        src/file_watcher.hpp
-        src/file_watcher.cpp
         src/parts/accuracy.hpp
         src/simulation/world_description.hpp
         src/simulation/world_description.cpp
+        src/shared_library.hpp
+        src/shared_library.cpp
 )
-target_include_directories(robots PRIVATE src)
+target_include_directories(robots_core PUBLIC src)
 
 find_package(spdlog CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE spdlog::spdlog)
+target_link_libraries(robots_core PUBLIC spdlog::spdlog)
 
 find_package(ImGui CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE imgui::imgui)
+target_link_libraries(robots_core PUBLIC imgui::imgui)
 
 find_package(glfw3 CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE glfw)
+target_link_libraries(robots_core PUBLIC glfw)
 
 find_package(glad CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE glad::glad)
+target_link_libraries(robots_core PUBLIC glad::glad)
 
 find_package(box2d CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE box2d::box2d)
+target_link_libraries(robots_core PUBLIC box2d::box2d)
 
 find_package(yaml-cpp CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE yaml-cpp::yaml-cpp)
+target_link_libraries(robots_core PUBLIC yaml-cpp::yaml-cpp)
 
 find_package(glm CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE glm::glm)
+target_link_libraries(robots_core PUBLIC glm::glm)
 
 find_package(Lua REQUIRED)
-target_link_libraries(robots PRIVATE ${LUA_LIBRARIES})
+target_link_libraries(robots_core PUBLIC ${LUA_LIBRARIES})
 
 find_package(tinyfiledialogs CONFIG REQUIRED)
-target_link_libraries(robots PRIVATE tinyfiledialogs::tinyfiledialogs)
+target_link_libraries(robots_core PUBLIC tinyfiledialogs::tinyfiledialogs)
+
+# Bind the robots AIs written in Lustre
+add_subdirectory(lustre)
+
+add_executable(robots src/main.cpp)
+target_link_libraries(robots PRIVATE robots_core)

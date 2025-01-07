@@ -8,14 +8,17 @@
 #include "robot/robot_parser.hpp"
 #include "robot/robot_saver.hpp"
 
-#include "file_watcher.hpp"
+#include "shared_library.hpp"
 
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 #include <tinyfiledialogs.h>
 
 Application::Application() = default;
-Application::~Application() = default;
+
+Application::~Application() {
+    unload_robot_ai();
+}
 
 bool Application::start() {
     m_robot_inspector_ui = std::make_unique<RobotInspectorUI>();
@@ -27,9 +30,6 @@ bool Application::start() {
 }
 
 void Application::update() {
-    if (m_robot_ai_watcher != nullptr)
-        m_robot_ai_watcher->check();
-
     if (ImGui::BeginMainMenuBar()) {
         show_main_menu_bar();
         ImGui::EndMainMenuBar();
@@ -153,15 +153,18 @@ void Application::show_robot_ai_inspector() {
                 else
                     load_lua_robot_ai(lua_ai->get_source_path());
             }
-
-            ImGui::SameLine();
-            if (ImGui::Button("Unload")) {
-                m_robot_ai = nullptr;
-                m_simulation_view->set_robot_ai(nullptr);
+        } else {
+            if (ImGui::Button("Reload")) {
+                if (m_robot_ai_lib == nullptr)
+                    tinyfd_messageBox("Error", "Cannot reload the robot AI", "ok", "error", 1);
+                else
+                    load_native_robot_ai(m_robot_ai_lib->get_path());
             }
+        }
 
-            if (m_robot_ai_watcher->check())
-                ImGui::TextColored({1.0f, 1.0f, 0.0f, 1.0f}, ICON_FA_TRIANGLE_EXCLAMATION " The robot AI script has been modified. Reload it to apply the changes.");
+        ImGui::SameLine();
+        if (ImGui::Button("Unload")) {
+            unload_robot_ai();
         }
     }
 
@@ -194,8 +197,7 @@ void Application::load_robot(const std::string &path) {
     m_simulation_view->set_robot(m_robot);
 
     // Unload the current robot AI
-    m_robot_ai = nullptr;
-    m_simulation_view->set_robot_ai(nullptr);
+    unload_robot_ai();
 
     // Pause the simulation
     m_simulation_view->pause();
@@ -260,17 +262,7 @@ void Application::load_lua_robot_ai(const std::string &path) {
 
     m_robot_ai = robot_ai;
     m_simulation_view->set_robot_ai(m_robot_ai);
-    m_robot_ai_watcher = std::make_unique<FileWatcher>(path);
-    m_robot_ai_watcher->set_callback([=, this](bool deleted) {
-        SPDLOG_TRACE("Robot AI file '{}' has been modified", path);
-        if (deleted) {
-            m_robot_ai = nullptr;
-            m_simulation_view->set_robot_ai(nullptr);
-            m_robot_ai_watcher = nullptr;
-        } else {
-            load_lua_robot_ai(path);
-        }
-    });
+    m_robot_ai_lib.reset();// free the shared library as not needed anymore
 
     // Pause the simulation
     m_simulation_view->pause();
@@ -278,7 +270,42 @@ void Application::load_lua_robot_ai(const std::string &path) {
     SPDLOG_INFO("Lua robot AI loaded successfully");
 }
 
+using CreateRobotAIFunction = RobotAI *(*) ();
+
 void Application::load_native_robot_ai(const std::string &path) {
-    SPDLOG_ERROR("Native robot AI is not supported yet");
-    tinyfd_messageBox("Error", "Native robot AI is not supported yet", "ok", "error", 1);
+    auto library = std::make_unique<SharedLibrary>(path);
+    if (!library->load()) {
+        SPDLOG_ERROR("Failed to load shared library '{}'", path);
+        tinyfd_messageBox("Error", "Failed to load native robot AI", "ok", "error", 1);
+        return;
+    }
+
+    auto create_robot_ai = library->get<CreateRobotAIFunction>("create_robot_ai");
+    if (create_robot_ai == nullptr) {
+        SPDLOG_ERROR("Failed to load symbol 'create_robot_ai' from native robot AI");
+        tinyfd_messageBox("Error", "Failed to load native robot AI", "ok", "error", 1);
+        return;
+    }
+
+    auto *robot_ai = create_robot_ai();
+    if (robot_ai == nullptr) {
+        SPDLOG_ERROR("Failed to create robot AI from native robot AI");
+        tinyfd_messageBox("Error", "Failed to create robot AI from native robot AI", "ok", "error", 1);
+        return;
+    }
+
+    m_robot_ai = std::shared_ptr<RobotAI>(robot_ai);
+    m_simulation_view->set_robot_ai(m_robot_ai);
+    m_robot_ai_lib = std::move(library);
+
+    // Pause the simulation
+    m_simulation_view->pause();
+
+    SPDLOG_INFO("Native robot AI loaded successfully");
+}
+
+void Application::unload_robot_ai() {
+    m_robot_ai = nullptr;
+    m_simulation_view->set_robot_ai(nullptr);
+    m_robot_ai_lib.reset();
 }
