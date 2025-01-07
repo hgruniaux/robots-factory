@@ -99,8 +99,15 @@ void SimulationView::show_toolbar() {
         ImGui::SetItemTooltip("Start the simulation");
 
         ImGui::SameLine();
+        if (ImGui::Button(ICON_FA_FORWARD_STEP)) {
+            start();
+            pause();
+        }
+        ImGui::SetItemTooltip("Start the simulation and pause it immediately");
 
+        ImGui::SameLine();
         ImGui::InputTextWithHint("##world_description", "Path to world description", &m_world_description_path);
+
         ImGui::SameLine();
         if (ImGui::Button("...")) {
             const char *filter_patterns[] = {"*.json", "*.yml", "*.yaml"};
