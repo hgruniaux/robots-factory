@@ -29,10 +29,11 @@ public:
         const float calfRdistance = physics_robot->get_sensor_value("calfRDistance");
         const bool footLcontact = physics_robot->has_collision_by_name("calfL");
         const bool footRcontact = physics_robot->has_collision_by_name("calfR");
+        const bool bodyContact = physics_robot->has_collision_by_name("body");
 
         // Call lustre code
         Robot__robot_out out;
-        Robot__robot_step(dt, hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, &out, &m_memory);
+        Robot__robot_step(dt, hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, bodyContact, &out, &m_memory);
 
         fmt::print("@@@@ STEP\n");
         fmt::print("calfLdistance: {}\n", calfLdistance);
