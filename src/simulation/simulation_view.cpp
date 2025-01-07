@@ -192,7 +192,7 @@ void SimulationView::show_world() {
     m_scene_view.end();
 
     glm::vec2 mouse_world_position;
-    if (m_scene_view.is_right_clicked(mouse_world_position)) {
+    if (m_scene_view.is_right_clicked(mouse_world_position) && m_simulation != nullptr && !m_simulation_paused) {
         auto *world = m_simulation->get_world();
         ExplosionQueryCallback callback;
         callback.blast_center = {mouse_world_position.x, mouse_world_position.y};
