@@ -86,9 +86,7 @@ Simulation::Simulation(const std::shared_ptr<Robot> &robot, const std::shared_pt
         m_robot_ai->attach(m_robot, m_physics_robot.get());
 }
 
-Simulation::~Simulation() {
-    m_robot_ai->dettach();
-}
+Simulation::~Simulation() = default;
 
 void Simulation::step() {
     m_world->Step(m_time_step, m_velocity_iterations, m_position_iterations);
