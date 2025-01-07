@@ -99,20 +99,13 @@ void Joint::draw(Renderer2D &renderer, const DrawPartContext &context) {
 
     Part::draw(renderer, context);
 
-    auto draw_anchor = [&renderer](const glm::vec2 &point) {
-        constexpr glm::vec3 color = {1.0f, 1.0f, 0.0f};
-        constexpr float radius = 0.01f;
-        renderer.draw_solid_circle(point, radius, glm::vec4(color, 0.5f));
-        renderer.draw_circle(point, radius, glm::vec4(color, 1.0f));
-    };
-
     auto *part_a = get_robot()->get_part_by_name(m_part_a);
     if (part_a != nullptr)
-        draw_anchor(get_world_anchor_a());
+        renderer.draw_anchor(get_world_anchor_a());
 
     auto *part_b = get_robot()->get_part_by_name(m_part_b);
     if (part_b != nullptr)
-        draw_anchor(get_world_anchor_b());
+        renderer.draw_anchor(get_world_anchor_b());
 }
 
 void Joint::load(const YAML::Node &node) {

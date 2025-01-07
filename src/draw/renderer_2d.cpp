@@ -176,6 +176,14 @@ void Renderer2D::draw_axes(float size, float subsize) {
     draw_infinite_line({0.0f, 0.0f}, {0.0f, 1.0f}, 0.01f, y_color);
 }
 
+void Renderer2D::draw_anchor(const glm::vec2 &position, float radius) {
+    constexpr glm::vec4 outer_color = {1.0f, 1.0f, 0.0f, 1.0f};
+    constexpr glm::vec4 inner_color = {1.0f, 0.0f, 0.0f, 1.0f};
+    draw_solid_circle(position, radius, outer_color);
+    draw_solid_circle(position, radius / 2.f, inner_color);
+    draw_circle(position, radius, glm::vec4(0.f, 0.f, 0.f, 1.0f));
+}
+
 void Renderer2D::draw_point(const glm::vec2 &position, float size, const glm::vec4 &color) {
     draw_quad(position - size / 2.f, {size, size}, color);
 }

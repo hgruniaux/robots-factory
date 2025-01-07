@@ -40,6 +40,7 @@ public:
     void draw_solid_polygon(const glm::vec2 *vertices, size_t vertices_count, const glm::vec4 &color);
 
     void draw_axes(float size = 1.0f, float subsize = 0.1f);
+    void draw_anchor(const glm::vec2 &position, float radius = 0.01f);
 
     void show_scene_gui();
 
@@ -77,7 +78,7 @@ private:
 class SceneView {
 public:
     explicit SceneView(Renderer2D &renderer)
-            : m_renderer(renderer) {}
+        : m_renderer(renderer) {}
 
     void begin();
     void end();

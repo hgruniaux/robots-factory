@@ -7,6 +7,26 @@
  */
 class Sensor : public Part {
 public:
+    // The name of the part to connect.
+    [[nodiscard]] const std::string &get_part() const { return m_part; }
+    void set_part(const std::string &part) { m_part = part; }
+
+    // The local anchor point relative to the part center in meters.
+    [[nodiscard]] const glm::vec2 &get_local_anchor() const { return m_local_anchor; }
+    void set_local_anchor(const glm::vec2 &local_anchor) { m_local_anchor = local_anchor; }
+
+    bool show_inspector() override;
+    void draw(Renderer2D &renderer, const DrawPartContext &context) override;
+    void load(const YAML::Node &node) override;
+    void save(YAML::Emitter &emitter) const override;
+
+protected:
+    [[nodiscard]] bool should_draw(const DrawPartContext &context) const;
+    [[nodiscard]] glm::vec2 get_world_anchor() const;
+
+private:
+    std::string m_part;
+    glm::vec2 m_local_anchor = {0.0f, 0.0f};
 };// class Sensor
 
 /**
@@ -49,8 +69,12 @@ public:
     void set_max_distance(float max_distance) { m_max_distance = max_distance; }
 
     bool show_inspector() override;
+    void draw(Renderer2D &renderer, const DrawPartContext &context) override;
     void load(const YAML::Node &node) override;
     void save(YAML::Emitter &emitter) const override;
+
+private:
+    void check_constraints();
 
 private:
     float m_min_distance = 0.0f;
