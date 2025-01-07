@@ -158,7 +158,7 @@ int LuaRobotAI::lua_set_motor_speed(lua_State *state) {
     const auto value = (float) lua_tonumber(state, 2);
 
     // Transmit the call to the C++ world!
-    robot_ai->set_motor_speed(name, value);
+    robot_ai->get_physics_robot()->set_motor_speed(name, value);
     return 0;
 }
 
@@ -189,7 +189,7 @@ int LuaRobotAI::lua_get_motor_speed(lua_State *state) {
         return 0;
 
     // Transmit the call to the C++ world!
-    float speed = robot_ai->get_motor_speed(name);
+    float speed = robot_ai->get_physics_robot()->get_motor_speed(name);
     lua_pushnumber(state, speed);
     return 1;
 }
@@ -221,7 +221,7 @@ int LuaRobotAI::lua_get_motor_min_speed(lua_State *state) {
         return 0;
 
     // Transmit the call to the C++ world!
-    float speed = robot_ai->get_motor_min_speed(name);
+    float speed = robot_ai->get_physics_robot()->get_motor_min_speed(name);
     lua_pushnumber(state, speed);
     return 1;
 }
@@ -253,7 +253,7 @@ int LuaRobotAI::lua_get_motor_max_speed(lua_State *state) {
         return 0;
 
     // Transmit the call to the C++ world!
-    float speed = robot_ai->get_motor_max_speed(name);
+    float speed = robot_ai->get_physics_robot()->get_motor_max_speed(name);
     lua_pushnumber(state, speed);
     return 1;
 }
@@ -285,7 +285,7 @@ int LuaRobotAI::lua_get_sensor_value(lua_State *state) {
         return 0;
 
     // Transmit the call to the C++ world!
-    const auto value = robot_ai->get_sensor_value(name);
+    const auto value = robot_ai->get_physics_robot()->get_sensor_value(name);
     lua_pushnumber(state, value);
     return 1;
 }

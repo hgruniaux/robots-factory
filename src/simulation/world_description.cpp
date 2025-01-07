@@ -24,6 +24,9 @@ bool load_shape_description(b2World *world, b2Body *body, const YAML::Node &node
             shape.SetAsBox(size.x / 2.f, size.y / 2.f);
         }
 
+        // TODO: avoid changing the Box2D skin radius (for CCD).
+        shape.m_radius = 0.0001f;
+
         b2FixtureDef fixture_def;
         fixture_def.shape = &shape;
 

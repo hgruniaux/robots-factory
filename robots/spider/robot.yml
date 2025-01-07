@@ -3,33 +3,53 @@ meta:
 parts:
   - kind: RectangleShape
     name: body
-    position: [-0.00488766702, 0.565671563]
-    angle: 0.339874774
+    position: [-0.00492494367, 0.56589371]
+    angle: 0.458559155
     color: [1, 1, 1, 1]
+    density: 1
+    friction: 0.200000003
+    restitution: 0
+    restitution_threshold: 1
     size: [0.5, 0.0599999987]
   - kind: RectangleShape
     name: thighL
-    position: [-0.338595867, 0.602701485]
-    angle: 71.369873
+    position: [-0.338589996, 0.60258621]
+    angle: 71.3102493
     color: [1, 1, 1, 1]
+    density: 1
+    friction: 0.200000003
+    restitution: 0
+    restitution_threshold: 1
     size: [0.0299999993, 0.300000012]
   - kind: RectangleShape
     name: thighR
-    position: [0.327009827, 0.610313475]
-    angle: 111.170265
+    position: [0.327213824, 0.610354722]
+    angle: 110.844673
     color: [1, 1, 1, 1]
+    density: 1
+    friction: 0.200000003
+    restitution: 0
+    restitution_threshold: 1
     size: [0.0299999993, 0.300000012]
   - kind: RectangleShape
     name: calfR
-    position: [0.487631679, 0.490781367]
-    angle: 16.653986
+    position: [0.487516344, 0.490018427]
+    angle: 16.4557495
     color: [1, 1, 1, 1]
+    density: 1
+    friction: 0.200000003
+    restitution: 0
+    restitution_threshold: 1
     size: [0.0199999996, 0.400000006]
   - kind: RectangleShape
     name: calfL
-    position: [-0.518708169, 0.484540373]
-    angle: -22.9911957
+    position: [-0.518689215, 0.484554827]
+    angle: -23.00103
     color: [1, 1, 1, 1]
+    density: 1
+    friction: 0.200000003
+    restitution: 0
+    restitution_threshold: 1
     size: [0.0199999996, 0.400000006]
   - kind: RevoluteJoint
     name: hipL
@@ -95,3 +115,27 @@ parts:
     min_motor_speed: -15
     max_motor_speed: 15
     max_motor_torque: 100
+  - kind: AngleSensor
+    name: gyroscope
+    position: [0, 0]
+    angle: 0
+    part: body
+    local_anchor: [0, 0]
+    min_angle: 0
+    max_angle: 360
+  - kind: DistanceSensor
+    name: calfRDistance
+    position: [0, 0]
+    angle: 270
+    part: calfR
+    local_anchor: [0, -0.200000003]
+    min_distance: 0
+    max_distance: .inf
+  - kind: DistanceSensor
+    name: calfLDistance
+    position: [0, 0]
+    angle: 270
+    part: calfL
+    local_anchor: [0, -0.200000003]
+    min_distance: 0
+    max_distance: .inf

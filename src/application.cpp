@@ -22,7 +22,7 @@ bool Application::start() {
     m_simulation_view = std::make_unique<SimulationView>();
 
     load_robot("robots/spider/robot.yml");
-    //load_robot_ai("robots/spider/robot.lua");
+    load_robot_ai("robots/spider/robot.lua");
     return true;
 }
 

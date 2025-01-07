@@ -8,6 +8,7 @@
 class Part;
 class Shape;
 class Joint;
+class Sensor;
 
 /**
  * The physics representation (in Box2D) of a robot.
@@ -54,6 +55,10 @@ public:
     [[nodiscard]] glm::vec2 get_motor_speed_range(const std::string &name) const;
     [[nodiscard]] float get_motor_max_force(const std::string &name) const;
     void set_motor_speed(const std::string &name, float value);
+
+private:
+    [[nodiscard]] float get_sensor_value(Sensor *sensor) const;
+    [[nodiscard]] float get_sensor_value(Joint *joint) const;
 
 private:
     void clear();

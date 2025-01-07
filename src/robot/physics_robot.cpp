@@ -1,5 +1,6 @@
 #include "physics_robot.hpp"
 #include "parts/joint.hpp"
+#include "parts/sensor.hpp"
 #include "parts/shape.hpp"
 
 #include <spdlog/spdlog.h>
@@ -104,12 +105,90 @@ bool PhysicsRobot::has_collision_by_name(const std::string &name) const {
 }
 
 float PhysicsRobot::get_sensor_value(const std::string &name) const {
-    auto *joint = m_robot->get_part_by_name<Joint>(name);
-    if (joint == nullptr) {
-        SPDLOG_WARN("Joint part '{}' not found.", name);
+    auto *part = m_robot->get_part_by_name(name);
+    if (part == nullptr) {
+        SPDLOG_WARN("Sensor part '{}' not found.", name);
         return 0.f;
     }
 
+    if (auto *sensor = dynamic_cast<Sensor *>(part); sensor != nullptr) {
+        return get_sensor_value(sensor);
+    } else if (auto *joint = dynamic_cast<Joint *>(part); joint != nullptr) {
+        return get_sensor_value(joint);
+    } else {
+        SPDLOG_WARN("Unsupported part type (cannot be a sensor) for '{}'.", name);
+        return 0.f;
+    }
+}
+
+class DistanceSensorRayCastCallback : public b2RayCastCallback {
+public:
+    bool found = false;
+    b2Vec2 recorded_hit_point = b2Vec2_zero;
+
+    float ReportFixture(b2Fixture *fixture, const b2Vec2 &point,
+                        const b2Vec2 &normal, float fraction) override {
+        // Nearest fixture hit.
+        found = true;
+        recorded_hit_point = point;
+        return fraction;
+    }
+};// DistanceSensorRayCastCallback
+
+float PhysicsRobot::get_sensor_value(Sensor *sensor) const {
+    auto *part = m_robot->get_part_by_name(sensor->get_part());
+    if (part == nullptr) {
+        SPDLOG_WARN("Sensor attached part '{}' not found for '{}'.", sensor->get_part(), sensor->get_name());
+        return 0.f;
+    }
+
+    auto *part_body = get_physics_body(part);
+    if (part_body == nullptr) {
+        SPDLOG_WARN("Physics body not found for '{}' (probably not a shape).", part->get_name());
+        return 0.f;
+    }
+
+    // Attach point in world coordinates.
+    const auto world_point = part_body->GetWorldPoint(b2Vec2(sensor->get_local_anchor().x, sensor->get_local_anchor().y));
+
+    float true_value;
+    if (auto *angle_sensor = dynamic_cast<AngleSensor *>(sensor); angle_sensor != nullptr) {
+        true_value = glm::degrees(part_body->GetAngle());
+    } else if (auto *distance_sensor = dynamic_cast<DistanceSensor *>(sensor); distance_sensor != nullptr) {
+        float max_distance = distance_sensor->get_max_distance();
+        if (max_distance == INFINITY)
+            max_distance = 100000.f;
+
+        const float angle = part_body->GetAngle() + glm::radians(distance_sensor->get_angle());
+        const auto direction = b2Vec2(std::cos(angle), std::sin(angle));
+        const auto ray_start = world_point;
+        const auto ray_end = world_point + max_distance * direction;
+
+        // By default, Box2D ignore shapes that contain the starting point of the ray.
+        DistanceSensorRayCastCallback callback;
+        m_world->RayCast(&callback, ray_start, ray_end);
+
+        // Detected distance (in meters).
+        float distance;
+        if (callback.found)
+            distance = (callback.recorded_hit_point - ray_start).Length();
+        else
+            distance = INFINITY;// no detection
+
+        // If the hit is too near, we consider it as no detection.
+        if (distance < distance_sensor->get_min_distance())
+            distance = INFINITY;// no detection
+
+        true_value = distance;
+    } else {
+        SPDLOG_WARN("Unsupported sensor type (cannot be a sensor) for '{}'.", sensor->get_name());
+        return 0.f;
+    }
+
+    return true_value;
+}
+
+float PhysicsRobot::get_sensor_value(Joint *joint) const {
     b2Joint *physics_joint = m_joints.at(joint);
     assert(physics_joint != nullptr);
 
@@ -119,7 +198,7 @@ float PhysicsRobot::get_sensor_value(const std::string &name) const {
     } else if (auto *prismatic_joint = dynamic_cast<b2PrismaticJoint *>(joint); prismatic_joint != nullptr) {
         true_value = prismatic_joint->GetJointTranslation();
     } else {
-        SPDLOG_WARN("Unsupported joint type (cannot be a sensor).");
+        SPDLOG_WARN("Unsupported joint type (cannot be a sensor) for '{}'.", joint->get_name());
         return 0.f;
     }
 
@@ -272,6 +351,8 @@ void PhysicsRobot::build_part(const BuildContext &ctx, Part *part) {
         // Nothing to do, the LED has no physics representation.
     } else if (auto *ground = dynamic_cast<Ground *>(part); ground != nullptr) {
         m_bodies[ground] = m_ground_body;
+    } else if (auto *sensor = dynamic_cast<Sensor *>(part); sensor != nullptr) {
+        // Nothing to do, the sensor has no physics representation.
     } else {
         assert(false && "Unknown part type");
     }
@@ -310,11 +391,13 @@ void PhysicsRobot::build_shape_part(const BuildContext &ctx, Shape *part) {
     } else if (auto *shape = dynamic_cast<RectangleShape *>(part); shape != nullptr) {
         b2PolygonShape physics_shape;
         physics_shape.SetAsBox(shape->get_size().x / 2.0f, shape->get_size().y / 2.0f);
+        physics_shape.m_radius = 0.0001f;// TODO: avoid changing the Box2D skin radius (for CCD).
         fixture_def.shape = &physics_shape;
         body->CreateFixture(&fixture_def);
     } else if (auto *shape = dynamic_cast<PolygonShape *>(part); shape != nullptr) {
         b2PolygonShape physics_shape;
         physics_shape.Set(reinterpret_cast<const b2Vec2 *>(shape->get_vertices().data()), (int) shape->get_vertices().size());
+        physics_shape.m_radius = 0.0001f;// TODO: avoid changing the Box2D skin radius (for CCD).
         fixture_def.shape = &physics_shape;
         body->CreateFixture(&fixture_def);
     } else {
