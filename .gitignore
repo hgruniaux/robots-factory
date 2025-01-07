@@ -92,3 +92,7 @@ Sessionx.vim
 *~
 tags
 [._]*.un~
+*.epci
+*.log
+*.mls
+build

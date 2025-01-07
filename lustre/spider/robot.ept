@@ -1,0 +1,22 @@
+open Lib
+
+node robot(dt : float;
+           hipLangle : float;
+           hipRangle : float;
+           kneeLangle : float;
+           kneeRangle : float;
+           gyroscope : float;
+           calfLdistance : float;
+           calfRdistance : float)
+returns (  hipLspeed : float;
+           hipRspeed : float;
+           kneeLspeed : float;
+           kneeRspeed : float);
+var x : float ; y : float ;
+let
+    hipLspeed = 1.1;
+    hipRspeed = 1.1 -> x;
+    kneeLspeed = 1.1;
+    (x, y) = foo(1.0, false);
+    kneeRspeed = x;
+tel

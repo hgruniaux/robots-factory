@@ -1,0 +1,1 @@
+val fun foo (lambda : float; alpha : bool) returns (x : float; y : float)
