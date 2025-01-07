@@ -91,7 +91,7 @@ bool PhysicsRobot::has_collision(Part *part) const {
             return true;
     }
 
-    return true;
+    return false;
 }
 
 bool PhysicsRobot::has_collision_by_name(const std::string &name) const {

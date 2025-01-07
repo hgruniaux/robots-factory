@@ -27,16 +27,18 @@ public:
         const float gyroscope = physics_robot->get_sensor_value("gyroscope");
         const float calfLdistance = physics_robot->get_sensor_value("calfLDistance");
         const float calfRdistance = physics_robot->get_sensor_value("calfRDistance");
+        const bool footLcontact = physics_robot->has_collision_by_name("calfL");
+        const bool footRcontact = physics_robot->has_collision_by_name("calfR");
 
         // Call lustre code
         Robot__robot_out out;
-        Robot__robot_step(dt, hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, calfLdistance, calfRdistance, &out, &m_memory);
+        Robot__robot_step(dt, hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, &out, &m_memory);
 
         fmt::print("@@@@ STEP\n");
-        fmt::print("hipLangle: {}\n", hipLangle);
-        fmt::print("hipRangle: {}\n", hipRangle);
-        fmt::print("kneeLangle: {}\n", kneeLangle);
-        fmt::print("kneeRangle: {}\n", kneeRangle);
+        fmt::print("calfLdistance: {}\n", calfLdistance);
+        fmt::print("calfRdistance: {}\n", calfRdistance);
+        fmt::print("footLcontact: {}\n", footLcontact);
+        fmt::print("footRcontact: {}\n", footRcontact);
 
         // Output parameters
         physics_robot->set_motor_speed("hipL", out.hipLspeed);
