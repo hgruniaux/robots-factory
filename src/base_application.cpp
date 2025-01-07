@@ -7,11 +7,7 @@
 #include <imgui_impl_opengl3.h>
 #include <spdlog/spdlog.h>
 
-#include "draw/renderer_2d.hpp"
-#include "robot/robot_inspector_ui.hpp"
 #include "robot/robot_parser.hpp"
-#include "simulation/simulation.hpp"
-#include "simulation/simulation_view.hpp"
 
 bool BaseApplication::init() {
     // Initialize GLFW

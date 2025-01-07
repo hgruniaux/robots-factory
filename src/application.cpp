@@ -141,30 +141,21 @@ void Application::show_new_robot_modal() {
 
 void Application::show_robot_ai_inspector() {
     if (ImGui::Begin(ICON_FA_BRAIN " Robot AI")) {
-        if (m_robot_ai == nullptr)
+        if (m_robot_ai == nullptr) {
             ImGui::Text("No robot AI loaded");
-        else
+        } else {
             ImGui::Text("Robot AI loaded");
 
-        if (auto *lua_ai = dynamic_cast<LuaRobotAI *>(m_robot_ai.get())) {
-            if (ImGui::Button("Reload")) {
-                if (lua_ai->get_source_path().empty())
-                    tinyfd_messageBox("Error", "Cannot reload the robot AI", "ok", "error", 1);
-                else
-                    load_lua_robot_ai(lua_ai->get_source_path());
-            }
-        } else {
-            if (ImGui::Button("Reload")) {
-                if (m_robot_ai_lib == nullptr)
-                    tinyfd_messageBox("Error", "Cannot reload the robot AI", "ok", "error", 1);
-                else
-                    load_native_robot_ai(m_robot_ai_lib->get_path());
-            }
-        }
+            if (m_robot_ai_path.empty())
+                ImGui::Text("Path: <unknown>");
+            else
+                ImGui::Text("Path: %s", m_robot_ai_path.c_str());
 
-        ImGui::SameLine();
-        if (ImGui::Button("Unload")) {
-            unload_robot_ai();
+            if (ImGui::Button("Reload"))
+                reload_robot_ai();
+            ImGui::SameLine();
+            if (ImGui::Button("Unload"))
+                unload_robot_ai();
         }
     }
 
@@ -263,6 +254,7 @@ void Application::load_lua_robot_ai(const std::string &path) {
     m_robot_ai = robot_ai;
     m_simulation_view->set_robot_ai(m_robot_ai);
     m_robot_ai_lib.reset();// free the shared library as not needed anymore
+    m_robot_ai_path = path;
 
     // Pause the simulation
     m_simulation_view->pause();
@@ -297,6 +289,7 @@ void Application::load_native_robot_ai(const std::string &path) {
     m_robot_ai = std::shared_ptr<RobotAI>(robot_ai);
     m_simulation_view->set_robot_ai(m_robot_ai);
     m_robot_ai_lib = std::move(library);
+    m_robot_ai_path = path;
 
     // Pause the simulation
     m_simulation_view->pause();
@@ -304,8 +297,15 @@ void Application::load_native_robot_ai(const std::string &path) {
     SPDLOG_INFO("Native robot AI loaded successfully");
 }
 
+void Application::reload_robot_ai() {
+    if (m_robot_ai_path.empty())
+        return;
+
+    load_robot_ai(m_robot_ai_path);
+}
+
 void Application::unload_robot_ai() {
-    m_robot_ai = nullptr;
     m_simulation_view->set_robot_ai(nullptr);
+    m_robot_ai = nullptr;
     m_robot_ai_lib.reset();
 }

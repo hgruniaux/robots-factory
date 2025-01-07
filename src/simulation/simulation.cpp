@@ -48,7 +48,6 @@ Simulation::Simulation(const std::shared_ptr<Robot> &robot, const std::shared_pt
     : m_robot(robot), m_robot_ai(robot_ai) {
     m_world = std::make_unique<b2World>(b2Vec2{DEFAULT_GRAVITY.x, DEFAULT_GRAVITY.y});
 
-
     // Try to load the world description if provided
     bool no_world_description_loaded = true;
     if (!world_description.empty()) {
@@ -87,7 +86,9 @@ Simulation::Simulation(const std::shared_ptr<Robot> &robot, const std::shared_pt
         m_robot_ai->attach(m_robot, m_physics_robot.get());
 }
 
-Simulation::~Simulation() = default;
+Simulation::~Simulation() {
+    m_robot_ai->dettach();
+}
 
 void Simulation::step() {
     m_world->Step(m_time_step, m_velocity_iterations, m_position_iterations);
