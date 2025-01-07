@@ -37,4 +37,5 @@ private:
     bool m_simulation_paused = false;
     bool m_real_time = true;
     float m_time_since_last_step = 0.0f;
+    float m_time_dilatation = 1.0f;
 };// class SimulationView
