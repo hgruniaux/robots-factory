@@ -1,0 +1,48 @@
+open Lib
+
+fun abs(x : float) returns (r : float);
+let
+    r = (if (x >=. 0.0) then x else -.x);
+tel
+
+
+node robot(dt : float;
+           hipLangle : float;
+           hipRangle : float;
+           kneeLangle : float;
+           kneeRangle : float;
+           gyroscope : float;
+           calfLdistance : float;
+           calfRdistance : float)
+returns (  hipLspeed : float;
+           hipRspeed : float;
+           kneeLspeed : float;
+           kneeRspeed : float);
+let
+    automaton
+        state On_the_ground
+            do
+                hipLspeed = hipLangle -. 30.0;
+                hipRspeed = hipRangle -. 30.0;
+                kneeLspeed = kneeLangle -. 30.0;
+                kneeRspeed = kneeRangle -. 30.0;
+
+            (* until false -> (abs(gyroscope-.(pre gyroscope)) <=. 0.1) then In_the_sky *)
+            until false then In_the_sky
+        
+        state Jump
+            do
+                hipLspeed = 1.1;
+                hipRspeed = 1.1;
+                kneeLspeed = 1.1;
+                kneeRspeed = 1.1;
+            until false then Jump
+        state In_the_sky
+            do
+                hipLspeed = 1.1;
+                hipRspeed = 1.1;
+                kneeLspeed = 1.1;
+                kneeRspeed = 1.1;
+            until false then On_the_ground
+    end;
+tel
