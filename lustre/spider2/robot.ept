@@ -40,7 +40,8 @@ node robot(dt : float;
            calfLdistance : float;
            calfRdistance : float;
            footLcontact : bool;
-           footRcontact : bool)
+           footRcontact : bool;
+           bodyContact : bool)
 returns (  hipLspeed : float;
            hipRspeed : float;
            kneeLspeed : float;
@@ -49,10 +50,11 @@ let
     automaton
         state In_the_sky
             do
-                hipLspeed = setMotor(hipLangle, -.30.0, 60.0);
-                hipRspeed = setMotor(hipRangle, 30.0, 60.0);
-                kneeLspeed = setMotor(kneeLangle, 80.0, 60.0);
-                kneeRspeed = setMotor(kneeRangle, -.80.0, 60.0);
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+ 
             until footLcontact and footRcontact then On_the_ground
  
         state On_the_ground
@@ -65,10 +67,10 @@ let
         
         state Jump
             do
-                hipLspeed = setMotorFast(hipLangle, 90.0, 200.0);
-                hipRspeed = setMotorFast(hipRangle, -.90.0, 200.0);
-                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 200.0);
-                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 200.0);
+                hipLspeed = setMotorFast(hipLangle, 90.0, 300.0);
+                hipRspeed = setMotorFast(hipRangle, -.90.0, 300.0);
+                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 300.0);
+                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 300.0);
             until not footLcontact and not footRcontact then In_the_sky
    end;
 tel

@@ -1,4 +1,4 @@
-/* --- Generated the 7/1/2025 at 17:35 --- */
+/* --- Generated the 7/1/2025 at 18:11 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -55,7 +55,7 @@ void Robot__robot_reset(Robot__robot_mem* self);
 void Robot__robot_step(float dt, float hipLangle, float hipRangle,
                        float kneeLangle, float kneeRangle, float gyroscope,
                        float calfLdistance, float calfRdistance,
-                       int footLcontact, int footRcontact,
+                       int footLcontact, int footRcontact, int bodyContact,
                        Robot__robot_out* _out, Robot__robot_mem* self);
 
 #endif // ROBOT_H
