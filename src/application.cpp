@@ -301,6 +301,7 @@ void Application::reload_robot_ai() {
     if (m_robot_ai_path.empty())
         return;
 
+    unload_robot_ai();
     load_robot_ai(m_robot_ai_path);
 }
 
