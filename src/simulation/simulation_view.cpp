@@ -20,7 +20,7 @@ void SimulationView::show() {
     if (m_simulation != nullptr && !m_simulation_paused) {
         // If in real time, only step
         if (m_real_time) {
-            m_time_since_last_step += ImGui::GetIO().DeltaTime;
+            m_time_since_last_step += ImGui::GetIO().DeltaTime * m_time_dilatation;
             if (m_time_since_last_step >= m_simulation->get_time_step()) {
                 while (m_time_since_last_step >= m_simulation->get_time_step()) {
                     m_simulation->step();
@@ -147,6 +147,11 @@ void SimulationView::show_toolbar() {
                 step_forward_fast();
             ImGui::SetItemTooltip("Step forward one second");
         }
+
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(ImGui::CalcTextSize(ICON_FA_CLOCK " xxxxxxx").x);
+        ImGui::DragFloat(ICON_FA_CLOCK, &m_time_dilatation, 0.001f, 0.001f, 2.0f);
+        ImGui::SetItemTooltip("Time dilatation factor");
 
         // Show the elapsed time
         if (m_simulation != nullptr) {
