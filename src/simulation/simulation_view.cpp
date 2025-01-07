@@ -159,6 +159,30 @@ void SimulationView::show_toolbar() {
     }
 }
 
+class ExplosionQueryCallback : public b2QueryCallback {
+public:
+    b2Vec2 blast_center;
+    float blast_power;
+
+    bool ReportFixture(b2Fixture *fixture) override {
+        b2Body *body = fixture->GetBody();
+        if (body->GetType() != b2_dynamicBody)
+            return true;
+
+        b2Vec2 body_center = body->GetWorldCenter();
+        b2Vec2 blast_dir = body_center - blast_center;
+        float distance = blast_dir.Normalize();
+        if (distance == 0)
+            return true;
+
+        float inv_distance = 1 / distance;
+        float impulse_mag = blast_power * inv_distance * inv_distance;
+        body->ApplyLinearImpulse(impulse_mag * blast_dir, body_center, true);
+
+        return true;
+    }
+};// class ExplosionQueryCallback
+
 void SimulationView::show_world() {
     if (m_simulation == nullptr)
         return;
@@ -166,6 +190,19 @@ void SimulationView::show_world() {
     m_scene_view.begin();
     m_simulation->draw(m_renderer);
     m_scene_view.end();
+
+    glm::vec2 mouse_world_position;
+    if (m_scene_view.is_right_clicked(mouse_world_position)) {
+        auto *world = m_simulation->get_world();
+        ExplosionQueryCallback callback;
+        callback.blast_center = {mouse_world_position.x, mouse_world_position.y};
+        callback.blast_power = 0.1f;
+        const float explosion_radius = 10.0f;
+
+        b2AABB region = {b2Vec2(mouse_world_position.x - explosion_radius, mouse_world_position.y - explosion_radius),
+                         b2Vec2(mouse_world_position.x + explosion_radius, mouse_world_position.y + explosion_radius)};
+        world->QueryAABB(&callback, region);
+    }
 }
 
 void SimulationView::restart_if_needed() {

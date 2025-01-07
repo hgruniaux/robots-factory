@@ -21,6 +21,9 @@ public:
     // Total of elapsed simulated time since the start of the simulation in seconds.
     [[nodiscard]] float get_elapsed_time() const { return m_elapsed_time; }
 
+    // The Box2D world being simulated.
+    [[nodiscard]] b2World *get_world() const { return m_world.get(); }
+
     // Step the simulation forward in time (by around 16 ms).
     void step();
 

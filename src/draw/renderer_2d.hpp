@@ -83,11 +83,12 @@ public:
     void begin();
     void end();
 
+    bool is_right_clicked(glm::vec2 &world_pos) const;
+
 private:
     static constexpr float DEFAULT_SCALE = 300.f;
 
     Renderer2D &m_renderer;
     glm::vec2 m_offset = {0.f, 0.f};
-    float m_scale = DEFAULT_SCALE;
-    bool m_wireframe = false;
+    float m_scale = DEFAULT_SCALE; // pixels/meter
 };// class SceneView

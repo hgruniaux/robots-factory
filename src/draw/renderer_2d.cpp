@@ -336,6 +336,9 @@ void SceneView::end() {
     m_renderer.end();
     ImGui::Image((void *) (uintptr_t) m_renderer.get_texture_id(), image_size);
 
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+    }
+
     // Handle zooming and panning.
     if (ImGui::IsItemHovered()) {
         ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY);
@@ -367,4 +370,38 @@ void SceneView::end() {
             m_offset.y += ImGui::GetIO().MouseDelta.y / m_scale;
         }
     }
+}
+
+bool SceneView::is_right_clicked(glm::vec2 &world_pos) const {
+    ImVec2 mouse_pos = ImGui::GetMousePos();
+    ImVec2 cursor_screen_pos = ImGui::GetItemRectMin();
+    ImVec2 viewport_size = ImGui::GetItemRectSize();
+    ImVec2 cursor_pos_in_viewport = {
+            (mouse_pos.x - cursor_screen_pos.x),
+            (mouse_pos.y - cursor_screen_pos.y)};
+    ImVec2 cursor_pos_in_viewport_centered = {
+            cursor_pos_in_viewport.x - viewport_size.x / 2.f,
+            cursor_pos_in_viewport.y - viewport_size.y / 2.f};
+
+    // Invert the y-axis
+    cursor_pos_in_viewport_centered.y = -cursor_pos_in_viewport_centered.y;
+
+    world_pos = {cursor_pos_in_viewport_centered.x / m_scale + m_offset.x, cursor_pos_in_viewport_centered.y / m_scale + m_offset.y};
+
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+        return true;
+    }
+
+#if 0
+    if (ImGui::Begin("Debug")) {
+        ImGui::Text("Mouse pos: (%.2f, %.2f)", mouse_pos.x, mouse_pos.y);
+        ImGui::Text("Cursor screen pos: (%.2f, %.2f)", cursor_screen_pos.x, cursor_screen_pos.y);
+        ImGui::Text("Cursor pos in viewport: (%.2f, %.2f)", cursor_pos_in_viewport.x, cursor_pos_in_viewport.y);
+        ImGui::Text("Cursor pos in viewport centered: (%.2f, %.2f)", cursor_pos_in_viewport_centered.x, cursor_pos_in_viewport_centered.y);
+        ImGui::Text("World pos: (%.2f, %.2f)", world_pos.x, world_pos.y);
+    }
+    ImGui::End();
+#endif
+
+    return false;
 }
