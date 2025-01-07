@@ -196,7 +196,7 @@ void SimulationView::show_world() {
         auto *world = m_simulation->get_world();
         ExplosionQueryCallback callback;
         callback.blast_center = {mouse_world_position.x, mouse_world_position.y};
-        callback.blast_power = 0.1f;
+        callback.blast_power = 0.01f;
         const float explosion_radius = 10.0f;
 
         b2AABB region = {b2Vec2(mouse_world_position.x - explosion_radius, mouse_world_position.y - explosion_radius),
