@@ -64,8 +64,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -180
-    max_motor_speed: 180
+    min_motor_speed: -1000
+    max_motor_speed: 1000
     max_motor_torque: 100
   - kind: RevoluteJoint
     name: hipR
@@ -80,8 +80,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -180
-    max_motor_speed: 180
+    min_motor_speed: -1000
+    max_motor_speed: 1000
     max_motor_torque: 100
   - kind: RevoluteJoint
     name: kneeL
@@ -96,8 +96,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -180
-    max_motor_speed: 180
+    min_motor_speed: -1000
+    max_motor_speed: 1000
     max_motor_torque: 100
   - kind: RevoluteJoint
     name: kneeR
@@ -112,8 +112,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -180
-    max_motor_speed: 180
+    min_motor_speed: -1000
+    max_motor_speed: 1000
     max_motor_torque: 100
   - kind: AngleSensor
     name: gyroscope
@@ -126,16 +126,16 @@ parts:
   - kind: DistanceSensor
     name: calfRDistance
     position: [0, 0]
-    angle: 270
+    angle: 0
     part: calfR
-    local_anchor: [0, -0.189999998]
+    local_anchor: [0.189999998, 0]
     min_distance: 0
     max_distance: .inf
   - kind: DistanceSensor
     name: calfLDistance
     position: [0, 0]
-    angle: 270
+    angle: 180
     part: calfL
-    local_anchor: [0, -0.189999998]
+    local_anchor: [-0.189999998, 0]
     min_distance: 0
     max_distance: .inf

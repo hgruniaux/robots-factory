@@ -23,6 +23,20 @@ let
     power = if delta <. 180.0 then min(abs(delta),maxi) else -.min(abs(delta), maxi);
 tel
 
+fun setMotorFast(current : float; goal : float ; maxi : float) returns (power : float);
+var delta : float;
+let 
+    delta = modulo(goal -. current, 360.0);
+    power = if delta <. 180.0 then maxi else -.maxi;
+tel
+
+
+(*fun verticalFoot(calfAngle : float ; thighAngle : float ; gyro : float) returns (power : float);
+let
+    sum = calfAngle +. thighAngle +. gyro;
+
+tel*)
+
 
 node robot(dt : float;
            hipLangle : float;
@@ -40,29 +54,29 @@ let
     automaton
         state On_the_ground
             do
-                hipLspeed = setMotor(hipLangle, -.40.0, 10.0);
-                hipRspeed = setMotor(hipRangle, 40.0, 10.0);
-                kneeLspeed = setMotor(kneeLangle, 100.0, 10.0);
-                kneeRspeed = setMotor(kneeRangle, -.100.0, 10.0);
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
 
             (* until false -> (abs(gyroscope-.(pre gyroscope)) <=. 0.1) then In_the_sky *)
             until hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Jump
         
         state Jump
             do
-                hipLspeed = setMotor(hipLangle, 90.0, 180.0);
-                hipRspeed = setMotor(hipRangle, -.90.0, 180.0);
-                kneeLspeed = setMotor(kneeLangle, 100.0, 180.0);
-                kneeRspeed = setMotor(kneeRangle, 100.0, 180.0);
+                hipLspeed = setMotorFast(hipLangle, 90.0, 1000.0);
+                hipRspeed = setMotorFast(hipRangle, -.90.0, 1000.0);
+                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 1000.0);
+                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 1000.0);
 
 
-            until false then In_the_sky
+            until calfLdistance >=. 0.04 and calfRdistance >=. 0.04 then In_the_sky
         state In_the_sky
             do
-                hipLspeed = 1.1;
-                hipRspeed = 1.1;
-                kneeLspeed = 1.1;
-                kneeRspeed = 1.1;
-            until false then On_the_ground
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+            until calfLdistance <=. 0.04 and calfRdistance <=. 0.04 then On_the_ground
     end;
 tel
