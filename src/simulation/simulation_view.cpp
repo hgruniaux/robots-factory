@@ -16,6 +16,8 @@ void SimulationView::set_robot_ai(const std::shared_ptr<RobotAI> &robot_ai) {
 }
 
 void SimulationView::show() {
+    handle_shortcuts();
+
     // Simulate the simulation by one step
     if (m_simulation != nullptr && !m_simulation_paused) {
         // If in real time, only step
@@ -215,4 +217,25 @@ void SimulationView::restart_if_needed() {
         return;
 
     start();
+}
+
+void SimulationView::handle_shortcuts() {
+    // Pause/resume the simulation
+    if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Space))) {
+        if (m_simulation == nullptr) {
+            start();
+        } else if (m_simulation_paused) {
+            resume();
+        } else {
+            pause();
+        }
+    }
+
+    // Forward time
+    if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F))) {
+        if (ImGui::GetIO().KeyShift)
+            step_forward_fast();
+        else
+            step_forward();
+    }
 }

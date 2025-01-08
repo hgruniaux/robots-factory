@@ -27,6 +27,8 @@ private:
 
     void restart_if_needed();
 
+    void handle_shortcuts();
+
 private:
     std::string m_world_description_path;
     std::shared_ptr<Robot> m_robot;
