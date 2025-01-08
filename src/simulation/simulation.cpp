@@ -67,9 +67,11 @@ Simulation::Simulation(const std::shared_ptr<Robot> &robot, const std::shared_pt
         ground_body_def.type = b2_staticBody;
         ground_body = m_world->CreateBody(&ground_body_def);
 
+        const float ground_half_width = 50.0f;
+        const float ground_half_height = 50.0f;
         b2FixtureDef ground_fixture_def;
         b2PolygonShape ground_shape;
-        ground_shape.SetAsBox(50.f, 0.05f, b2Vec2(0.0f, -0.05f), 0.0f);
+        ground_shape.SetAsBox(ground_half_width, ground_half_height, b2Vec2(0.0f, -ground_half_height), 0.0f);
         ground_fixture_def.shape = &ground_shape;
         ground_body->CreateFixture(&ground_fixture_def);
     } else if (m_world->GetBodyCount() > 0) {
