@@ -31,14 +31,17 @@ public:
         const bool footRcontact = physics_robot->has_collision_by_name("calfR");
         const bool bodyContact = physics_robot->has_collision_by_name("body");
 
-        const float armTheta1 = physics_robot->get_sensor_value("shoulder");
-        const float armTheta2 = physics_robot->get_sensor_value("elbow1");
-        const float armTheta3 = physics_robot->get_sensor_value("elbow2");
-        const float armTheta4 = physics_robot->get_sensor_value("elbow3");
+        const float arm1angle = physics_robot->get_sensor_value("shoulder");
+        const float arm2angle = physics_robot->get_sensor_value("elbow1");
+        const float arm3angle = physics_robot->get_sensor_value("elbow2");
+        const float arm4angle = physics_robot->get_sensor_value("elbow3");
 
         // Call lustre code
         Robot__robot_out out;
-        Robot__robot_step(dt, hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, bodyContact, &out, &m_memory);
+        Robot__robot_step(dt,
+                          hipLangle, hipRangle, kneeLangle, kneeRangle,
+                          arm1angle, arm2angle, arm3angle, arm4angle,
+                          gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, bodyContact, &out, &m_memory);
 
         fmt::print("@@@@ STEP\n");
         fmt::print("calfLdistance: {}\n", calfLdistance);
@@ -51,6 +54,10 @@ public:
         physics_robot->set_motor_speed("hipR", out.hipRspeed);
         physics_robot->set_motor_speed("kneeL", out.kneeLspeed);
         physics_robot->set_motor_speed("kneeR", out.kneeRspeed);
+        physics_robot->set_motor_speed("shoulder", out.arm1speed);
+        physics_robot->set_motor_speed("elbow1", out.arm2speed);
+        physics_robot->set_motor_speed("elbow2", out.arm3speed);
+        physics_robot->set_motor_speed("elbow3", out.arm4speed);
     }
 
 private:
