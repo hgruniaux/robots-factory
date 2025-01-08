@@ -31,6 +31,11 @@ public:
         const bool footRcontact = physics_robot->has_collision_by_name("calfR");
         const bool bodyContact = physics_robot->has_collision_by_name("body");
 
+        const float armTheta1 = physics_robot->get_sensor_value("shoulder");
+        const float armTheta2 = physics_robot->get_sensor_value("elbow1");
+        const float armTheta3 = physics_robot->get_sensor_value("elbow2");
+        const float armTheta4 = physics_robot->get_sensor_value("elbow3");
+
         // Call lustre code
         Robot__robot_out out;
         Robot__robot_step(dt, hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, bodyContact, &out, &m_memory);
@@ -52,6 +57,6 @@ private:
     Robot__robot_mem m_memory;
 };// class SpiderRobotAI
 
-extern "C" RobotAI* create_robot_ai() {
+extern "C" RobotAI *create_robot_ai() {
     return new SpiderRobotAI();
 }

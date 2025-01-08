@@ -15,3 +15,12 @@ external val fun tan (x : float) returns (x : float)
 external val fun asin (x : float) returns (x : float)
 external val fun acos (x : float) returns (x : float)
 external val fun atan (x : float) returns (x : float)
+
+(* Arm control *)
+external val fun arm_end_effector (theta1, theta2, theta3, theta4 : float;
+                                   L1, L2, L3, L4 : float)
+                                   returns (x, y, pji : float)
+external val fun arm_ik (xe, ye, phi : float;
+                         theta1, theta2, theta3, theta4 : float;
+                         L1, L2, L3, L4 : float)
+                         returns (theta1, theta2, theta3, theta4 : float)
