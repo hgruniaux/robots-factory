@@ -18,5 +18,4 @@ function(add_lustre_ai name)
     set_target_properties(${name} PROPERTIES PREFIX "robotai_")
 endfunction()
 
-add_lustre_ai(spider)
 add_lustre_ai(spider2)
