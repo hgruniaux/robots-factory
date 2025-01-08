@@ -29,8 +29,8 @@ let
 
     hipLspeed = setMotor(hipLangle, hipLgoal, 60.0);
     hipRspeed = setMotor(hipRangle, hipRgoal, 60.0);
-    kneeLspeed = setMotor(kneeLangle +. hipLgoal +. gyroscope, kneeLgoal, 300.0);
-    kneeRspeed = setMotor(kneeRangle +. hipRgoal +. gyroscope, kneeRgoal, 300.0);
+    kneeLspeed = setMotor(kneeLangle +. hipLgoal, kneeLgoal, 300.0);
+    kneeRspeed = setMotor(kneeRangle +. hipRgoal, kneeRgoal, 300.0);
 tel
 
 
@@ -39,16 +39,26 @@ node robot(dt : float;
            hipRangle : float;
            kneeLangle : float;
            kneeRangle : float;
+           arm1angle : float;
+           arm2angle : float;
+           arm3angle : float;
+           arm4angle : float;
            gyroscope : float;
            calfLdistance : float;
            calfRdistance : float;
            footLcontact : bool;
            footRcontact : bool;
-           bodyContact : bool)
+           bodyContact : bool
+)
 returns (  hipLspeed : float;
            hipRspeed : float;
            kneeLspeed : float;
-           kneeRspeed : float);
+           kneeRspeed : float;
+           arm1speed : float;
+           arm2speed : float;
+           arm3speed : float;
+           arm4speed : float;
+);
 let
     automaton
         state In_the_sky
@@ -97,4 +107,8 @@ let
                   | not (footLcontact or footRcontact or bodyContact) then In_the_sky
 
    end;
+   arm1speed = 0.0;
+   arm2speed = 0.0;
+   arm3speed = 0.0;
+   arm4speed = 0.0;
 tel
