@@ -43,12 +43,6 @@ public:
                           arm1angle, arm2angle, arm3angle, arm4angle,
                           gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, bodyContact, &out, &m_memory);
 
-        fmt::print("@@@@ STEP\n");
-        fmt::print("calfLdistance: {}\n", calfLdistance);
-        fmt::print("calfRdistance: {}\n", calfRdistance);
-        fmt::print("footLcontact: {}\n", footLcontact);
-        fmt::print("footRcontact: {}\n", footRcontact);
-
         // Output parameters
         physics_robot->set_motor_speed("hipL", out.hipLspeed);
         physics_robot->set_motor_speed("hipR", out.hipRspeed);

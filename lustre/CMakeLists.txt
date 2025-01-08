@@ -3,6 +3,7 @@ add_library(lustre_lib STATIC
         lib/lib.h
         lib/lib_types.h)
 target_link_libraries(lustre_lib PRIVATE robots_core)
+target_link_libraries(lustre_lib PUBLIC ${LBFGS_LIBRARIES})
 
 function(add_lustre_ai name)
     add_library(${name} SHARED

@@ -192,9 +192,9 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -15
-    max_motor_speed: 15
-    max_motor_torque: 50
+    min_motor_speed: -2
+    max_motor_speed: 2
+    max_motor_torque: 25
   - kind: RevoluteJoint
     name: elbow1
     position: [0, 0]
@@ -208,9 +208,9 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -30
-    max_motor_speed: 30
-    max_motor_torque: 50
+    min_motor_speed: -2
+    max_motor_speed: 2
+    max_motor_torque: 25
   - kind: RevoluteJoint
     name: elbow2
     position: [0, 0]
@@ -224,9 +224,9 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -30
-    max_motor_speed: 30
-    max_motor_torque: 50
+    min_motor_speed: -2
+    max_motor_speed: 2
+    max_motor_torque: 25
   - kind: RevoluteJoint
     name: elbow3
     position: [0, 0]
@@ -240,9 +240,9 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -30
-    max_motor_speed: 30
-    max_motor_torque: 50
+    min_motor_speed: -2
+    max_motor_speed: 2
+    max_motor_torque: 25
   - kind: RectangleShape
     name: fingerL1
     position: [0.14810206, 1.01723826]
