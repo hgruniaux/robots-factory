@@ -1,4 +1,4 @@
-/* --- Generated the 8/1/2025 at 12:26 --- */
+/* --- Generated the 8/1/2025 at 13:13 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -40,7 +40,9 @@ void Robot__step_step(float hipLangle, float hipRangle, float kneeLangle,
 
 typedef struct Robot__robot_mem {
   float v_30;
-  Robot__st ck;
+  Robot__st_1 ck;
+  Robot__st ck_1;
+  int pnr_1;
   int pnr;
 } Robot__robot_mem;
 

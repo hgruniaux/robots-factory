@@ -75,7 +75,7 @@ let
                 hipRspeed = setMotor(hipRangle, 40.0, 60.0);
                 kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
                 kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
-            until hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Ground
+            until false and hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Ground
                   | not (footLcontact or footRcontact or bodyContact) then In_the_sky
         
         state Jump
@@ -105,10 +105,25 @@ let
                 (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) = step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, false);
             until not bodyContact then On_the_ground
                   | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+    end;
 
-   end;
-   arm1speed = 0.0;
-   arm2speed = 0.0;
-   arm3speed = 0.0;
-   arm4speed = 0.0;
+    automaton
+        state Init
+        do
+            arm1speed = 0.0;
+            arm2speed = 0.0;
+            arm3speed = 0.0;
+            arm4speed = 0.0;
+            until true then Catch
+
+        state Catch
+            var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
+            do
+                (theta1, theta2, theta3, theta4) = arm_ik (0.6, 0.6 ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
+                arm1speed = setMotor(arm1angle, theta1, 60.0);
+                arm2speed = setMotor(arm2angle, theta2, 60.0);
+                arm3speed = setMotor(arm3angle, theta3, 60.0);
+                arm4speed = setMotor(arm4angle, theta4, 60.0);
+    end;            
+
 tel
