@@ -24,10 +24,12 @@ public:
 private:
     void show_toolbar();
     void show_world();
+    void show_robot_info();
 
     void restart_if_needed();
 
     void handle_shortcuts();
+    void handle_robot_input();
 
 private:
     std::string m_world_description_path;

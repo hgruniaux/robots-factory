@@ -25,6 +25,7 @@ void SimulationView::show() {
             m_time_since_last_step += ImGui::GetIO().DeltaTime * m_time_dilatation;
             if (m_time_since_last_step >= m_simulation->get_time_step()) {
                 while (m_time_since_last_step >= m_simulation->get_time_step()) {
+                    handle_robot_input();
                     m_simulation->step();
                     m_time_since_last_step -= m_simulation->get_time_step();
                 }
@@ -35,6 +36,8 @@ void SimulationView::show() {
             m_simulation->step();
         }
     }
+
+    show_robot_info();
 
     ImGui::PushID(this);
     if (ImGui::Begin(ICON_FA_FLASK " Simulation")) {
@@ -212,6 +215,53 @@ void SimulationView::show_world() {
     }
 }
 
+void SimulationView::show_robot_info() {
+
+    if (ImGui::Begin("Simulation robot info")) {
+        if (m_simulation == nullptr) {
+            ImGui::Text("No simulation running...");
+            ImGui::End();
+            return;
+        }
+
+        if (ImGui::CollapsingHeader(ICON_FA_CIRCLE_INFO " Robot AI info", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if (m_robot_ai != nullptr) {
+                m_robot_ai->show_state();
+            } else {
+                ImGui::Text("No robot AI attached...");
+            }
+        }
+
+        if (ImGui::CollapsingHeader(ICON_FA_GAMEPAD " Robot user input", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if (m_robot_ai != nullptr) {
+                auto &user_input = m_robot_ai->get_user_input();
+
+                auto draw_virtual_joystick = [](float x, float y) {
+                    const float virtual_joystick_size = ImGui::GetFontSize() * 2.5f;
+                    const auto virtual_joystick_center = ImVec2(ImGui::GetCursorScreenPos().x + virtual_joystick_size / 2.f, ImGui::GetCursorScreenPos().y + virtual_joystick_size / 2.f);
+                    ImGui::GetWindowDrawList()->AddCircle(virtual_joystick_center, virtual_joystick_size / 2.f, IM_COL32(255, 255, 255, 255), 30, 2.0f);
+                    ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(virtual_joystick_center.x + x * virtual_joystick_size / 2.f,
+                                                                       virtual_joystick_center.y + -y * virtual_joystick_size / 2.f),
+                                                                virtual_joystick_size / 15.f, IM_COL32(255, 255, 255, 255));
+                    ImGui::Dummy(ImVec2(virtual_joystick_size, virtual_joystick_size));
+                };
+
+                ImGui::Text("Main axis: (x: %.2f, y: %.2f)", user_input.main_x, user_input.main_y);
+                ImGui::Text("Secondary axis: (x: %.2f, y: %.2f)", user_input.secondary_x, user_input.secondary_y);
+                draw_virtual_joystick(user_input.main_x, user_input.main_y);
+                ImGui::SameLine();
+                ImGui::Spacing();
+                ImGui::SameLine();
+                draw_virtual_joystick(user_input.secondary_x, user_input.secondary_y);
+                ImGui::Text("Action A: %s", user_input.action_a ? "true" : "false");
+            } else {
+                ImGui::Text("No robot AI attached...");
+            }
+        }
+    }
+    ImGui::End();
+}
+
 void SimulationView::restart_if_needed() {
     if (m_simulation == nullptr)
         return;
@@ -238,4 +288,60 @@ void SimulationView::handle_shortcuts() {
         else
             step_forward();
     }
+}
+
+#include <fmt/format.h>
+#include <glfw/glfw3.h>
+
+void SimulationView::handle_robot_input() {
+    int gamepad_jid = GLFW_JOYSTICK_1;
+
+    // Possible user inputs for the user.
+    float main_x = 0.0f;
+    float main_y = 0.0f;
+    float secondary_x = 0.0f;
+    float secondary_y = 0.0f;
+    bool action_a = false;
+
+    // Handle gamepad input
+    GLFWgamepadstate gamepad_state;
+    if (glfwGetGamepadState(gamepad_jid, &gamepad_state)) {
+        const bool button_a = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_A];
+
+        float left_axis_x = gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
+        float left_axis_y = -gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
+        float right_axis_x = gamepad_state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
+        float right_axis_y = -gamepad_state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
+
+        // Around 0, the axis is not perfectly centered, so we consider it as 0.
+        const float axis_dead_zone = 0.1f;
+        if (std::abs(left_axis_x) <= axis_dead_zone)
+            left_axis_x = 0.0f;
+        if (std::abs(left_axis_y) <= axis_dead_zone)
+            left_axis_y = 0.0f;
+        if (std::abs(right_axis_x) <= axis_dead_zone)
+            right_axis_x = 0.0f;
+        if (std::abs(right_axis_y) <= axis_dead_zone)
+            right_axis_y = 0.0f;
+
+        // Register robot inputs
+        main_x = right_axis_x;
+        main_y = right_axis_y;
+        secondary_x = left_axis_x;
+        secondary_y = left_axis_y;
+        action_a = button_a;
+    }
+
+    // Handle keyboard inputs
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_W)))
+        main_y = 1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_S)))
+        main_y = -1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_A)))
+        main_x = -1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_D)))
+        main_x = 1.0f;
+
+    if (m_robot_ai != nullptr)
+        m_robot_ai->set_user_input(main_x, main_y, secondary_x, secondary_y, action_a);
 }
