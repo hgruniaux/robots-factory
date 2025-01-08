@@ -76,16 +76,19 @@ let
                 kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 300.0);
             until not footLcontact and not footRcontact then In_the_sky
         state Ground
-            var speed : float;
+            var speed : float; okL : bool ; okR : bool;
             do
                 speed = if bodyContact and (false -> abs(gyroscope -. pre gyroscope) <. 0.1)
                         then 100.0
                         else 10.0;
                 hipLspeed = setMotor(hipLangle, -.70.0, speed);
                 hipRspeed = setMotor(hipRangle, 70.0, speed);
-                kneeLspeed = 0.0;
-                kneeRspeed = 0.0;
-            until hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 and bodyContact then Go_left
+                kneeLspeed = if kneeLangle >=. 0.0 and calfLdistance <=. 10.0 then -.10.0 else 0.0;
+                kneeRspeed = if kneeRangle <=. 0.0 and calfRdistance <=. 10.0 then 10.0 else 0.0;
+                okL = kneeLangle <=. 1.0 or calfLdistance >=. 9.0;
+                okR = kneeLangle >=. -.1.0 or calfLdistance >=. 9.0;
+                
+            until okL and okR and hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 and bodyContact then Go_left
                   | not (footLcontact or footRcontact or bodyContact) then In_the_sky
         state Go_left
             do
