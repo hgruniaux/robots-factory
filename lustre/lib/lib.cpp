@@ -84,9 +84,9 @@ void Lib__atan_step(float x, Lib__atan_out *out) {
 
 #include <glm/glm.hpp>
 
-void Lib__arm_end_effector(float theta1, float theta2, float theta3, float theta4,
-                           float L1, float L2, float L3, float L4,
-                           Lib__arm_end_effector_out *out) {
+void Lib__arm_end_effector_step(float theta1, float theta2, float theta3, float theta4,
+                                float L1, float L2, float L3, float L4,
+                                Lib__arm_end_effector_out *out) {
     // Convert to radians.
     theta1 = deg2rad(theta1);
     theta2 = deg2rad(theta2);
@@ -152,17 +152,17 @@ static glm::mat3x4 compute_pseudo_inverse(const glm::mat3x4 &J) {
     return JtJ_inv * Jt;
 }
 
-void Lib__arm_ik(float xe, float ye, float phi,
-                 float theta1, float theta2, float theta3, float theta4,
-                 float L1, float L2, float L3, float L4,
-                 Lib__arm_ik_out *out) {
+void Lib__arm_ik_step(float xe, float ye, float phi,
+                      float theta1, float theta2, float theta3, float theta4,
+                      float L1, float L2, float L3, float L4,
+                      Lib__arm_ik_out *out) {
     constexpr int MAX_ITERS = 10;
     constexpr float EPSILON = 0.01f;
 
     for (int i = 0; i < MAX_ITERS; ++i) {
         // Forward kinematics
         Lib__arm_end_effector_out end_effector;
-        Lib__arm_end_effector(theta1, theta2, theta3, theta4, L1, L2, L3, L4, &end_effector);
+        Lib__arm_end_effector_step(theta1, theta2, theta3, theta4, L1, L2, L3, L4, &end_effector);
 
         // Compute the error
         const float dx = xe - end_effector.x;

@@ -57,9 +57,9 @@ typedef struct Lib__arm_end_effector_out {
     float phi;
 } Lib__arm_end_effector_out;
 
-void Lib__arm_end_effector(float theta1, float theta2, float theta3, float theta4,
-                           float L1, float L2, float L3, float L4,
-                           Lib__arm_end_effector_out *out);
+void Lib__arm_end_effector_step(float theta1, float theta2, float theta3, float theta4,
+                                float L1, float L2, float L3, float L4,
+                                Lib__arm_end_effector_out *out);
 
 typedef struct Lib__arm_ik_out {
     float theta1;
@@ -68,10 +68,10 @@ typedef struct Lib__arm_ik_out {
     float theta4;
 } Lib__arm_ik_out;
 
-void Lib__arm_ik(float xe, float ye, float phi,
-                 float theta1, float theta2, float theta3, float theta4,
-                 float L1, float L2, float L3, float L4,
-                 Lib__arm_ik_out *out);
+void Lib__arm_ik_step(float xe, float ye, float phi,
+                      float theta1, float theta2, float theta3, float theta4,
+                      float L1, float L2, float L3, float L4,
+                      Lib__arm_ik_out *out);
 
 #ifdef __cplusplus
 }
