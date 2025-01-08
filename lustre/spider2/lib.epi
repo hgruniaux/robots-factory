@@ -17,5 +17,5 @@ external val fun acos (x : float) returns (x : float)
 external val fun atan (x : float) returns (x : float)
 
 (* Arm control *)
-external val fun arm_end_effector (theta1 : float; theta2 : float; theta3 : float; theta4 : float; L1 : float; L2 : float; L3 : float; L4 : float) returns (x : float; y : float; phi : float)
-external val fun arm_ik (xe : float; ye : float; phi : float; theta1 : float; theta2 : float; theta3 : float; theta4 : float; L1 : float; L2 : float; L3 : float; L4 : float) returns (theta1 : float; theta2 : float; theta3 : float; theta4 : float)
+external val fun arm_end_effector (theta1 : float; theta2 : float; theta3 : float; theta4 : float; l1 : float; l2 : float; l3 : float; l4 : float) returns (x : float; y : float; phi : float)
+external val fun arm_ik (xe : float; ye : float; phi : float; theta1 : float; theta2 : float; theta3 : float; theta4 : float; l1 : float; l2 : float; l3 : float; l4 : float) returns (theta1 : float; theta2 : float; theta3 : float; theta4 : float)
