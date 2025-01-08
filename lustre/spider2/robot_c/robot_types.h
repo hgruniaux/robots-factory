@@ -1,4 +1,4 @@
-/* --- Generated the 7/1/2025 at 18:11 --- */
+/* --- Generated the 8/1/2025 at 11:17 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -8,10 +8,13 @@
 #include "stdbool.h"
 #include "assert.h"
 #include "pervasives.h"
+#include "lib_types.h"
 typedef enum {
   Robot__St_On_the_ground,
   Robot__St_Jump,
-  Robot__St_In_the_sky
+  Robot__St_In_the_sky,
+  Robot__St_Ground,
+  Robot__St_Go_left
 } Robot__st;
 
 Robot__st Robot__st_of_string(char* s);

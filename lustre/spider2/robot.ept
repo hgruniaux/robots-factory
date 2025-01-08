@@ -1,33 +1,36 @@
 open Lib
 
-fun abs(x : float) returns (r : float);
+fun mux(x : bool ; y, z : float) returns (r : float);
 let
-    r = (if (x >=. 0.0) then x else -.x);
-tel
-fun min(x : float ; y : float) returns (r : float);
-let
-    r = if x <=. y then x else y
-tel
-
-fun modulo(x : float ; y : float) returns (r : float);
-var r1 : float;
-let
-    r1 = if x <. 0.0 then x +. y else (if x >=. y then x -. y else x);
-    r = if r1 <. 0.0 then r1 +. y else (if r1 >=. y then r1 -. y else r1);
+    r = if x then y else z;
 tel
 
 fun setMotor(current : float; goal : float ; maxi : float) returns (power : float);
 var delta : float;
 let 
-    delta = modulo(goal -. current, 360.0);
+    delta = fmod(goal -. current, 360.0);
     power = if delta <. 180.0 then min(abs(delta),maxi) else -.min(abs(delta), maxi);
 tel
 
 fun setMotorFast(current : float; goal : float ; maxi : float) returns (power : float);
 var delta : float;
 let 
-    delta = modulo(goal -. current, 360.0);
+    delta = fmod(goal -. current, 360.0);
     power = if delta <. 180.0 then maxi else -.maxi;
+tel
+
+fun step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope : float ; goLeft : bool ) returns (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed : float);
+var hipLgoal, hipRgoal, kneeLgoal, kneeRgoal : float;
+let
+    hipLgoal = mux(goLeft, -.0.0, -.80.0);
+    hipRgoal = mux(goLeft, 80.0, 0.0);
+    kneeLgoal = mux(goLeft, 20.0, 80.0);
+    kneeRgoal = mux(goLeft, -.80.0, -.20.0);
+
+    hipLspeed = setMotor(hipLangle, hipLgoal, 60.0);
+    hipRspeed = setMotor(hipRangle, hipRgoal, 60.0);
+    kneeLspeed = setMotor(kneeLangle +. hipLgoal +. gyroscope, kneeLgoal, 300.0);
+    kneeRspeed = setMotor(kneeRangle +. hipRgoal +. gyroscope, kneeRgoal, 300.0);
 tel
 
 
@@ -54,7 +57,6 @@ let
                 hipRspeed = setMotor(hipRangle, 40.0, 60.0);
                 kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
                 kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
- 
             until footLcontact and footRcontact then On_the_ground
  
         state On_the_ground
@@ -63,7 +65,8 @@ let
                 hipRspeed = setMotor(hipRangle, 40.0, 60.0);
                 kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
                 kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
-            until hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Jump
+            until hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Ground
+                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
         
         state Jump
             do
@@ -72,5 +75,23 @@ let
                 kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 300.0);
                 kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 300.0);
             until not footLcontact and not footRcontact then In_the_sky
+        state Ground
+            var speed : float;
+            do
+                speed = if bodyContact and (false -> abs(gyroscope -. pre gyroscope) <. 0.1)
+                        then 100.0
+                        else 10.0;
+                hipLspeed = setMotor(hipLangle, -.70.0, speed);
+                hipRspeed = setMotor(hipRangle, 70.0, speed);
+                kneeLspeed = 0.0;
+                kneeRspeed = 0.0;
+            until hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 and bodyContact then Go_left
+                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+        state Go_left
+            do
+                (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) = step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, false);
+            until not bodyContact then On_the_ground
+                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+
    end;
 tel
