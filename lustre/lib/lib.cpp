@@ -26,6 +26,8 @@ void Lib__clamp_out_step(float x, float min, float max, Lib__clamp_out *out) {
 
 void Lib__fmod_out_step(float x, float y, Lib__fmod_out *out) {
     out->x = std::fmod(x, y);
+    if (out->x < 0)
+        out->x += y;
 }
 
 static constexpr float deg2rad(float x) {
