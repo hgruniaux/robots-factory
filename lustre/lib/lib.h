@@ -28,7 +28,7 @@ DECL_FUNC0(sqrt)
 DECL_FUNC1(min)
 DECL_FUNC1(max)
 DECL_FUNC2(clamp)
-DECL_FUNC1(mod)
+DECL_FUNC1(fmod)
 
 DECL_FUNC0(deg2rad)
 DECL_FUNC0(rad2deg)
