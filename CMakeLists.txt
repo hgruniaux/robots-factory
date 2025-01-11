@@ -80,7 +80,8 @@ target_link_libraries(robots_core PUBLIC ${LUA_LIBRARIES})
 find_package(tinyfiledialogs CONFIG REQUIRED)
 target_link_libraries(robots_core PUBLIC tinyfiledialogs::tinyfiledialogs)
 
-find_library(LBFGS_LIBRARIES REQUIRED NAMES liblbfgs)
+#find_library(LBFGS_LIBRARIES REQUIRED NAMES liblbfgs)
+find_library(LBFGS_LIBRARIES REQUIRED NAMES lbfgs liblbfgs)
 target_link_libraries(robots_core PUBLIC ${LBFGS_LIBRARIES})
 
 # Bind the robots AIs written in Lustre

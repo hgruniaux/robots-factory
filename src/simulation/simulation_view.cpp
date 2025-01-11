@@ -291,7 +291,8 @@ void SimulationView::handle_shortcuts() {
 }
 
 #include <fmt/format.h>
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
+//#include <glfw/glfw3.h>
 
 void SimulationView::handle_robot_input() {
     int gamepad_jid = GLFW_JOYSTICK_1;
