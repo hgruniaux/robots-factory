@@ -148,7 +148,7 @@ let
                     setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, 60.0, 40.0, 40.0, -.100.0);
  
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.50.0, -.10.0 , -.10.0, -.30.0);
+                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.65.0, -.0.0 , -.10.0, -.30.0);
                 
                 until gyroscope <=. 40.0 or gyroscope >=. 320.0 then Standard
                     | doNotMove(0.1, arm1speed, arm2speed, arm3speed, arm4speed) and arm1angle <=. -.20.0 and dgyroscope <=. 1.0 then Upside_Down_Right
@@ -159,7 +159,7 @@ let
                     setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, -.60.0, 100.0, -.40.0);
  
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 50.0, 10.0 , 10.0, 30.0);
+                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 65.0, 0.0 , 10.0, 30.0);
 
                 until gyroscope <=. 40.0 or gyroscope >=. 320.0 then Standard
                     | doNotMove(0.1, arm1speed, arm2speed, arm3speed, arm4speed) and arm1angle >=. 20.0 and dgyroscope <=. 1.0 then Upside_Down_Left

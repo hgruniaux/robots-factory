@@ -1,4 +1,4 @@
-/* --- Generated the 12/1/2025 at 20:0 --- */
+/* --- Generated the 12/1/2025 at 20:6 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -473,7 +473,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
         Robot__setMotorArm_reset(&self->setMotorArm_2);
       };
       Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
-                              -50.000000, -10.000000, -10.000000, -30.000000,
+                              -65.000000, -0.000000, -10.000000, -30.000000,
                               &Robot__setMotorArm_out_st,
                               &self->setMotorArm_2);
       arm1speed_St_Upside_Down_Left = Robot__setMotorArm_out_st.arm1speed;
@@ -535,7 +535,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
         Robot__setMotorArm_reset(&self->setMotorArm_1);
       };
       Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
-                              50.000000, 10.000000, 10.000000, 30.000000,
+                              65.000000, 0.000000, 10.000000, 30.000000,
                               &Robot__setMotorArm_out_st,
                               &self->setMotorArm_1);
       arm1speed_St_Upside_Down_Right = Robot__setMotorArm_out_st.arm1speed;
