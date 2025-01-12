@@ -5,10 +5,16 @@ let
     r = if x then y else z;
 tel
 
+fun sgn(x : float) returns (r : float);
+let 
+    r = if x >. 0.0 then 1.0 else (if x <. 0.0 then -.1.0 else 0.0);
+tel
+
 fun setMotor(current : float; goal : float ; maxi : float) returns (power : float);
 var delta : float;
 let 
     delta = fmod(goal -. current, 360.0);
+    (*power = if abs(delta) >=. 20.0 then -.maxi *.sgn(delta) *. 0.1 else -.delta;*)
     power = if delta <. 180.0 then min(abs(delta),maxi) else -.min(abs(delta), maxi);
 tel
 
@@ -18,7 +24,33 @@ let
     delta = fmod(goal -. current, 360.0);
     power = if delta <. 180.0 then maxi else -.maxi;
 tel
+node setMotorPID(
+    currentAngle: float; 
+    goalAngle: float; 
+    maxSpeed: float; 
+    kp: float; 
+    ki: float; 
+    kd: float;
+) returns (motorSpeed: float);
+var
+    error: float;
+    integral: float;
+    derivative: float;
+    lastError: float;
+    rawSpeed: float;
+let
+    error = goalAngle -. currentAngle;
+    integral = 0.0 -> pre integral +. error;
+    derivative = 0.0 -> (error -. pre lastError);
+    rawSpeed = (kp *. error) +. (ki *. integral) +. (kd *. derivative);
+    motorSpeed = if rawSpeed >. maxSpeed then maxSpeed 
+                 else if rawSpeed <. -.maxSpeed then -.maxSpeed 
+                 else rawSpeed;
+    lastError = error;
+tel
 
+
+(*
 fun step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope : float ; goLeft : bool ) returns (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed : float);
 var hipLgoal, hipRgoal, kneeLgoal, kneeRgoal : float;
 let
@@ -31,6 +63,12 @@ let
     hipRspeed = setMotor(hipRangle, hipRgoal, 60.0);
     kneeLspeed = setMotor(kneeLangle +. hipLgoal, kneeLgoal, 300.0);
     kneeRspeed = setMotor(kneeRangle +. hipRgoal, kneeRgoal, 300.0);
+tel
+*)
+
+fun do_not_move(limit, speedA, speedB, speedC, speedD : float) returns (ok : bool);
+let
+    ok = (speedA <=. limit) and (speedB <=. limit) and (speedC <=. limit) and (speedD <=. limit);
 tel
 
 
@@ -60,70 +98,40 @@ returns (  hipLspeed : float;
            arm4speed : float;
 );
 let
+    (* This first automaton is used when you need to control the legs and the arm at the same time *)
     automaton
-        state In_the_sky
+        state Falling
             do
                 hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
                 hipRspeed = setMotor(hipRangle, 40.0, 60.0);
                 kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
                 kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
-            until footLcontact and footRcontact then On_the_ground
- 
-        state On_the_ground
+                arm1speed = setMotorPID(arm1angle, -.40.0, 20.0, 0.5, 0.0, 0.2);
+                arm2speed = setMotorPID(arm2angle, 30.0, 20.0, 0.7, 0.0, 0.3);
+                arm3speed = setMotorPID(arm3angle, 80.0, 20.0, 0.9, 0.0, 0.4);
+                arm4speed = setMotorPID(arm4angle, 60.0, 20.0, 1.0, 0.0, 0.5);
+            until false then Standard
+        state Upside_Down_Init
+            do
+                (* TODO *)
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+                arm1speed = setMotor(arm1angle, 0.0, 60.0);
+                arm2speed = setMotor(arm2angle, 0.0, 60.0);
+                arm3speed = setMotor(arm3angle, 0.0, 60.0);
+                arm4speed = setMotor(arm4angle, 0.0, 60.0);
+
+        state Standard
             do
                 hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
                 hipRspeed = setMotor(hipRangle, 40.0, 60.0);
                 kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
                 kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
-            until false and hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Ground
-                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
-        
-        state Jump
-            do
-                hipLspeed = setMotorFast(hipLangle, 90.0, 300.0);
-                hipRspeed = setMotorFast(hipRangle, -.90.0, 300.0);
-                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 300.0);
-                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 300.0);
-            until not footLcontact and not footRcontact then In_the_sky
-        state Ground
-            var speed : float; okL : bool ; okR : bool;
-            do
-                speed = if bodyContact and (false -> abs(gyroscope -. pre gyroscope) <. 0.1)
-                        then 100.0
-                        else 10.0;
-                hipLspeed = setMotor(hipLangle, -.70.0, speed);
-                hipRspeed = setMotor(hipRangle, 70.0, speed);
-                kneeLspeed = if kneeLangle >=. 0.0 and calfLdistance <=. 10.0 then -.10.0 else 0.0;
-                kneeRspeed = if kneeRangle <=. 0.0 and calfRdistance <=. 10.0 then 10.0 else 0.0;
-                okL = kneeLangle <=. 1.0 or calfLdistance >=. 9.0;
-                okR = kneeLangle >=. -.1.0 or calfLdistance >=. 9.0;
-                
-            until okL and okR and hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 and bodyContact then Go_left
-                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
-        state Go_left
-            do
-                (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) = step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, false);
-            until not bodyContact then On_the_ground
-                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+                arm1speed = setMotor(arm1angle, 0.0, 60.0);
+                arm2speed = setMotor(arm2angle, 0.0, 60.0);
+                arm3speed = setMotor(arm3angle, 0.0, 60.0);
+                arm4speed = setMotor(arm4angle, 0.0, 60.0);
     end;
-
-    automaton
-        state Init
-        do
-            arm1speed = 0.0;
-            arm2speed = 0.0;
-            arm3speed = 0.0;
-            arm4speed = 0.0;
-            until true then Catch
-
-        state Catch
-            var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
-            do
-                (theta1, theta2, theta3, theta4) = arm_ik (0.6, 0.6 ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
-                arm1speed = setMotor(arm1angle, theta1, 60.0);
-                arm2speed = setMotor(arm2angle, theta2, 60.0);
-                arm3speed = setMotor(arm3angle, theta3, 60.0);
-                arm4speed = setMotor(arm4angle, theta4, 60.0);
-    end;            
-
 tel

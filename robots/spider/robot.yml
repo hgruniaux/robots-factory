@@ -3,8 +3,8 @@ meta:
 parts:
   - kind: RectangleShape
     name: body
-    position: [0.285733223, 0.797465384]
-    angle: 24.0277691
+    position: [0.285729557, 0.797422647]
+    angle: 24.030529
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -13,8 +13,8 @@ parts:
     size: [0.5, 0.119999997]
   - kind: RectangleShape
     name: thighL
-    position: [-0.0900498033, 0.621545315]
-    angle: 26.281683
+    position: [-0.0900597796, 0.621520042]
+    angle: 26.2720013
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -23,8 +23,8 @@ parts:
     size: [0.449999988, 0.0299999993]
   - kind: RectangleShape
     name: thighR
-    position: [0.6626333, 0.802993119]
-    angle: 334.464264
+    position: [0.662624478, 0.802975237]
+    angle: 334.47171
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -33,8 +33,8 @@ parts:
     size: [0.449999988, 0.0299999993]
   - kind: RectangleShape
     name: calfR
-    position: [0.836779654, 0.448939711]
-    angle: 269.616882
+    position: [0.83678031, 0.448944688]
+    angle: 269.616577
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.5
@@ -43,8 +43,8 @@ parts:
     size: [0.600000024, 0.0199999996]
   - kind: RectangleShape
     name: calfL
-    position: [-0.363989055, 0.284045368]
-    angle: 68.4677353
+    position: [-0.363997519, 0.284043282]
+    angle: 68.471405
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.5
@@ -141,8 +141,8 @@ parts:
     max_distance: .inf
   - kind: RectangleShape
     name: arm1
-    position: [0.282802135, 0.971953809]
-    angle: -7.70818377
+    position: [0.282862961, 0.971906483]
+    angle: -7.73397112
     color: [0, 0.313725501, 0.776470602, 1]
     density: 0.600000024
     friction: 0.200000003
@@ -151,8 +151,8 @@ parts:
     size: [0.0399999991, 0.300000012]
   - kind: RectangleShape
     name: arm2
-    position: [0.294882298, 1.23036742]
-    angle: 2.35635638
+    position: [0.294894904, 1.23060906]
+    angle: 2.40828991
     color: [0, 0.31514442, 0.776470602, 1]
     density: 0.600000024
     friction: 0.200000003
@@ -161,8 +161,8 @@ parts:
     size: [0.0399999991, 0.300000012]
   - kind: RectangleShape
     name: arm3
-    position: [0.165544629, 1.32096386]
-    angle: 107.439133
+    position: [0.165482208, 1.32129765]
+    angle: 107.548462
     color: [0, 0.313725501, 0.776470602, 1]
     density: 0.600000024
     friction: 0.200000003
@@ -171,8 +171,8 @@ parts:
     size: [0.0399999991, 0.300000012]
   - kind: RectangleShape
     name: arm4
-    position: [0.0772758946, 1.15721822]
-    angle: 196.020523
+    position: [0.0773499236, 1.15713286]
+    angle: 195.993118
     color: [0, 0.313725501, 0.776470602, 1]
     density: 0.600000024
     friction: 0.200000003
@@ -192,8 +192,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -2
-    max_motor_speed: 2
+    min_motor_speed: -20
+    max_motor_speed: 20
     max_motor_torque: 25
   - kind: RevoluteJoint
     name: elbow1
@@ -208,8 +208,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -2
-    max_motor_speed: 2
+    min_motor_speed: -20
+    max_motor_speed: 20
     max_motor_torque: 25
   - kind: RevoluteJoint
     name: elbow2
@@ -224,8 +224,8 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -2
-    max_motor_speed: 2
+    min_motor_speed: -20
+    max_motor_speed: 20
     max_motor_torque: 25
   - kind: RevoluteJoint
     name: elbow3
@@ -240,13 +240,13 @@ parts:
     upper_angle: 0
     limit_enabled: false
     is_motor: true
-    min_motor_speed: -2
-    max_motor_speed: 2
+    min_motor_speed: -20
+    max_motor_speed: 20
     max_motor_torque: 25
   - kind: RectangleShape
     name: fingerL1
-    position: [0.14810206, 1.01723826]
-    angle: -1170.19495
+    position: [0.14809747, 1.01713645]
+    angle: -1169.75171
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -255,8 +255,8 @@ parts:
     size: [0.00999999978, 0.0399999991]
   - kind: RectangleShape
     name: fingerL2
-    position: [0.162989035, 1.00218761]
-    angle: 179.568588
+    position: [0.162987292, 1.0022018]
+    angle: 179.579697
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -297,8 +297,8 @@ parts:
     max_motor_torque: 200
   - kind: RectangleShape
     name: fingerR1
-    position: [0.0904869512, 1.0030961]
-    angle: -1326.87866
+    position: [0.0904369354, 1.00297856]
+    angle: -1327.13989
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003
@@ -307,8 +307,8 @@ parts:
     size: [0.00999999978, 0.0399999991]
   - kind: RectangleShape
     name: fingerR2
-    position: [0.0842546001, 0.98420918]
-    angle: 210.09848
+    position: [0.0842006952, 0.98421073]
+    angle: 210.378235
     color: [1, 1, 1, 1]
     density: 1
     friction: 0.200000003

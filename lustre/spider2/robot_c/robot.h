@@ -1,4 +1,4 @@
-/* --- Generated the 8/1/2025 at 13:13 --- */
+/* --- Generated the 12/1/2025 at 18:57 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -12,6 +12,12 @@ typedef struct Robot__mux_out {
 } Robot__mux_out;
 
 void Robot__mux_step(int x, float y, float z, Robot__mux_out* _out);
+
+typedef struct Robot__sgn_out {
+  float r;
+} Robot__sgn_out;
+
+void Robot__sgn_step(float x, Robot__sgn_out* _out);
 
 typedef struct Robot__setMotor_out {
   float power;
@@ -27,23 +33,39 @@ typedef struct Robot__setMotorFast_out {
 void Robot__setMotorFast_step(float current, float goal, float maxi,
                               Robot__setMotorFast_out* _out);
 
-typedef struct Robot__step_out {
-  float hipLspeed;
-  float hipRspeed;
-  float kneeLspeed;
-  float kneeRspeed;
-} Robot__step_out;
+typedef struct Robot__setMotorPID_mem {
+  float v_14;
+  int v_13;
+  float v_11;
+  int v;
+} Robot__setMotorPID_mem;
 
-void Robot__step_step(float hipLangle, float hipRangle, float kneeLangle,
-                      float kneeRangle, float gyroscope, int goLeft,
-                      Robot__step_out* _out);
+typedef struct Robot__setMotorPID_out {
+  float motorSpeed;
+} Robot__setMotorPID_out;
+
+void Robot__setMotorPID_reset(Robot__setMotorPID_mem* self);
+
+void Robot__setMotorPID_step(float currentAngle, float goalAngle,
+                             float maxSpeed, float kp, float ki, float kd,
+                             Robot__setMotorPID_out* _out,
+                             Robot__setMotorPID_mem* self);
+
+typedef struct Robot__do_not_move_out {
+  int ok;
+} Robot__do_not_move_out;
+
+void Robot__do_not_move_step(float limit, float speedA, float speedB,
+                             float speedC, float speedD,
+                             Robot__do_not_move_out* _out);
 
 typedef struct Robot__robot_mem {
-  float v_30;
-  Robot__st_1 ck;
-  Robot__st ck_1;
-  int pnr_1;
+  Robot__st ck;
   int pnr;
+  Robot__setMotorPID_mem setMotorPID_3;
+  Robot__setMotorPID_mem setMotorPID_2;
+  Robot__setMotorPID_mem setMotorPID_1;
+  Robot__setMotorPID_mem setMotorPID;
 } Robot__robot_mem;
 
 typedef struct Robot__robot_out {
