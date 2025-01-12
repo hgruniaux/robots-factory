@@ -1,4 +1,4 @@
-/* --- Generated the 12/1/2025 at 18:57 --- */
+/* --- Generated the 12/1/2025 at 20:0 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -8,6 +8,12 @@
 #include "robot_types.h"
 
 Robot__st Robot__st_of_string(char* s) {
+  if ((strcmp(s, "St_Upside_Down_Right")==0)) {
+    return Robot__St_Upside_Down_Right;
+  };
+  if ((strcmp(s, "St_Upside_Down_Left")==0)) {
+    return Robot__St_Upside_Down_Left;
+  };
   if ((strcmp(s, "St_Upside_Down_Init")==0)) {
     return Robot__St_Upside_Down_Init;
   };
@@ -21,6 +27,12 @@ Robot__st Robot__st_of_string(char* s) {
 
 char* string_of_Robot__st(Robot__st x, char* buf) {
   switch (x) {
+    case Robot__St_Upside_Down_Right:
+      strcpy(buf, "St_Upside_Down_Right");
+      break;
+    case Robot__St_Upside_Down_Left:
+      strcpy(buf, "St_Upside_Down_Left");
+      break;
     case Robot__St_Upside_Down_Init:
       strcpy(buf, "St_Upside_Down_Init");
       break;

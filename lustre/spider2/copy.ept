@@ -1,0 +1,218 @@
+open Lib
+
+fun mux(x : bool ; y, z : float) returns (r : float);
+let
+    r = if x then y else z;
+tel
+
+fun sgn(x : float) returns (r : float);
+let 
+    r = if x >. 0.0 then 1.0 else (if x <. 0.0 then -.1.0 else 0.0);
+tel
+
+fun setMotor(current : float; goal : float ; maxi : float) returns (power : float);
+var delta : float;
+let 
+    delta = fmod(goal -. current, 360.0);
+    (*power = if abs(delta) >=. 20.0 then -.maxi *.sgn(delta) *. 0.1 else -.delta;*)
+    power = if delta <. 180.0 then min(abs(delta),maxi) else -.min(abs(delta), maxi);
+tel
+
+fun setMotorFast(current : float; goal : float ; maxi : float) returns (power : float);
+var delta : float;
+let 
+    delta = fmod(goal -. current, 360.0);
+    power = if delta <. 180.0 then maxi else -.maxi;
+tel
+
+fun step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope : float ; goLeft : bool ) returns (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed : float);
+var hipLgoal, hipRgoal, kneeLgoal, kneeRgoal : float;
+let
+    hipLgoal = mux(goLeft, -.0.0, -.80.0);
+    hipRgoal = mux(goLeft, 80.0, 0.0);
+    kneeLgoal = mux(goLeft, 20.0, 80.0);
+    kneeRgoal = mux(goLeft, -.80.0, -.20.0);
+
+    hipLspeed = setMotor(hipLangle, hipLgoal, 60.0);
+    hipRspeed = setMotor(hipRangle, hipRgoal, 60.0);
+    kneeLspeed = setMotor(kneeLangle +. hipLgoal, kneeLgoal, 300.0);
+    kneeRspeed = setMotor(kneeRangle +. hipRgoal, kneeRgoal, 300.0);
+tel
+
+fun do_not_move(limit, speedA, speedB, speedC, speedD : float) returns (ok : bool);
+let
+    ok = speedA <=. limit and speedB <=. limit and speedC <=. limit and speedD <=. limit;
+tel
+
+
+node robot(dt : float;
+           hipLangle : float;
+           hipRangle : float;
+           kneeLangle : float;
+           kneeRangle : float;
+           arm1angle : float;
+           arm2angle : float;
+           arm3angle : float;
+           arm4angle : float;
+           gyroscope : float;
+           calfLdistance : float;
+           calfRdistance : float;
+           footLcontact : bool;
+           footRcontact : bool;
+           bodyContact : bool
+)
+returns (  hipLspeed : float;
+           hipRspeed : float;
+           kneeLspeed : float;
+           kneeRspeed : float;
+           arm1speed : float;
+           arm2speed : float;
+           arm3speed : float;
+           arm4speed : float;
+);
+let
+    (* This first automaton is used when you need to control the legs and the arm at the same time *)
+    (*automaton
+        state Falling
+            do
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+                arm1speed = setMotor(arm1angle, 0.0, 60.0);
+                arm2speed = setMotor(arm2angle, 0.0, 60.0);
+                arm3speed = setMotor(arm3angle, 0.0, 60.0);
+                arm4speed = setMotor(arm4angle, 0.0, 60.0);
+
+        state Upside_Down_Init
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+                arm1speed = setMotor(arm1angle, 0.0, 60.0);
+                arm2speed = setMotor(arm2angle, 0.0, 60.0);
+                arm3speed = setMotor(arm3angle, 0.0, 60.0);
+                arm4speed = setMotor(arm4angle, 0.0, 60.0);
+            do
+
+        state Standard
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+                arm1speed = setMotor(arm1angle, 0.0, 60.0);
+                arm2speed = setMotor(arm2angle, 0.0, 60.0);
+                arm3speed = setMotor(arm3angle, 0.0, 60.0);
+                arm4speed = setMotor(arm4angle, 0.0, 60.0);
+ 
+            do
+    end; *)
+
+    automaton
+        state In_the_sky
+            do
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+            until footLcontact and footRcontact then On_the_ground
+
+        state Upside_Down_Init
+            do
+                hipLspeed = 0.0;
+                hipRspeed = 0.0;
+                kneeLspeed = 0.0;
+                kneeRspeed = 0.0;
+            until do_not_move(1.0, hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) then Upside_Down_Loop
+        state Upside_Down_Init
+            do
+                hipLspeed = 0.0;
+                hipRspeed = 0.0;
+                kneeLspeed = 0.0;
+                kneeRspeed = 0.0;
+            until do_not_move(1.0, hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) then Upside_Down_Loop
+
+
+
+                
+ 
+        state On_the_ground
+            do
+                hipLspeed = setMotor(hipLangle, -.40.0, 60.0);
+                hipRspeed = setMotor(hipRangle, 40.0, 60.0);
+                kneeLspeed = setMotor(kneeLangle, 100.0, 60.0);
+                kneeRspeed = setMotor(kneeRangle, -.100.0, 60.0);
+            until false and hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 then Ground_Right
+                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+       
+        state Jump
+            do
+                hipLspeed = setMotorFast(hipLangle, 90.0, 300.0);
+                hipRspeed = setMotorFast(hipRangle, -.90.0, 300.0);
+                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 300.0);
+                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 300.0);
+            until not footLcontact and not footRcontact then In_the_sky
+        state Ground
+            var speed : float; okL : bool ; okR : bool;
+            do
+                speed = if bodyContact and (false -> abs(gyroscope -. pre gyroscope) <. 0.1)
+                        then 100.0
+                        else 10.0;
+                hipLspeed = setMotor(hipLangle, -.70.0, speed);
+                hipRspeed = setMotor(hipRangle, 70.0, speed);
+                kneeLspeed = if kneeLangle >=. 0.0 and calfLdistance <=. 10.0 then -.10.0 else 0.0;
+                kneeRspeed = if kneeRangle <=. 0.0 and calfRdistance <=. 10.0 then 10.0 else 0.0;
+                okL = kneeLangle <=. 1.0 or calfLdistance >=. 9.0;
+                okR = kneeLangle >=. -.1.0 or calfLdistance >=. 9.0;
+                
+            until okL and okR and hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0 and bodyContact then Go_left
+                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+        state Ground_Right
+            var speed : float;
+            do
+                speed = if bodyContact and (false -> abs(gyroscope -. pre gyroscope) <. 0.1)
+                        then 100.0
+                        else 60.0;
+                hipLspeed = setMotor(hipLangle, -.10.0, speed);
+                hipRspeed = setMotor(hipRangle, 80.0, speed);
+                kneeLspeed = setMotor(kneeLangle, 20.0, speed);
+                kneeRspeed = setMotor(kneeRangle, -.110.0, speed);
+            until bodyContact and (false -> abs(gyroscope -. pre gyroscope) <=. 0.001) then Ground
+                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+        state Legs_up
+            do
+                hipLspeed = setMotor(hipLangle, -.45.0, 100.0);
+                hipRspeed = setMotor(hipRangle, 45.0, 100.0);
+                kneeLspeed = setMotor(kneeLangle, 10.0, 100.0);
+                kneeRspeed = setMotor(kneeRangle, -.10.0, 100.0);
+            until (hipLspeed <=. 1.0 and hipRspeed <=. 1.0 and kneeLspeed <=. 1.0 and kneeRspeed <=. 1.0) or (calfLdistance >=. 0.5 and calfRdistance >=. 0.5) then Go_left
+
+        state Go_left
+            do
+                (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) = step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope, false);
+            until not bodyContact then Ground_Right
+                  | not (footLcontact or footRcontact or bodyContact) then In_the_sky
+    end;
+
+    automaton
+        state Init
+            do
+                arm1speed = setMotor(arm1angle, -.66.0, 60.0);
+                arm2speed = setMotor(arm2angle, -.34.0, 60.0);
+                arm3speed = setMotor(arm3angle, 62.0, 60.0);
+                arm4speed = setMotor(arm4angle, 39.0, 60.0);
+ 
+            (*until true then Catch*)
+
+        state Catch
+            var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
+            do
+                (theta1, theta2, theta3, theta4) = arm_ik (0.6, 0.6 ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
+                arm1speed = setMotor(arm1angle, theta1, 60.0);
+                arm2speed = setMotor(arm2angle, theta2, 60.0);
+                arm3speed = setMotor(arm3angle, theta3, 60.0);
+                arm4speed = setMotor(arm4angle, theta4, 60.0);
+    end;
+
+
+tel

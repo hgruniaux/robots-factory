@@ -1,4 +1,4 @@
-/* --- Generated the 12/1/2025 at 18:57 --- */
+/* --- Generated the 12/1/2025 at 20:0 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -10,6 +10,8 @@
 #include "pervasives.h"
 #include "lib_types.h"
 typedef enum {
+  Robot__St_Upside_Down_Right,
+  Robot__St_Upside_Down_Left,
   Robot__St_Upside_Down_Init,
   Robot__St_Standard,
   Robot__St_Falling

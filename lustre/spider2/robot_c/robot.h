@@ -1,4 +1,4 @@
-/* --- Generated the 12/1/2025 at 18:57 --- */
+/* --- Generated the 12/1/2025 at 20:0 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -51,21 +51,59 @@ void Robot__setMotorPID_step(float currentAngle, float goalAngle,
                              Robot__setMotorPID_out* _out,
                              Robot__setMotorPID_mem* self);
 
-typedef struct Robot__do_not_move_out {
+typedef struct Robot__doNotMove_out {
   int ok;
-} Robot__do_not_move_out;
+} Robot__doNotMove_out;
 
-void Robot__do_not_move_step(float limit, float speedA, float speedB,
-                             float speedC, float speedD,
-                             Robot__do_not_move_out* _out);
+void Robot__doNotMove_step(float limit, float speedA, float speedB,
+                           float speedC, float speedD,
+                           Robot__doNotMove_out* _out);
+
+typedef struct Robot__setMotorArm_mem {
+  Robot__setMotorPID_mem setMotorPID;
+  Robot__setMotorPID_mem setMotorPID_1;
+  Robot__setMotorPID_mem setMotorPID_2;
+  Robot__setMotorPID_mem setMotorPID_3;
+} Robot__setMotorArm_mem;
+
+typedef struct Robot__setMotorArm_out {
+  float arm1speed;
+  float arm2speed;
+  float arm3speed;
+  float arm4speed;
+} Robot__setMotorArm_out;
+
+void Robot__setMotorArm_reset(Robot__setMotorArm_mem* self);
+
+void Robot__setMotorArm_step(float arm1angle, float arm2angle,
+                             float arm3angle, float arm4angle,
+                             float arm1goal, float arm2goal, float arm3goal,
+                             float arm4goal, Robot__setMotorArm_out* _out,
+                             Robot__setMotorArm_mem* self);
+
+typedef struct Robot__setMotorLegs_out {
+  float hipLspeed;
+  float hipRspeed;
+  float kneeLspeed;
+  float kneeRspeed;
+} Robot__setMotorLegs_out;
+
+void Robot__setMotorLegs_step(float hipLangle, float hipRangle,
+                              float kneeLangle, float kneeRangle,
+                              float hipLgoal, float hipRgoal,
+                              float kneeLgoal, float kneeRgoal,
+                              Robot__setMotorLegs_out* _out);
 
 typedef struct Robot__robot_mem {
   Robot__st ck;
+  float v_30;
+  int v;
   int pnr;
-  Robot__setMotorPID_mem setMotorPID_3;
-  Robot__setMotorPID_mem setMotorPID_2;
-  Robot__setMotorPID_mem setMotorPID_1;
-  Robot__setMotorPID_mem setMotorPID;
+  Robot__setMotorArm_mem setMotorArm;
+  Robot__setMotorArm_mem setMotorArm_1;
+  Robot__setMotorArm_mem setMotorArm_2;
+  Robot__setMotorArm_mem setMotorArm_3;
+  Robot__setMotorArm_mem setMotorArm_4;
 } Robot__robot_mem;
 
 typedef struct Robot__robot_out {
@@ -84,7 +122,7 @@ void Robot__robot_reset(Robot__robot_mem* self);
 void Robot__robot_step(float dt, float hipLangle, float hipRangle,
                        float kneeLangle, float kneeRangle, float arm1angle,
                        float arm2angle, float arm3angle, float arm4angle,
-                       float gyroscope, float calfLdistance,
+                       float gyroscopeTot, float calfLdistance,
                        float calfRdistance, int footLcontact,
                        int footRcontact, int bodyContact,
                        Robot__robot_out* _out, Robot__robot_mem* self);
