@@ -313,6 +313,8 @@ void SimulationView::handle_robot_input(float dt) {
     bool action_b = false;
     bool action_y = false;
     bool action_x = false;
+    bool action_lb = false;
+    bool action_rb = false;
 
     // Handle gamepad input
     GLFWgamepadstate gamepad_state;
@@ -321,6 +323,8 @@ void SimulationView::handle_robot_input(float dt) {
         action_b = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_PRESS;
         action_x = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_PRESS;
         action_y = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_PRESS;
+        action_lb = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] == GLFW_PRESS;
+        action_rb = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_PRESS;
 
         float left_axis_x = gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
         float left_axis_y = -gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
@@ -378,6 +382,15 @@ void SimulationView::handle_robot_input(float dt) {
         action_a = true;
     if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_C)))
         action_y = true;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_X)))
+        action_x = true;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_Z)))
+        action_b = true;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_G)))
+        action_lb = true;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_L)))
+        action_rb = true;
+
 
     if (action_y) {
         center_robot();
@@ -390,7 +403,7 @@ void SimulationView::handle_robot_input(float dt) {
     }
 
     if (m_robot_ai != nullptr)
-        m_robot_ai->set_user_input(main_x, main_y, secondary_x, secondary_y, action_a);
+        m_robot_ai->set_user_input(main_x, main_y, secondary_x, secondary_y, action_a, action_b, action_x, action_lb, action_rb);
 }
 
 void SimulationView::center_robot() {

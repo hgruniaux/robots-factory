@@ -111,7 +111,11 @@ node robot(dt : float;
            main_y : float;
            secondary_x : float;
            secondary_y : float;
-           action_a : bool
+           action_a : bool;
+           action_x : bool;
+           action_b : bool;
+           action_lb : bool;
+           action_rb : bool;
 )
 returns (  hipLspeed : float;
            hipRspeed : float;
@@ -123,6 +127,7 @@ returns (  hipLspeed : float;
            arm4speed : float;
            arm_target_x : float;
            arm_target_y : float;
+           arm_target_angle : float;
 );
 var dgyroscope : float; body_target_y : float; alti : float;
 let
@@ -132,6 +137,7 @@ let
     arm_target_x = clamp(   0.0 -> pre arm_target_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
     arm_target_y = clamp(   0.2 -> pre arm_target_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
     body_target_y = clamp(  0.2 -> pre body_target_y +. (main_y *. dt *. 0.5), 0.0, 0.4);
+    arm_target_angle = 0.0 -> fmod( pre arm_target_angle +. ( mux(action_lb, 1.0, 0.0) +. mux(action_rb, -.1.0, 0.0)) *. dt *. 10.0 , 360.0);
 
     (* This first automaton is used when you need to control the legs and the arm at the same time *)
     automaton
@@ -208,7 +214,6 @@ let
                         do
                             (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
                                  setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
-
                 end;
 
                

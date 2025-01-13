@@ -46,7 +46,8 @@ public:
     X(arm3speed, physics_robot->set_motor_speed("elbow2", m_out.arm3speed))   \
     X(arm4speed, physics_robot->set_motor_speed("elbow3", m_out.arm4speed))   \
     X(arm_target_x, /* nothing */)                                            \
-    X(arm_target_y, /* nothing */)
+    X(arm_target_y, /* nothing */)                                            \
+    X(arm_target_angle, /* nothing */)                                        \
 
     void step(float dt) override {
         auto *physics_robot = get_physics_robot();
@@ -61,7 +62,8 @@ public:
                           hipLangle, hipRangle, kneeLangle, kneeRangle,
                           arm1angle, arm2angle, arm3angle, arm4angle,
                           gyroscope, calfLdistance, calfRdistance, bodyDistance, footLcontact, footRcontact, bodyContact,
-                          m_user_input.main_x, m_user_input.main_y, m_user_input.secondary_x, m_user_input.secondary_y, m_user_input.action_a,
+                          m_user_input.main_x, m_user_input.main_y, m_user_input.secondary_x, m_user_input.secondary_y,
+                          m_user_input.action_a, m_user_input.action_x, m_user_input.action_b, m_user_input.action_lb, m_user_input.action_rb,
                           &m_out, &m_memory);
 
         // Output parameters
