@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 13:24 --- */
+/* --- Generated the 13/1/2025 at 14:19 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -122,6 +122,8 @@ typedef struct Robot__robot_out {
   float arm2speed;
   float arm3speed;
   float arm4speed;
+  float arm_target_x;
+  float arm_target_y;
 } Robot__robot_out;
 
 void Robot__robot_reset(Robot__robot_mem* self);

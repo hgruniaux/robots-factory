@@ -121,14 +121,16 @@ returns (  hipLspeed : float;
            arm2speed : float;
            arm3speed : float;
            arm4speed : float;
+           arm_target_x : float;
+           arm_target_y : float;
 );
-var gyroscope : float; dgyroscope : float; secondary_sum_x : float; secondary_sum_y : float;
+var gyroscope : float; dgyroscope : float;
 let
     gyroscope = fmod(gyroscopeTot, 360.0);
     dgyroscope = 100.0 -> abs(gyroscope -. pre gyroscope) /. dt;
 
-    secondary_sum_x = clamp(   0.0 -> pre secondary_sum_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
-    secondary_sum_y = clamp(   0.2 -> pre secondary_sum_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
+    arm_target_x = clamp(   0.0 -> pre arm_target_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
+    arm_target_y = clamp(   0.2 -> pre arm_target_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
 
     (* This first automaton is used when you need to control the legs and the arm at the same time *)
     automaton
@@ -206,7 +208,7 @@ let
                 (* (arm1speed, arm2speed, arm3speed, arm4speed) =
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.40.0, 30.0 , 80.0, 60.0); *)
 
-                (theta1, theta2, theta3, theta4) = arm_ik (secondary_sum_x, secondary_sum_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
+                (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
 

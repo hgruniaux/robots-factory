@@ -48,6 +48,8 @@ public:
     X(arm2speed, "elbow1")   \
     X(arm3speed, "elbow2")   \
     X(arm4speed, "elbow3")   \
+    X(arm_target_x, "arm target x")   \
+    X(arm_target_y, "arm target y")   \
 
     void step(float dt) override {
         auto *physics_robot = get_physics_robot();

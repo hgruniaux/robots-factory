@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 13:24 --- */
+/* --- Generated the 13/1/2025 at 14:19 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -415,8 +415,6 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   int nr;
   float gyroscope;
   float dgyroscope;
-  float secondary_sum_x;
-  float secondary_sum_y;
   r = self->pnr;
   v_47 = (secondary_y*dt);
   v_48 = (v_47*0.500000);
@@ -427,7 +425,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
     v_50 = v_49;
   };
   Lib__clamp_step(v_50, 0.250000, 1.000000, &Lib__clamp_out_st);
-  secondary_sum_y = Lib__clamp_out_st.x;
+  _out->arm_target_y = Lib__clamp_out_st.x;
   v_41 = (secondary_x*dt);
   v_42 = (v_41*0.500000);
   v_43 = (self->v_40+v_42);
@@ -437,7 +435,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
     v_44 = v_43;
   };
   Lib__clamp_step(v_44, -1.000000, 1.000000, &Lib__clamp_out_st);
-  secondary_sum_x = Lib__clamp_out_st.x;
+  _out->arm_target_x = Lib__clamp_out_st.x;
   Lib__fmod_step(gyroscopeTot, 360.000000, &Lib__fmod_out_st);
   gyroscope = Lib__fmod_out_st.x;
   v_36 = (gyroscope-self->v_35);
@@ -741,9 +739,9 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       nr = nr_St_Jump;
       break;
     case Robot__St_Standard:
-      Lib__arm_ik_step(secondary_sum_x, secondary_sum_y, 0.000000, arm1angle,
-                       arm2angle, arm3angle, arm4angle, 0.260000, 0.260000,
-                       0.260000, 0.260000, &Lib__arm_ik_out_st);
+      Lib__arm_ik_step(_out->arm_target_x, _out->arm_target_y, 0.000000,
+                       arm1angle, arm2angle, arm3angle, arm4angle, 0.260000,
+                       0.260000, 0.260000, 0.260000, &Lib__arm_ik_out_st);
       theta1 = Lib__arm_ik_out_st.theta1;
       theta2 = Lib__arm_ik_out_st.theta2;
       theta3 = Lib__arm_ik_out_st.theta3;
@@ -799,9 +797,9 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   };
   self->pnr = nr;
   self->ck = ns;
-  self->v_46 = secondary_sum_y;
+  self->v_46 = _out->arm_target_y;
   self->v_45 = false;
-  self->v_40 = secondary_sum_x;
+  self->v_40 = _out->arm_target_x;
   self->v_39 = false;
   self->v_35 = gyroscope;
   self->v = false;;
