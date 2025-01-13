@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 10:47 --- */
+/* --- Generated the 13/1/2025 at 11:26 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -14,6 +14,7 @@ typedef enum {
   Robot__St_Upside_Down_Left,
   Robot__St_Upside_Down_Init,
   Robot__St_Standard,
+  Robot__St_Jump,
   Robot__St_Falling
 } Robot__st;
 

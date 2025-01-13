@@ -32,11 +32,11 @@ public:
     X(bool, footLcontact, physics_robot->has_collision_by_name("calfL"))      \
     X(bool, footRcontact, physics_robot->has_collision_by_name("calfR"))      \
     X(bool, bodyContact, physics_robot->has_collision_by_name("body"))        \
-    X(float, main_x, main_x)                                                  \
-    X(float, main_y, main_y)                                                  \
-    X(float, secondary_x, secondary_x)                                        \
-    X(float, secondary_y, secondary_y)                                        \
-    X(float, action_a, action_a)
+    X(float, main_x, m_user_input.main_x)                                                  \
+    X(float, main_y, m_user_input.main_y)                                                  \
+    X(float, secondary_x, m_user_input.secondary_x)                                        \
+    X(float, secondary_y, m_user_input.secondary_y)                                        \
+    X(float, action_a, m_user_input.action_a)
 
 #define OUTPUTS              \
     X(hipLspeed, "hipL")     \
@@ -46,7 +46,7 @@ public:
     X(arm1speed, "shoulder") \
     X(arm2speed, "elbow1")   \
     X(arm3speed, "elbow2")   \
-    X(arm4speed, "elbow3")
+    X(arm4speed, "elbow3")   \
 
     void step(float dt) override {
         auto *physics_robot = get_physics_robot();
@@ -55,7 +55,7 @@ public:
 #define X(typ, name, value) const typ name = value;
         INPUTS
 #undef X
-
+        
         // Call lustre code
         Robot__robot_step(dt,
                           hipLangle, hipRangle, kneeLangle, kneeRangle,

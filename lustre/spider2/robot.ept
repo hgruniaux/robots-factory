@@ -108,7 +108,7 @@ node robot(dt : float;
            main_y : float;
            secondary_x : float;
            secondary_y : float;
-           action_a : float
+           action_a : bool
 )
 returns (  hipLspeed : float;
            hipRspeed : float;
@@ -169,6 +169,13 @@ let
                 until gyroscope <=. 40.0 or gyroscope >=. 320.0 then Standard
                     | doNotMove(0.1, arm1speed, arm2speed, arm3speed, arm4speed) and arm1angle >=. 20.0 and dgyroscope <=. 1.0 then Upside_Down_Left
 
+        state Jump
+            do
+                (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
+                    setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
+                (arm1speed, arm2speed, arm3speed, arm4speed) =
+                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.10.0, 10.0 , -.10.0, 10.0);
+
         state Standard
             do
                 (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
@@ -177,5 +184,6 @@ let
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.40.0, 30.0 , 80.0, 60.0);
 
             until gyroscope >=. 90.0 and gyroscope <=. 260.0 then Upside_Down_Init
+                | action_a then Jump
     end;
 tel
