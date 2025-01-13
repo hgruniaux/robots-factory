@@ -154,8 +154,9 @@ let
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.0.0, 0.0 , 0.0, 0.0);
 
                 isStatic = doNotMove(1.0, hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) and doNotMove(1.0, arm1speed, arm2speed, arm3speed, arm4speed) ;
-                until isStatic and gyroscope >=. 180.0 then Upside_Down_Left
-                    | isStatic and gyroscope <. 180.0 then Upside_Down_Right
+                until gyroscope <=. 40.0 and gyroscope >=. 320.0 then Standard
+                    | isStatic and gyroscope >=. 180.0 and gyroscope <. 320.0 then Upside_Down_Left
+                    | isStatic and gyroscope <. 180.0  and gyroscope >. 40.0 then Upside_Down_Right
 
         state Upside_Down_Left
             var time : float;
@@ -207,10 +208,7 @@ let
                         do
                             (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
                                  setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
-                    state AnOtherState
-                        do
-                             (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
-                                 setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
+
                 end;
 
                

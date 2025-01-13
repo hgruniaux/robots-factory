@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 16:11 --- */
+/* --- Generated the 13/1/2025 at 17:2 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -281,12 +281,6 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   Robot__doNotMove_out Robot__doNotMove_out_st;
   Robot__setMotorArm_out Robot__setMotorArm_out_st;
   
-  int nr_St_AnOtherState;
-  Robot__st ns_St_AnOtherState;
-  float kneeRspeed_St_1_Standard_St_AnOtherState;
-  float kneeLspeed_St_1_Standard_St_AnOtherState;
-  float hipRspeed_St_1_Standard_St_AnOtherState;
-  float hipLspeed_St_1_Standard_St_AnOtherState;
   int nr_St_Center;
   Robot__st ns_St_Center;
   float kneeRspeed_St_1_Standard_St_Center;
@@ -346,18 +340,27 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   int v_86;
   int r_5;
   float time;
+  int v_116;
+  int v_115;
+  int v_114;
+  Robot__st_1 v_113;
+  int v_112;
+  Robot__st_1 v_111;
+  int v_110;
+  int v_109;
+  int v_108;
   int v_107;
   int v_106;
   int v_105;
-  Robot__st_1 v_104;
+  int v_104;
   int v_103;
   int v_102;
   int v_101;
   int v_100;
   int r_6;
   int isStatic;
-  int v_109;
-  int v_108;
+  int v_118;
+  int v_117;
   int r_7;
   int nr_1_St_1_Standard;
   Robot__st_1 ns_1_St_1_Standard;
@@ -493,9 +496,9 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       hipRspeed_St_1_Falling = Robot__setMotorLegs_out_st.hipRspeed;
       kneeLspeed_St_1_Falling = Robot__setMotorLegs_out_st.kneeLspeed;
       kneeRspeed_St_1_Falling = Robot__setMotorLegs_out_st.kneeRspeed;
-      v_108 = (footLcontact||footRcontact);
-      v_109 = (v_108||bodyContact);
-      if (v_109) {
+      v_117 = (footLcontact||footRcontact);
+      v_118 = (v_117||bodyContact);
+      if (v_118) {
         nr_1_St_1_Falling = true;
         ns_1_St_1_Falling = Robot__St_1_Standard;
       } else {
@@ -533,8 +536,13 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       hipRspeed_St_1_Upside_Down_Init = Robot__setMotorLegs_out_st.hipRspeed;
       kneeLspeed_St_1_Upside_Down_Init = Robot__setMotorLegs_out_st.kneeLspeed;
       kneeRspeed_St_1_Upside_Down_Init = Robot__setMotorLegs_out_st.kneeRspeed;
-      v_102 = (gyroscope<180.000000);
-      v_100 = (gyroscope>=180.000000);
+      v_109 = (gyroscope>40.000000);
+      v_107 = (gyroscope<180.000000);
+      v_105 = (gyroscope<320.000000);
+      v_103 = (gyroscope>=180.000000);
+      v_101 = (gyroscope>=320.000000);
+      v_100 = (gyroscope<=40.000000);
+      v_102 = (v_100&&v_101);
       r_6 = r_1;
       if (r_6) {
         Robot__setMotorArm_reset(&self->setMotorArm_4);
@@ -554,7 +562,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       Robot__doNotMove_step(1.000000, _out->arm1speed, _out->arm2speed,
                             _out->arm3speed, _out->arm4speed,
                             &Robot__doNotMove_out_st);
-      v_107 = Robot__doNotMove_out_st.ok;
+      v_116 = Robot__doNotMove_out_st.ok;
       _out->hipLspeed = hipLspeed_St_1_Upside_Down_Init;
       _out->hipRspeed = hipRspeed_St_1_Upside_Down_Init;
       _out->kneeLspeed = kneeLspeed_St_1_Upside_Down_Init;
@@ -562,23 +570,38 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       Robot__doNotMove_step(1.000000, _out->hipLspeed, _out->hipRspeed,
                             _out->kneeLspeed, _out->kneeRspeed,
                             &Robot__doNotMove_out_st);
-      v_106 = Robot__doNotMove_out_st.ok;
-      isStatic = (v_106&&v_107);
-      v_103 = (isStatic&&v_102);
-      if (v_103) {
-        v_105 = true;
-        v_104 = Robot__St_1_Upside_Down_Right;
+      v_115 = Robot__doNotMove_out_st.ok;
+      isStatic = (v_115&&v_116);
+      v_108 = (isStatic&&v_107);
+      v_110 = (v_108&&v_109);
+      if (v_110) {
+        v_112 = true;
+        v_111 = Robot__St_1_Upside_Down_Right;
       } else {
-        v_105 = false;
-        v_104 = Robot__St_1_Upside_Down_Init;
+        v_112 = false;
+        v_111 = Robot__St_1_Upside_Down_Init;
       };
-      v_101 = (isStatic&&v_100);
-      if (v_101) {
-        nr_1_St_1_Upside_Down_Init = true;
-        ns_1_St_1_Upside_Down_Init = Robot__St_1_Upside_Down_Left;
+      v_104 = (isStatic&&v_103);
+      v_106 = (v_104&&v_105);
+      if (v_106) {
+        v_114 = true;
       } else {
-        nr_1_St_1_Upside_Down_Init = v_105;
-        ns_1_St_1_Upside_Down_Init = v_104;
+        v_114 = v_112;
+      };
+      if (v_102) {
+        nr_1_St_1_Upside_Down_Init = true;
+      } else {
+        nr_1_St_1_Upside_Down_Init = v_114;
+      };
+      if (v_106) {
+        v_113 = Robot__St_1_Upside_Down_Left;
+      } else {
+        v_113 = v_111;
+      };
+      if (v_102) {
+        ns_1_St_1_Upside_Down_Init = Robot__St_1_Standard;
+      } else {
+        ns_1_St_1_Upside_Down_Init = v_113;
       };
       ns_1 = ns_1_St_1_Upside_Down_Init;
       nr_1 = nr_1_St_1_Upside_Down_Init;
@@ -844,24 +867,6 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
           kneeRspeed_St_1_Standard = kneeRspeed_St_1_Standard_St_Center;
           ns = ns_St_Center;
           nr = nr_St_Center;
-          break;
-        case Robot__St_AnOtherState:
-          Robot__setMotorLegs_step(hipLangle, hipRangle, kneeLangle,
-                                   kneeRangle, -40.000000, 40.000000,
-                                   100.000000, -100.000000,
-                                   &Robot__setMotorLegs_out_st);
-          hipLspeed_St_1_Standard_St_AnOtherState = Robot__setMotorLegs_out_st.hipLspeed;
-          hipRspeed_St_1_Standard_St_AnOtherState = Robot__setMotorLegs_out_st.hipRspeed;
-          kneeLspeed_St_1_Standard_St_AnOtherState = Robot__setMotorLegs_out_st.kneeLspeed;
-          kneeRspeed_St_1_Standard_St_AnOtherState = Robot__setMotorLegs_out_st.kneeRspeed;
-          nr_St_AnOtherState = false;
-          ns_St_AnOtherState = Robot__St_AnOtherState;
-          hipLspeed_St_1_Standard = hipLspeed_St_1_Standard_St_AnOtherState;
-          hipRspeed_St_1_Standard = hipRspeed_St_1_Standard_St_AnOtherState;
-          kneeLspeed_St_1_Standard = kneeLspeed_St_1_Standard_St_AnOtherState;
-          kneeRspeed_St_1_Standard = kneeRspeed_St_1_Standard_St_AnOtherState;
-          ns = ns_St_AnOtherState;
-          nr = nr_St_AnOtherState;
           break;
         default:
           break;

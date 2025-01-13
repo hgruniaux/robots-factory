@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 16:11 --- */
+/* --- Generated the 13/1/2025 at 17:2 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -23,8 +23,7 @@ Robot__st_1 Robot__st_1_of_string(char* s);
 char* string_of_Robot__st_1(Robot__st_1 x, char* buf);
 
 typedef enum {
-  Robot__St_Center,
-  Robot__St_AnOtherState
+  Robot__St_Center
 } Robot__st;
 
 Robot__st Robot__st_of_string(char* s);
