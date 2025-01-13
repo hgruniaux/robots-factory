@@ -35,16 +35,16 @@ public:
     X(bool, bodyContact, physics_robot->has_collision_by_name("body"))
 
 #define OUTPUTS              \
-    X(hipLspeed, "hipL")     \
-    X(hipRspeed, "hipR")     \
-    X(kneeLspeed, "kneeL")   \
-    X(kneeRspeed, "kneeR")   \
-    X(arm1speed, "shoulder") \
-    X(arm2speed, "elbow1")   \
-    X(arm3speed, "elbow2")   \
-    X(arm4speed, "elbow3")   \
-    X(arm_target_x, "arm target x")   \
-    X(arm_target_y, "arm target y")   \
+    X(hipLspeed, physics_robot->set_motor_speed("hipL", m_out.hipLspeed))     \
+    X(hipRspeed, physics_robot->set_motor_speed("hipR", m_out.hipRspeed))     \
+    X(kneeLspeed, physics_robot->set_motor_speed("kneeL", m_out.kneeLspeed))   \
+    X(kneeRspeed, physics_robot->set_motor_speed("kneeR", m_out.kneeRspeed))   \
+    X(arm1speed, physics_robot->set_motor_speed("shoulder", m_out.arm1speed)) \
+    X(arm2speed, physics_robot->set_motor_speed("elbow1", m_out.arm2speed))   \
+    X(arm3speed, physics_robot->set_motor_speed("elbow2", m_out.arm3speed))   \
+    X(arm4speed, physics_robot->set_motor_speed("elbow3", m_out.arm4speed))   \
+    X(arm_target_x, /* nothing */)   \
+    X(arm_target_y, /* nothing */)   \
 
     void step(float dt) override {
         auto *physics_robot = get_physics_robot();
@@ -63,7 +63,7 @@ public:
                           &m_out, &m_memory);
 
         // Output parameters
-#define X(varName, motorName) physics_robot->set_motor_speed(motorName, m_out.varName);
+#define X(varName, setCode) setCode;
         OUTPUTS
 #undef X
     }
@@ -79,7 +79,7 @@ public:
 #undef X
 
         ImGui::SeparatorText("Output parameters");
-#define X(varName, motorName) ImGui::Text(fmt::format("{}: {}", #varName, m_out.varName).c_str());
+#define X(varName, setCode) ImGui::Text(fmt::format("{}: {}", #varName, m_out.varName).c_str());
         OUTPUTS
 #undef X
     }
