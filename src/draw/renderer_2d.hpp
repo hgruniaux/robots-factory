@@ -85,10 +85,13 @@ public:
 
     bool is_right_clicked(glm::vec2 &world_pos) const;
 
+    [[nodiscard]] glm::vec2 get_offset() const { return m_offset; }
+    void move_camera(float dx, float dy) { m_offset += glm::vec2{dx, dy}; }
+
 private:
     static constexpr float DEFAULT_SCALE = 300.f;
 
     Renderer2D &m_renderer;
     glm::vec2 m_offset = {0.f, 0.f};
-    float m_scale = DEFAULT_SCALE; // pixels/meter
+    float m_scale = DEFAULT_SCALE;// pixels/meter
 };// class SceneView

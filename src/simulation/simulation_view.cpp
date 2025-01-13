@@ -25,7 +25,7 @@ void SimulationView::show() {
             m_time_since_last_step += ImGui::GetIO().DeltaTime * m_time_dilatation;
             if (m_time_since_last_step >= m_simulation->get_time_step()) {
                 while (m_time_since_last_step >= m_simulation->get_time_step()) {
-                    handle_robot_input();
+                    handle_robot_input(m_simulation->get_time_step());
                     m_simulation->step();
                     m_time_since_last_step -= m_simulation->get_time_step();
                 }
@@ -290,11 +290,11 @@ void SimulationView::handle_shortcuts() {
     }
 }
 
-#include <fmt/format.h>
 #include <GLFW/glfw3.h>
+#include <fmt/format.h>
 //#include <glfw/glfw3.h>
 
-void SimulationView::handle_robot_input() {
+void SimulationView::handle_robot_input(float dt) {
     int gamepad_jid = GLFW_JOYSTICK_1;
 
     // Possible user inputs for the user.
@@ -302,17 +302,35 @@ void SimulationView::handle_robot_input() {
     float main_y = 0.0f;
     float secondary_x = 0.0f;
     float secondary_y = 0.0f;
+    float third_x = 0.0f;
+    float third_y = 0.0f;
     bool action_a = false;
+    bool action_b = false;
+    bool action_y = false;
+    bool action_x = false;
 
     // Handle gamepad input
     GLFWgamepadstate gamepad_state;
     if (glfwGetGamepadState(gamepad_jid, &gamepad_state)) {
-        const bool button_a = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_A];
+        action_a = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_A] == GLFW_PRESS;
+        action_b = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_PRESS;
+        action_x = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_PRESS;
+        action_y = gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_PRESS;
 
         float left_axis_x = gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
         float left_axis_y = -gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
         float right_axis_x = gamepad_state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
         float right_axis_y = -gamepad_state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
+
+        float dpad_axis_x = 0.0f, dpad_axis_y = 0.0f;
+        if (gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] == GLFW_PRESS)
+            dpad_axis_x -= 1.0f;
+        if (gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] == GLFW_PRESS)
+            dpad_axis_x += 1.0f;
+        if (gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP] == GLFW_PRESS)
+            dpad_axis_y += 1.0f;
+        if (gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] == GLFW_PRESS)
+            dpad_axis_y -= 1.0f;
 
         // Around 0, the axis is not perfectly centered, so we consider it as 0.
         const float axis_dead_zone = 0.1f;
@@ -330,7 +348,8 @@ void SimulationView::handle_robot_input() {
         main_y = right_axis_y;
         secondary_x = left_axis_x;
         secondary_y = left_axis_y;
-        action_a = button_a;
+        third_x = dpad_axis_x;
+        third_y = dpad_axis_y;
     }
 
     // Handle keyboard inputs
@@ -352,7 +371,14 @@ void SimulationView::handle_robot_input() {
         secondary_x = 1.0f;
     if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_LeftShift)))
         action_a = true;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_C)))
+        action_y = true;
 
+    if (action_y) {
+        // Center camera on robot
+    }
+
+    m_scene_view.move_camera(third_x * dt, third_y * dt);
 
     if (m_robot_ai != nullptr)
         m_robot_ai->set_user_input(main_x, main_y, secondary_x, secondary_y, action_a);

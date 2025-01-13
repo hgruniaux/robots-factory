@@ -29,7 +29,7 @@ private:
     void restart_if_needed();
 
     void handle_shortcuts();
-    void handle_robot_input();
+    void handle_robot_input(float dt);
 
 private:
     std::string m_world_description_path;
