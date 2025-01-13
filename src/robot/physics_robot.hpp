@@ -30,6 +30,9 @@ public:
     // Retrieve the Box2D world where the robot is simulated.
     [[nodiscard]] b2World *get_world() const { return m_world; }
 
+    // Retrieve the world space position of the robot.
+    [[nodiscard]] glm::vec2 get_position() const;
+
     // Retrieve the Box2D representation of a part or joint.
     [[nodiscard]] b2Body *get_physics_body(Part *part) const;
     [[nodiscard]] b2Joint *get_physics_joint(Joint *joint) const;
@@ -87,6 +90,9 @@ private:
     b2World *m_world = nullptr;
     // The Box2D body that should be used as the ground (to resolve the symbolic @ground@ part name).
     b2Body *m_ground_body = nullptr;
+
+    // The Box2D main body of the robot (used to retrieve the global robot center location).
+    b2Body *m_main_body = nullptr;
 
     // Mapping between the robot parts and their Box2D physics representation.
     std::unordered_map<Part *, b2Body *> m_bodies;

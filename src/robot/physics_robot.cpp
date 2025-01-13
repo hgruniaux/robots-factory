@@ -18,6 +18,11 @@ PhysicsRobot::PhysicsRobot(const std::shared_ptr<Robot> &robot, const glm::vec2 
     ctx.angle = angle;
     ctx.lax = lax;
     build(ctx);
+
+    auto *main_body_part = robot->get_part_by_name("body");
+    if (main_body_part == nullptr)// no body found, get the first part
+        main_body_part = robot->get_parts()[0].get();
+    m_main_body = m_bodies[main_body_part];
 }
 
 void PhysicsRobot::sync_to_box2d() {
@@ -38,6 +43,11 @@ void PhysicsRobot::sync_from_box2d() {
         part->set_position({position.x, position.y});
         part->set_angle(glm::degrees(angle));
     }
+}
+
+glm::vec2 PhysicsRobot::get_position() const {
+    auto [x, y] = m_main_body->GetWorldCenter();
+    return {x, y};
 }
 
 b2Body *PhysicsRobot::get_physics_body(Part *part) const {
@@ -104,6 +114,17 @@ bool PhysicsRobot::has_collision_by_name(const std::string &name) const {
     return has_collision(part);
 }
 
+static float better_fmod(float x, float y) {
+    x = std::fmod(x, y);
+    if (x < 0.0f)
+        x += y;
+    return x;
+}
+
+static float normalize_radians(float x) {
+    return better_fmod(glm::degrees(x), 360.f);
+}
+
 float PhysicsRobot::get_sensor_value(const std::string &name) const {
     auto *part = m_robot->get_part_by_name(name);
     if (part == nullptr) {
@@ -153,7 +174,7 @@ float PhysicsRobot::get_sensor_value(Sensor *sensor) const {
 
     float true_value;
     if (auto *angle_sensor = dynamic_cast<AngleSensor *>(sensor); angle_sensor != nullptr) {
-        true_value = glm::degrees(part_body->GetAngle());
+        true_value = normalize_radians(part_body->GetAngle());
     } else if (auto *distance_sensor = dynamic_cast<DistanceSensor *>(sensor); distance_sensor != nullptr) {
         float max_distance = distance_sensor->get_max_distance();
         if (max_distance == INFINITY)
@@ -194,7 +215,7 @@ float PhysicsRobot::get_sensor_value(Joint *joint) const {
 
     float true_value;
     if (physics_joint->GetType() == e_revoluteJoint) {
-        true_value = glm::degrees(static_cast<b2RevoluteJoint *>(physics_joint)->GetJointAngle());
+        true_value = normalize_radians(static_cast<b2RevoluteJoint *>(physics_joint)->GetJointAngle());
     } else if (physics_joint->GetType() == e_prismaticJoint) {
         true_value = static_cast<b2PrismaticJoint *>(physics_joint)->GetJointTranslation();
     } else {
