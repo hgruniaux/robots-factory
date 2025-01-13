@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 14:19 --- */
+/* --- Generated the 13/1/2025 at 15:1 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -56,7 +56,7 @@ void Robot__setMotor_step(float current, float goal, float maxi,
   delta = Lib__fmod_out_st.x;
   Lib__abs_step(delta, &Lib__abs_out_st);
   v_3 = Lib__abs_out_st.x;
-  v_4 = (v_3<=0.100000);
+  v_4 = (v_3<=1.000000);
   if (v_4) {
     delta2 = 0.000000;
   } else {
@@ -152,7 +152,7 @@ void Robot__setMotorPID_step(float currentAngle, float goalAngle,
   rawSpeed = (v_20+v_21);
   Lib__abs_step(rawSpeed, &Lib__abs_out_st);
   v_26 = Lib__abs_out_st.x;
-  v_27 = (v_26<0.100000);
+  v_27 = (v_26<1.000000);
   if (v_27) {
     v_28 = 0.000000;
   } else {
