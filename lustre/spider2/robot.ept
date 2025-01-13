@@ -103,6 +103,7 @@ node robot(dt : float;
            gyroscopeTot : float;
            calfLdistance : float;
            calfRdistance : float;
+           bodyDistance : float;
            footLcontact : bool;
            footRcontact : bool;
            bodyContact : bool;
@@ -189,7 +190,6 @@ let
                 kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 300.0);
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.10.0, 10.0 , -.10.0, 10.0);
-                
 
             until not footLcontact and not footRcontact then Falling
 
@@ -209,10 +209,6 @@ let
                 (theta1, theta2, theta3, theta4) = arm_ik (secondary_sum_x, secondary_sum_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
-                (*arm1speed = secondary_sum_x;
-                arm2speed = secondary_sum_y;
-                arm3speed = 0.0;
-                arm4speed = 0.0; *)
 
 
             until gyroscope >=. 90.0 and gyroscope <=. 260.0 then Upside_Down_Init

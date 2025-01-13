@@ -29,6 +29,7 @@ public:
     X(float, gyroscope, physics_robot->get_sensor_value("gyroscope"))         \
     X(float, calfLdistance, physics_robot->get_sensor_value("calfLDistance")) \
     X(float, calfRdistance, physics_robot->get_sensor_value("calfRDistance")) \
+    X(float, bodyDistance, physics_robot->get_sensor_value("bodyDistance")) \
     X(bool, footLcontact, physics_robot->has_collision_by_name("calfL"))      \
     X(bool, footRcontact, physics_robot->has_collision_by_name("calfR"))      \
     X(bool, bodyContact, physics_robot->has_collision_by_name("body"))        \
@@ -60,7 +61,7 @@ public:
         Robot__robot_step(dt,
                           hipLangle, hipRangle, kneeLangle, kneeRangle,
                           arm1angle, arm2angle, arm3angle, arm4angle,
-                          gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, bodyContact,
+                          gyroscope, calfLdistance, calfRdistance, bodyDistance, footLcontact, footRcontact, bodyContact,
                           m_user_input.main_x, m_user_input.main_y, m_user_input.secondary_x, m_user_input.secondary_y, m_user_input.action_a,
                           &m_out, &m_memory);
 
