@@ -15,6 +15,7 @@ public:
     // The robot and its AI being simulated.
     [[nodiscard]] const std::shared_ptr<Robot> &get_robot() const { return m_robot; }
     [[nodiscard]] const std::shared_ptr<RobotAI> &get_robot_ai() const { return m_robot_ai; }
+    [[nodiscard]] const PhysicsRobot *get_physics_robot() const { return m_physics_robot.get(); }
 
     // The time step of the simulation in seconds.
     [[nodiscard]] float get_time_step() const { return m_time_step; }
@@ -41,6 +42,6 @@ private:
 
     // Parameters for b2World::Step()
     static constexpr float m_time_step = 1.0f / 60.0f;
-    static constexpr int32 m_velocity_iterations = 6;
-    static constexpr int32 m_position_iterations = 2;
+    static constexpr int32 m_velocity_iterations = 12;
+    static constexpr int32 m_position_iterations = 6;
 };// class Simulation
