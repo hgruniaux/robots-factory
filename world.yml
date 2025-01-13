@@ -1,9 +1,25 @@
+gravity: [ 0, -9.8 ]
+
 bodies:
+  # Ground
   - type: static
     shapes:
       - type: box
-        size: [ 50, 50 ]
+        size: [ 400, 50 ]
     position: [ 0, -25 ]
+  # End of world walls
+  - type: static
+    shapes:
+      - type: box
+        size: [ 50, 100 ]
+    position: [ -225, 0 ]
+  - type: static
+    shapes:
+      - type: box
+        size: [ 50, 100 ]
+    position: [ 225, 0 ]
+
+  # Stairs
   - type: static
     shapes:
       - type: box
@@ -34,3 +50,45 @@ bodies:
       - type: box
         size: [ 0.5, 0.6 ]
     position: [ 3.0, 0.30 ]
+  - type: static # TOP
+    shapes:
+      - type: box
+        size: [ 1.0, 0.7 ]
+    position: [ 3.75, 0.35 ]
+  - type: static
+    shapes:
+      - type: box
+        size: [ 0.5, 0.6 ]
+    position: [ 4.5, 0.30 ]
+  - type: static
+    shapes:
+      - type: box
+        size: [ 0.5, 0.5 ]
+    position: [ 5.0, 0.25 ]
+  - type: static
+    shapes:
+      - type: box
+        size: [ 0.5, 0.4 ]
+    position: [ 5.5, 0.20 ]
+  - type: static
+    shapes:
+      - type: box
+        size: [ 0.5, 0.3 ]
+    position: [ 6.0, 0.15 ]
+  - type: static
+    shapes:
+      - type: box
+        size: [ 0.5, 0.2 ]
+    position: [ 6.5, 0.10 ]
+  - type: static
+    shapes:
+      - type: box
+        size: [ 0.5, 0.1 ]
+    position: [ 7.0, 0.05 ]
+
+  # Ball
+  - type: dynamic
+    shapes:
+      - type: box
+        size: 0.1
+    position: [ -2, 2 ]
