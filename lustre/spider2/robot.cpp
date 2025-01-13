@@ -61,7 +61,7 @@ public:
                           hipLangle, hipRangle, kneeLangle, kneeRangle,
                           arm1angle, arm2angle, arm3angle, arm4angle,
                           gyroscope, calfLdistance, calfRdistance, footLcontact, footRcontact, bodyContact,
-                          main_x, main_y, secondary_x, secondary_y, action_a,
+                          m_user_input.main_x, m_user_input.main_y, m_user_input.secondary_x, m_user_input.secondary_y, m_user_input.action_a,
                           &m_out, &m_memory);
 
         // Output parameters

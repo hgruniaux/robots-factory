@@ -10,6 +10,17 @@ bool load_shape_description(b2World *world, b2Body *body, const YAML::Node &node
     if (!node["type"])
         throw YAML::RepresentationException(node.Mark(), "Shape type not defined");
 
+    b2FixtureDef fixture_def;
+
+    if (node["density"])
+        fixture_def.density = node["density"].as<float>();
+    if (node["friction"])
+        fixture_def.friction = node["friction"].as<float>();
+    if (node["restitution"])
+        fixture_def.restitution = node["restitution"].as<float>();
+    if (node["restitution_threshold"])
+        fixture_def.restitutionThreshold = node["restitution_threshold"].as<float>();
+
     const std::string &type = node["type"].as<std::string>();
     if (type == "box") {
         b2PolygonShape shape;
@@ -27,18 +38,18 @@ bool load_shape_description(b2World *world, b2Body *body, const YAML::Node &node
         // TODO: avoid changing the Box2D skin radius (for CCD).
         shape.m_radius = 0.0001f;
 
-        b2FixtureDef fixture_def;
         fixture_def.shape = &shape;
+        body->CreateFixture(&fixture_def);
+    } else if (type == "circle") {
+        b2CircleShape shape;
 
-        if (node["density"])
-            fixture_def.density = node["density"].as<float>();
-        if (node["friction"])
-            fixture_def.friction = node["friction"].as<float>();
-        if (node["restitution"])
-            fixture_def.restitution = node["restitution"].as<float>();
-        if (node["restitution_threshold"])
-            fixture_def.restitutionThreshold = node["restitution_threshold"].as<float>();
+        if (node["radius"]) {
+            shape.m_radius = node["radius"].as<float>();
+        } else {
+            throw YAML::RepresentationException(node.Mark(), "Circle shape requires a radius");
+        }
 
+        fixture_def.shape = &shape;
         body->CreateFixture(&fixture_def);
     } else {
         throw YAML::RepresentationException(node["type"].Mark(), "Invalid shape type '" + type + "'");
@@ -99,7 +110,6 @@ bool load_body_description(b2World *world, const YAML::Node &node) {
     if (node["shapes"]) {
         const YAML::Node &shapes = node["shapes"];
         if (!shapes.IsSequence()) throw YAML::RepresentationException(shapes.Mark(), "Invalid shapes in body description");
-
 
         for (const auto &shape: shapes) {
             if (!load_shape_description(world, body, shape))
