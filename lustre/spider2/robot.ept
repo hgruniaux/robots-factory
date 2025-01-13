@@ -154,7 +154,10 @@ let
                     | isStatic and gyroscope <. 180.0 then Upside_Down_Right
 
         state Upside_Down_Left
+            var time : float;
             do
+                time = 0.0 -> pre time +. dt;
+
                 (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
                     setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, 60.0, 40.0, 40.0, -.100.0);
  
@@ -162,10 +165,13 @@ let
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.65.0, -.0.0 , -.10.0, -.30.0);
                 
                 until gyroscope <=. 40.0 or gyroscope >=. 320.0 then Standard
-                    | doNotMove(0.1, arm1speed, arm2speed, arm3speed, arm4speed) and arm1angle <=. -.20.0 and dgyroscope <=. 1.0 then Upside_Down_Right
+                    | doNotMove(0.1, arm1speed, arm2speed, arm3speed, arm4speed) and arm1angle <=. -.20.0 and dgyroscope <=. 1.0 and time >=. 5.0 then Upside_Down_Right
 
         state Upside_Down_Right
+            var time : float;
             do
+                time = 0.0 -> pre time +. dt;
+
                 (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
                     setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, -.60.0, 100.0, -.40.0);
  
@@ -173,7 +179,7 @@ let
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 65.0, 0.0 , 10.0, 30.0);
 
                 until gyroscope <=. 40.0 or gyroscope >=. 320.0 then Standard
-                    | doNotMove(0.1, arm1speed, arm2speed, arm3speed, arm4speed) and arm1angle >=. 20.0 and dgyroscope <=. 1.0 then Upside_Down_Left
+                    | doNotMove(0.1, arm1speed, arm2speed, arm3speed, arm4speed) and arm1angle >=. 20.0 and dgyroscope <=. 1.0 and time >=. 5.0 then Upside_Down_Left
 
         state Jump
             do
