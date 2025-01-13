@@ -11,11 +11,12 @@ let
 tel
 
 fun setMotor(current : float; goal : float ; maxi : float) returns (power : float);
-var delta : float;
+var delta : float; delta2 : float;
 let 
     delta = fmod(goal -. current, 360.0);
+    delta2 = if abs(delta) <=. 0.1 then 0.0 else delta;
     (*power = if abs(delta) >=. 20.0 then -.maxi *.sgn(delta) *. 0.1 else -.delta;*)
-    power = if delta <. 180.0 then min(abs(delta),maxi) else -.min(abs(delta), maxi);
+    power = if delta2 <. 180.0 then min(abs(delta2),maxi) else -.min(abs(delta2), maxi);
 tel
 
 fun setMotorFast(current : float; goal : float ; maxi : float) returns (power : float);
@@ -45,6 +46,7 @@ let
     rawSpeed = (kp *. error) +. (ki *. integral) +. (kd *. derivative);
     motorSpeed = if rawSpeed >. maxSpeed then maxSpeed 
                  else if rawSpeed <. -.maxSpeed then -.maxSpeed 
+                 else if abs(rawSpeed) <. 0.1 then 0.0
                  else rawSpeed;
     lastError = error;
 tel
@@ -124,8 +126,8 @@ let
     gyroscope = fmod(gyroscopeTot, 360.0);
     dgyroscope = 100.0 -> abs(gyroscope -. pre gyroscope) /. dt;
 
-    secondary_sum_x = clamp( -.0.2 -> pre secondary_sum_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
-    secondary_sum_y = clamp( 0.2 -> pre secondary_sum_y +. (secondary_y *. dt *. 0.5) , -.1.0, 1.0);
+    secondary_sum_x = clamp(   0.0 -> pre secondary_sum_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
+    secondary_sum_y = clamp(   0.2 -> pre secondary_sum_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
 
     (* This first automaton is used when you need to control the legs and the arm at the same time *)
     automaton
