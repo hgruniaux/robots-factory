@@ -1,4 +1,6 @@
+#include "draw/renderer_2d.hpp"
 #include "robot/robot_ai.hpp"
+#include "parts/joint.hpp"
 
 extern "C" {
 #include "robot_c/robot.h"
@@ -29,22 +31,22 @@ public:
     X(float, gyroscope, physics_robot->get_sensor_value("gyroscope"))         \
     X(float, calfLdistance, physics_robot->get_sensor_value("calfLDistance")) \
     X(float, calfRdistance, physics_robot->get_sensor_value("calfRDistance")) \
-    X(float, bodyDistance, physics_robot->get_sensor_value("bodyDistance")) \
+    X(float, bodyDistance, physics_robot->get_sensor_value("bodyDistance"))   \
     X(bool, footLcontact, physics_robot->has_collision_by_name("calfL"))      \
     X(bool, footRcontact, physics_robot->has_collision_by_name("calfR"))      \
     X(bool, bodyContact, physics_robot->has_collision_by_name("body"))
 
-#define OUTPUTS              \
+#define OUTPUTS                                                               \
     X(hipLspeed, physics_robot->set_motor_speed("hipL", m_out.hipLspeed))     \
     X(hipRspeed, physics_robot->set_motor_speed("hipR", m_out.hipRspeed))     \
-    X(kneeLspeed, physics_robot->set_motor_speed("kneeL", m_out.kneeLspeed))   \
-    X(kneeRspeed, physics_robot->set_motor_speed("kneeR", m_out.kneeRspeed))   \
+    X(kneeLspeed, physics_robot->set_motor_speed("kneeL", m_out.kneeLspeed))  \
+    X(kneeRspeed, physics_robot->set_motor_speed("kneeR", m_out.kneeRspeed))  \
     X(arm1speed, physics_robot->set_motor_speed("shoulder", m_out.arm1speed)) \
     X(arm2speed, physics_robot->set_motor_speed("elbow1", m_out.arm2speed))   \
     X(arm3speed, physics_robot->set_motor_speed("elbow2", m_out.arm3speed))   \
     X(arm4speed, physics_robot->set_motor_speed("elbow3", m_out.arm4speed))   \
-    X(arm_target_x, /* nothing */)   \
-    X(arm_target_y, /* nothing */)   \
+    X(arm_target_x, /* nothing */)                                            \
+    X(arm_target_y, /* nothing */)
 
     void step(float dt) override {
         auto *physics_robot = get_physics_robot();
@@ -53,7 +55,7 @@ public:
 #define X(typ, name, value) const typ name = value;
         INPUTS
 #undef X
-        
+
         // Call lustre code
         Robot__robot_step(dt,
                           hipLangle, hipRangle, kneeLangle, kneeRangle,
@@ -82,6 +84,13 @@ public:
 #define X(varName, setCode) ImGui::Text(fmt::format("{}: {}", #varName, m_out.varName).c_str());
         OUTPUTS
 #undef X
+    }
+
+    void debug_draw(Renderer2D &renderer) {
+        const auto local_anchor = get_robot()->get_part_by_name<Joint>("shoulder")->get_local_anchor_a();
+        const auto *body = get_physics_robot()->get_physics_body_by_name("body");
+        const auto arm_target = body->GetWorldPoint(b2Vec2(m_out.arm_target_x + local_anchor.x, m_out.arm_target_y + local_anchor.y));
+        renderer.draw_cross({arm_target.x, arm_target.y}, 0.1f, 2.0f, {0.0f, 0.2f, 1.0f, 1.0f});
     }
 
 private:

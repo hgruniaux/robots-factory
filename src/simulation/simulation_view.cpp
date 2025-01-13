@@ -37,6 +37,9 @@ void SimulationView::show() {
         }
     }
 
+    if (m_follow_robot)
+        center_robot();
+
     show_robot_info();
 
     ImGui::PushID(this);
@@ -199,6 +202,8 @@ void SimulationView::show_world() {
 
     m_scene_view.begin();
     m_simulation->draw(m_renderer);
+    if (m_robot_ai != nullptr)
+        m_robot_ai->debug_draw(m_renderer);
     m_scene_view.end();
 
     glm::vec2 mouse_world_position;
@@ -375,11 +380,23 @@ void SimulationView::handle_robot_input(float dt) {
         action_y = true;
 
     if (action_y) {
-        // Center camera on robot
+        center_robot();
+        m_follow_robot = true;
     }
 
-    m_scene_view.move_camera(third_x * dt, third_y * dt);
+    if (std::abs(third_x) >= 0.01f || std::abs(third_y) >= 0.01f) {
+        m_scene_view.offset_camera(third_x * dt, third_y * dt);
+        m_follow_robot = false;
+    }
 
     if (m_robot_ai != nullptr)
         m_robot_ai->set_user_input(main_x, main_y, secondary_x, secondary_y, action_a);
+}
+
+void SimulationView::center_robot() {
+    if (m_simulation == nullptr)
+        return;
+
+    auto robot_position = m_simulation->get_physics_robot()->get_position();
+    m_scene_view.move_camera(robot_position.x, robot_position.y);
 }

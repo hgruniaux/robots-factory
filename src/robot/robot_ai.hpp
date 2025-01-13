@@ -23,6 +23,8 @@ public:
     // Called to show the state of the AI in the GUI.
     virtual void show_state() {}
 
+    virtual void debug_draw(Renderer2D &renderer) {}
+
     // Attach the AI to a robot and its physical representation.
     void attach(const std::shared_ptr<Robot> &robot, PhysicsRobot *physics_robot);
     void dettach();

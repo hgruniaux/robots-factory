@@ -30,6 +30,7 @@ private:
 
     void handle_shortcuts();
     void handle_robot_input(float dt);
+    void center_robot();
 
 private:
     std::string m_world_description_path;
@@ -40,6 +41,7 @@ private:
     SceneView m_scene_view{m_renderer};
     bool m_simulation_paused = false;
     bool m_real_time = true;
+    bool m_follow_robot = true;
     float m_time_since_last_step = 0.0f;
     float m_time_dilatation = 1.0f;
 };// class SimulationView

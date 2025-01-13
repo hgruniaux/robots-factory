@@ -282,6 +282,15 @@ void Renderer2D::draw_solid_arc(const glm::vec2 &center, float radius, float arc
     draw_solid_polygon((const glm::vec2 *) vertices.data(), vertices.size(), color);
 }
 
+void Renderer2D::draw_cross(const glm::vec2 &position, float size, float width, const glm::vec4 &color) {
+    const auto start_1 = position + glm::vec2(-size / 2.f, size / 2.f);
+    const auto end_1 = position + glm::vec2(size / 2.f, -size / 2.f);
+    const auto start_2 = position + glm::vec2(-size / 2.f, -size / 2.f);
+    const auto end_2 = position + glm::vec2(size / 2.f, size / 2.f);
+    draw_line(start_1, end_1, width, color);
+    draw_line(start_2, end_2, width, color);
+}
+
 void Renderer2D::draw_polygon(const glm::vec2 *vertices, size_t vertices_count, const glm::vec4 &color) {
     std::vector<Vertex2D> vertices2d;
     vertices2d.reserve(vertices_count);

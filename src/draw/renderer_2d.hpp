@@ -38,6 +38,7 @@ public:
     void draw_solid_arc(const glm::vec2 &center, float radius, float arc_start, float arc_end, const glm::vec4 &color);
     void draw_polygon(const glm::vec2 *vertices, size_t vertices_count, const glm::vec4 &color);
     void draw_solid_polygon(const glm::vec2 *vertices, size_t vertices_count, const glm::vec4 &color);
+    void draw_cross(const glm::vec2 &position, float size = 0.1f, float width = 2.0f, const glm::vec4 &color = {1.f, 0.f, 0.f, 1.f});
 
     void draw_axes(float size = 1.0f, float subsize = 0.1f);
     void draw_anchor(const glm::vec2 &position, float radius = 0.01f);
@@ -86,7 +87,8 @@ public:
     bool is_right_clicked(glm::vec2 &world_pos) const;
 
     [[nodiscard]] glm::vec2 get_offset() const { return m_offset; }
-    void move_camera(float dx, float dy) { m_offset += glm::vec2{dx, dy}; }
+    void offset_camera(float dx, float dy) { m_offset += glm::vec2{dx, dy}; }
+    void move_camera(float x, float y) { m_offset = glm::vec2{x, y}; }
 
 private:
     static constexpr float DEFAULT_SCALE = 300.f;
