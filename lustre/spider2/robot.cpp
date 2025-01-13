@@ -1,6 +1,6 @@
 #include "draw/renderer_2d.hpp"
-#include "robot/robot_ai.hpp"
 #include "parts/joint.hpp"
+#include "robot/robot_ai.hpp"
 
 extern "C" {
 #include "robot_c/robot.h"
@@ -74,6 +74,11 @@ public:
         ImGui::Text("Spider robot AI (Lustre code)");
 
         auto *physics_robot = get_physics_robot();
+
+        ImGui::SeparatorText("State (automaton)");
+        char buffer[512] = {0};
+        string_of_Robot__st_1(m_memory.ck, buffer);
+        ImGui::Text("Main state: %s", buffer);
 
         ImGui::SeparatorText("Input parameters");
 #define X(typ, name, value) ImGui::Text(fmt::format("{}: {}", #name, value).c_str());
