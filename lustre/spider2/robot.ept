@@ -171,10 +171,16 @@ let
 
         state Jump
             do
-                (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
-                    setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
+                hipLspeed = setMotorFast(hipLangle, 90.0, 300.0);
+                hipRspeed = setMotorFast(hipRangle, -.90.0, 300.0);
+                kneeLspeed = setMotorFast(kneeLangle +. hipLangle +. gyroscope, 90.0, 300.0);
+                kneeRspeed = setMotorFast(kneeRangle +. hipRangle +. gyroscope, -.90.0, 300.0);
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.10.0, 10.0 , -.10.0, 10.0);
+                
+
+            until not footLcontact and not footRcontact then Falling
+
 
         state Standard
             do
