@@ -14,7 +14,7 @@ fun setMotor(current : float; goal : float ; maxi : float) returns (power : floa
 var delta : float; delta2 : float;
 let 
     delta = fmod(goal -. current, 360.0);
-    delta2 = if abs(delta) <=. 0.1 then 0.0 else delta;
+    delta2 = if abs(delta) <=. 1.0 then 0.0 else delta;
     (*power = if abs(delta) >=. 20.0 then -.maxi *.sgn(delta) *. 0.1 else -.delta;*)
     power = if delta2 <. 180.0 then min(abs(delta2),maxi) else -.min(abs(delta2), maxi);
 tel
@@ -46,7 +46,7 @@ let
     rawSpeed = (kp *. error) +. (ki *. integral) +. (kd *. derivative);
     motorSpeed = if rawSpeed >. maxSpeed then maxSpeed 
                  else if rawSpeed <. -.maxSpeed then -.maxSpeed 
-                 else if abs(rawSpeed) <. 0.1 then 0.0
+                 else if abs(rawSpeed) <. 1.0 then 0.0
                  else rawSpeed;
     lastError = error;
 tel
