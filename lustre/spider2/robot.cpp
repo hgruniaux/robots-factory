@@ -32,12 +32,7 @@ public:
     X(float, bodyDistance, physics_robot->get_sensor_value("bodyDistance")) \
     X(bool, footLcontact, physics_robot->has_collision_by_name("calfL"))      \
     X(bool, footRcontact, physics_robot->has_collision_by_name("calfR"))      \
-    X(bool, bodyContact, physics_robot->has_collision_by_name("body"))        \
-    X(float, main_x, m_user_input.main_x)                                                  \
-    X(float, main_y, m_user_input.main_y)                                                  \
-    X(float, secondary_x, m_user_input.secondary_x)                                        \
-    X(float, secondary_y, m_user_input.secondary_y)                                        \
-    X(float, action_a, m_user_input.action_a)
+    X(bool, bodyContact, physics_robot->has_collision_by_name("body"))
 
 #define OUTPUTS              \
     X(hipLspeed, "hipL")     \
