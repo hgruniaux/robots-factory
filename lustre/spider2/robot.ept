@@ -100,7 +100,7 @@ node robot(dt : float;
            arm2angle : float;
            arm3angle : float;
            arm4angle : float;
-           gyroscopeTot : float;
+           gyroscope : float;
            calfLdistance : float;
            calfRdistance : float;
            bodyDistance : float;
@@ -124,13 +124,14 @@ returns (  hipLspeed : float;
            arm_target_x : float;
            arm_target_y : float;
 );
-var gyroscope : float; dgyroscope : float;
+var dgyroscope : float; body_target_y : float; alti : float;
 let
-    gyroscope = fmod(gyroscopeTot, 360.0);
-    dgyroscope = 100.0 -> abs(gyroscope -. pre gyroscope) /. dt;
+    dgyroscope = 100.0 -> abs(fmod(gyroscope -. pre gyroscope, 360.0)) /. dt;
+    alti = bodyDistance; (* TODO  take the gyroscope into accout *)
 
     arm_target_x = clamp(   0.0 -> pre arm_target_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
     arm_target_y = clamp(   0.2 -> pre arm_target_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
+    body_target_y = clamp(  0.2 -> pre body_target_y +. (main_y *. dt *. 0.5), 0.0, 0.4);
 
     (* This first automaton is used when you need to control the legs and the arm at the same time *)
     automaton
@@ -200,10 +201,19 @@ let
             var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
             do
                 (* control the legs *)
+                automaton
+                    
+                    state Center
+                        do
+                            (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
+                                 setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
+                    state AnOtherState
+                        do
+                             (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
+                                 setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
+                end;
 
-                (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
-                    setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
-                
+               
                 (* control the arm *)
                 (* (arm1speed, arm2speed, arm3speed, arm4speed) =
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.40.0, 30.0 , 80.0, 60.0); *)
