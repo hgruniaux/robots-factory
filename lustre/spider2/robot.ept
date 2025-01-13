@@ -103,7 +103,12 @@ node robot(dt : float;
            calfRdistance : float;
            footLcontact : bool;
            footRcontact : bool;
-           bodyContact : bool
+           bodyContact : bool;
+           main_x : float;
+           main_y : float;
+           secondary_x : float;
+           secondary_y : float;
+           action_a : float
 )
 returns (  hipLspeed : float;
            hipRspeed : float;

@@ -342,6 +342,17 @@ void SimulationView::handle_robot_input() {
         main_x = -1.0f;
     if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_D)))
         main_x = 1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_U)))
+        secondary_y = 1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_J)))
+        secondary_y = -1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_H)))
+        secondary_x = -1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_K)))
+        secondary_x = 1.0f;
+    if (ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_LeftShift)))
+        action_a = true;
+
 
     if (m_robot_ai != nullptr)
         m_robot_ai->set_user_input(main_x, main_y, secondary_x, secondary_y, action_a);
