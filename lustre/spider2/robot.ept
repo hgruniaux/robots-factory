@@ -110,6 +110,10 @@ node robot(dt : float;
            arm2angle : float;
            arm3angle : float;
            arm4angle : float;
+           fingerL1angle : float;
+           fingerL2angle : float;
+           fingerR1angle : float;
+           fingerR2angle : float;
            gyroscope : float;
            calfLdistance : float;
            calfRdistance : float;
@@ -135,6 +139,10 @@ returns (  hipLspeed : float;
            arm2speed : float;
            arm3speed : float;
            arm4speed : float;
+           fingerL1speed : float;
+           fingerL2speed : float;
+           fingerR1speed : float;
+           fingerR2speed : float;
            arm_target_x : float;
            arm_target_y : float;
            arm_target_angle : float;
@@ -148,6 +156,23 @@ let
     arm_target_y = clamp(   0.2 -> pre arm_target_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
     body_target_y = clamp(  0.2 -> pre body_target_y +. (main_y *. dt *. 0.5), 0.0, 0.4);
     arm_target_angle = 0.0 -> fmod( pre arm_target_angle +. ( mux(action_lb, 1.0, 0.0) +. mux(action_rb, -.1.0, 0.0)) *. dt *. 10.0 , 360.0);
+    
+    automaton
+        state Hand_Open
+            do
+                fingerL1speed = setMotor(fingerL1angle, 80.0, 1000.0);
+                fingerL2speed = setMotor(fingerL2angle, 300.0, 1000.0);
+                fingerR1speed = setMotor(fingerR1angle, -.80.0, 1000.0);
+                fingerR2speed = setMotor(fingerR2angle, -.300.0, 1000.0);
+            until false -> (not pre action_x) and action_x then Hand_Close
+        state Hand_Close
+            do
+                fingerL1speed = setMotor(fingerL1angle, 20.0, 1000.0);
+                fingerL2speed = setMotor(fingerL2angle, 300.0, 1000.0);
+                fingerR1speed = setMotor(fingerR1angle, -.20.0, 1000.0);
+                fingerR2speed = setMotor(fingerR2angle, -.300.0, 1000.0);
+            until false -> (not pre action_x) and action_x then Hand_Open
+    end;
 
     (* This first automaton is used when you need to control the legs and the arm at the same time *)
     automaton

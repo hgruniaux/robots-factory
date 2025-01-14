@@ -1,4 +1,4 @@
-/* --- Generated the 14/1/2025 at 13:45 --- */
+/* --- Generated the 14/1/2025 at 14:8 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -101,13 +101,16 @@ void Robot__setMotorLegs_step(float hipLangle, float hipRangle,
                               Robot__setMotorLegs_out* _out);
 
 typedef struct Robot__robot_mem {
-  Robot__st_1 v_78;
-  Robot__st v_81;
-  int v_82;
-  int v_79;
-  float v_102;
-  float v_116;
-  Robot__st_2 ck;
+  int v_73;
+  int v_77;
+  Robot__st_3 ck;
+  Robot__st_1 v_86;
+  Robot__st v_89;
+  int v_90;
+  int v_87;
+  float v_110;
+  float v_124;
+  Robot__st_2 ck_1;
   float v_65;
   int v_64;
   float v_59;
@@ -118,6 +121,7 @@ typedef struct Robot__robot_mem {
   int v_46;
   float v_41;
   int v;
+  int pnr_3;
   int pnr_2;
   Robot__setMotorArm_mem setMotorArm;
   Robot__setMotorArm_mem setMotorArm_1;
@@ -137,6 +141,10 @@ typedef struct Robot__robot_out {
   float arm2speed;
   float arm3speed;
   float arm4speed;
+  float fingerL1speed;
+  float fingerL2speed;
+  float fingerR1speed;
+  float fingerR2speed;
   float arm_target_x;
   float arm_target_y;
   float arm_target_angle;
@@ -147,6 +155,8 @@ void Robot__robot_reset(Robot__robot_mem* self);
 void Robot__robot_step(float dt, float hipLangle, float hipRangle,
                        float kneeLangle, float kneeRangle, float arm1angle,
                        float arm2angle, float arm3angle, float arm4angle,
+                       float fingerL1angle, float fingerL2angle,
+                       float fingerR1angle, float fingerR2angle,
                        float gyroscope, float calfLdistance,
                        float calfRdistance, float bodyDistance,
                        int footLcontact, int footRcontact, int bodyContact,

@@ -1,4 +1,4 @@
-/* --- Generated the 14/1/2025 at 13:45 --- */
+/* --- Generated the 14/1/2025 at 14:8 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -9,6 +9,15 @@
 #include "assert.h"
 #include "pervasives.h"
 #include "lib_types.h"
+typedef enum {
+  Robot__St_3_Hand_Open,
+  Robot__St_3_Hand_Close
+} Robot__st_3;
+
+Robot__st_3 Robot__st_3_of_string(char* s);
+
+char* string_of_Robot__st_3(Robot__st_3 x, char* buf);
+
 typedef enum {
   Robot__St_2_Upside_Down_Right,
   Robot__St_2_Upside_Down_Left,

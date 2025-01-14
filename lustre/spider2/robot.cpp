@@ -28,6 +28,10 @@ public:
     X(float, arm2angle, physics_robot->get_sensor_value("elbow1"))            \
     X(float, arm3angle, physics_robot->get_sensor_value("elbow2"))            \
     X(float, arm4angle, physics_robot->get_sensor_value("elbow3"))            \
+    X(float, fingerL1angle, physics_robot->get_sensor_value("handLJoint"))      \
+    X(float, fingerL2angle, physics_robot->get_sensor_value("fingerLJoint"))      \
+    X(float, fingerR1angle, physics_robot->get_sensor_value("handRJoint"))      \
+    X(float, fingerR2angle, physics_robot->get_sensor_value("fingerRJoint"))      \
     X(float, gyroscope, physics_robot->get_sensor_value("gyroscope"))         \
     X(float, calfLdistance, physics_robot->get_sensor_value("calfLDistance")) \
     X(float, calfRdistance, physics_robot->get_sensor_value("calfRDistance")) \
@@ -36,17 +40,21 @@ public:
     X(bool, footRcontact, physics_robot->has_collision_by_name("calfR"))      \
     X(bool, bodyContact, physics_robot->has_collision_by_name("body"))
 
-#define OUTPUTS                                                               \
-    X(hipLspeed, physics_robot->set_motor_speed("hipL", m_out.hipLspeed))     \
-    X(hipRspeed, physics_robot->set_motor_speed("hipR", m_out.hipRspeed))     \
-    X(kneeLspeed, physics_robot->set_motor_speed("kneeL", m_out.kneeLspeed))  \
-    X(kneeRspeed, physics_robot->set_motor_speed("kneeR", m_out.kneeRspeed))  \
-    X(arm1speed, physics_robot->set_motor_speed("shoulder", m_out.arm1speed)) \
-    X(arm2speed, physics_robot->set_motor_speed("elbow1", m_out.arm2speed))   \
-    X(arm3speed, physics_robot->set_motor_speed("elbow2", m_out.arm3speed))   \
-    X(arm4speed, physics_robot->set_motor_speed("elbow3", m_out.arm4speed))   \
-    X(arm_target_x, /* nothing */)                                            \
-    X(arm_target_y, /* nothing */)                                            \
+#define OUTPUTS                                                                        \
+    X(hipLspeed, physics_robot->set_motor_speed("hipL", m_out.hipLspeed))              \
+    X(hipRspeed, physics_robot->set_motor_speed("hipR", m_out.hipRspeed))              \
+    X(kneeLspeed, physics_robot->set_motor_speed("kneeL", m_out.kneeLspeed))           \
+    X(kneeRspeed, physics_robot->set_motor_speed("kneeR", m_out.kneeRspeed))           \
+    X(arm1speed, physics_robot->set_motor_speed("shoulder", m_out.arm1speed))          \
+    X(arm2speed, physics_robot->set_motor_speed("elbow1", m_out.arm2speed))            \
+    X(arm3speed, physics_robot->set_motor_speed("elbow2", m_out.arm3speed))            \
+    X(arm4speed, physics_robot->set_motor_speed("elbow3", m_out.arm4speed))            \
+    X(fingerL1speed, physics_robot->set_motor_speed("handLJoint", m_out.fingerL1speed))  \
+    X(fingerL2speed, physics_robot->set_motor_speed("fingerLJoint", m_out.fingerL2speed))  \
+    X(fingerR1speed, physics_robot->set_motor_speed("handRJoint", m_out.fingerR1speed))  \
+    X(fingerR2speed, physics_robot->set_motor_speed("fingerRJoint", m_out.fingerR2speed))  \
+    X(arm_target_x, /* nothing */)                                                     \
+    X(arm_target_y, /* nothing */)                                                     \
     X(arm_target_angle, /* nothing */)                                        
 
     void step(float dt) override {
@@ -61,6 +69,7 @@ public:
         Robot__robot_step(dt,
                           hipLangle, hipRangle, kneeLangle, kneeRangle,
                           arm1angle, arm2angle, arm3angle, arm4angle,
+                          fingerL1angle, fingerL2angle, fingerR1angle, fingerR2angle,
                           gyroscope, calfLdistance, calfRdistance, bodyDistance, footLcontact, footRcontact, bodyContact,
                           m_user_input.main_x, m_user_input.main_y, m_user_input.secondary_x, m_user_input.secondary_y,
                           m_user_input.action_a, m_user_input.action_x, m_user_input.action_b, m_user_input.action_lb, m_user_input.action_rb,
@@ -79,7 +88,7 @@ public:
 
         ImGui::SeparatorText("State (automaton)");
         char buffer[512] = {0};
-        string_of_Robot__st_2(m_memory.ck, buffer);
+        string_of_Robot__st_3(m_memory.ck, buffer);
         ImGui::Text("Main state: %s", buffer);
 
         ImGui::SeparatorText("Input parameters");
