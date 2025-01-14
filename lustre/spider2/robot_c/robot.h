@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 17:49 --- */
+/* --- Generated the 14/1/2025 at 13:30 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -34,10 +34,10 @@ void Robot__setMotorFast_step(float current, float goal, float maxi,
                               Robot__setMotorFast_out* _out);
 
 typedef struct Robot__setMotorPID_mem {
+  float v_19;
+  int v_18;
   float v_16;
   int v_15;
-  float v_13;
-  int v;
 } Robot__setMotorPID_mem;
 
 typedef struct Robot__setMotorPID_out {
@@ -95,11 +95,15 @@ void Robot__setMotorLegs_step(float hipLangle, float hipRangle,
                               Robot__setMotorLegs_out* _out);
 
 typedef struct Robot__robot_mem {
-  Robot__st v_72;
-  int v_73;
-  float v_93;
-  float v_107;
-  Robot__st_1 ck;
+  Robot__st_1 v_78;
+  Robot__st v_81;
+  int v_82;
+  int v_79;
+  float v_102;
+  float v_116;
+  Robot__st_2 ck;
+  float v_65;
+  int v_64;
   float v_59;
   int v_58;
   float v_53;
@@ -107,16 +111,15 @@ typedef struct Robot__robot_mem {
   float v_47;
   int v_46;
   float v_41;
-  int v_40;
-  float v_35;
   int v;
-  int pnr_1;
+  int pnr_2;
   Robot__setMotorArm_mem setMotorArm;
   Robot__setMotorArm_mem setMotorArm_1;
   Robot__setMotorArm_mem setMotorArm_2;
   Robot__setMotorArm_mem setMotorArm_3;
   Robot__setMotorArm_mem setMotorArm_4;
   Robot__setMotorArm_mem setMotorArm_5;
+  Robot__setMotorArm_mem setMotorArm_6;
 } Robot__robot_mem;
 
 typedef struct Robot__robot_out {

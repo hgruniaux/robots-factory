@@ -47,7 +47,7 @@ public:
     X(arm4speed, physics_robot->set_motor_speed("elbow3", m_out.arm4speed))   \
     X(arm_target_x, /* nothing */)                                            \
     X(arm_target_y, /* nothing */)                                            \
-    X(arm_target_angle, /* nothing */)                                        \
+    X(arm_target_angle, /* nothing */)                                        
 
     void step(float dt) override {
         auto *physics_robot = get_physics_robot();
@@ -79,7 +79,7 @@ public:
 
         ImGui::SeparatorText("State (automaton)");
         char buffer[512] = {0};
-        string_of_Robot__st_1(m_memory.ck, buffer);
+        //string_of_Robot__st_1(m_memory.ck, buffer);
         ImGui::Text("Main state: %s", buffer);
 
         ImGui::SeparatorText("Input parameters");

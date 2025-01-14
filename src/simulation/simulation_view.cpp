@@ -259,6 +259,8 @@ void SimulationView::show_robot_info() {
                 ImGui::SameLine();
                 draw_virtual_joystick(user_input.secondary_x, user_input.secondary_y);
                 ImGui::Text("Action A: %s", user_input.action_a ? "true" : "false");
+                ImGui::Text("Action B: %s", user_input.action_b ? "true" : "false");
+                ImGui::Text("Action X: %s", user_input.action_x ? "true" : "false");
             } else {
                 ImGui::Text("No robot AI attached...");
             }

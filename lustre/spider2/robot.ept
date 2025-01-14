@@ -34,21 +34,23 @@ node setMotorPID(
     kd: float;
 ) returns (motorSpeed: float);
 var
-    error: float;
+    error1: float;
+    error2: float;
     integral: float;
     derivative: float;
     lastError: float;
     rawSpeed: float;
 let
-    error = goalAngle -. currentAngle;
-    integral = 0.0 -> pre integral +. error;
-    derivative = 0.0 -> (error -. pre lastError);
-    rawSpeed = (kp *. error) +. (ki *. integral) +. (kd *. derivative);
+    error1 = fmod(goalAngle -. currentAngle,360.0);
+    error2 = if error1 <=. 180.0 then error1 else error1 -. 360.0;
+    integral = 0.0 -> pre integral +. error2;
+    derivative = 0.0 -> (error2 -. pre lastError);
+    rawSpeed = (kp *. error2) +. (ki *. integral) +. (kd *. derivative);
     motorSpeed = if rawSpeed >. maxSpeed then maxSpeed 
                  else if rawSpeed <. -.maxSpeed then -.maxSpeed 
                  else if abs(rawSpeed) <. 1.0 then 0.0
                  else rawSpeed;
-    lastError = error;
+    lastError = error2;
 tel
 
 
@@ -75,10 +77,10 @@ tel
 
 node setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, arm1goal, arm2goal, arm3goal, arm4goal : float) returns (arm1speed, arm2speed, arm3speed, arm4speed : float);
 let
-    arm1speed = setMotorPID(arm1angle, arm1goal, 20.0, 0.5, 0.0, 0.2);
-    arm2speed = setMotorPID(arm2angle, arm2goal, 20.0, 0.7, 0.0, 0.3);
-    arm3speed = setMotorPID(arm3angle, arm3goal, 20.0, 0.9, 0.0, 0.4);
-    arm4speed = setMotorPID(arm4angle, arm4goal, 20.0, 1.0, 0.0, 0.5);
+    arm1speed = setMotorPID(arm1angle, fmod(arm1goal,360.0), 20.0, 0.5, 0.0, 0.2);
+    arm2speed = setMotorPID(arm2angle, fmod(arm2goal,360.0), 20.0, 0.7, 0.0, 0.3);
+    arm3speed = setMotorPID(arm3angle, fmod(arm3goal,360.0), 20.0, 0.9, 0.0, 0.4);
+    arm4speed = setMotorPID(arm4angle, fmod(arm4goal,360.0), 20.0, 1.0, 0.0, 0.5);
 tel
 
 node setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, hipLgoal, hipRgoal, kneeLgoal, kneeRgoal : float) returns (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed : float);
@@ -146,7 +148,7 @@ let
                 (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
                     setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.40.0, 30.0 , 80.0, 60.0);
+                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 320.0, 30.0 , 80.0, 60.0);
 
             until footLcontact or footRcontact or bodyContact then Standard
 
@@ -157,7 +159,7 @@ let
                     setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
  
                 (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.0.0, 0.0 , 0.0, 0.0);
+                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 0.0, 0.0 , 0.0, 0.0);
 
                 isStatic = doNotMove(1.0, hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) and doNotMove(1.0, arm1speed, arm2speed, arm3speed, arm4speed) ;
                 until gyroscope <=. 40.0 and gyroscope >=. 320.0 then Standard
@@ -205,7 +207,6 @@ let
 
 
         state Standard
-            var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
             do
                 (* control the legs *)
                 automaton
@@ -218,12 +219,21 @@ let
 
                
                 (* control the arm *)
-                (* (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.40.0, 30.0 , 80.0, 60.0); *)
 
-                (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
-                (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
+                automaton
+                    state Normal
+                        do
+                            (arm1speed, arm2speed, arm3speed, arm4speed) =
+                                setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 320.0, 30.0 , 80.0, 60.0);
+                        until action_b then Move
+                    state Move
+                        var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
+                        do
+                            (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
+                            (arm1speed, arm2speed, arm3speed, arm4speed) =
+                                setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
+                        until not action_b then Normal
+                end;
 
 
             until gyroscope >=. 90.0 and gyroscope <=. 260.0 then Upside_Down_Init
