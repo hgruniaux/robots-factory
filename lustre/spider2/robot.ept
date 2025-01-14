@@ -205,7 +205,6 @@ let
 
 
         state Standard
-            var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
             do
                 (* control the legs *)
                 automaton
@@ -218,12 +217,21 @@ let
 
                
                 (* control the arm *)
-                (* (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.40.0, 30.0 , 80.0, 60.0); *)
 
-                (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
-                (arm1speed, arm2speed, arm3speed, arm4speed) =
-                    setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
+                automaton
+                    state Normal
+                        do
+                            (arm1speed, arm2speed, arm3speed, arm4speed) =
+                                setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, -.40.0, 30.0 , 80.0, 60.0);
+                        until action_b then Move
+                    state Move
+                        var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
+                        do
+                            (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
+                            (arm1speed, arm2speed, arm3speed, arm4speed) =
+                                setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
+                        until not action_b then Move
+                end;
 
 
             until gyroscope >=. 90.0 and gyroscope <=. 260.0 then Upside_Down_Init

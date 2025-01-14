@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 17:49 --- */
+/* --- Generated the 14/1/2025 at 13:7 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -247,16 +247,19 @@ void Robot__setMotorLegs_step(float hipLangle, float hipRangle,
 }
 
 void Robot__robot_reset(Robot__robot_mem* self) {
+  Robot__setMotorArm_reset(&self->setMotorArm_6);
   Robot__setMotorArm_reset(&self->setMotorArm_5);
   Robot__setMotorArm_reset(&self->setMotorArm_4);
   Robot__setMotorArm_reset(&self->setMotorArm_3);
   Robot__setMotorArm_reset(&self->setMotorArm_2);
   Robot__setMotorArm_reset(&self->setMotorArm_1);
   Robot__setMotorArm_reset(&self->setMotorArm);
+  self->v_76 = false;
+  self->v_75 = Robot__St_Normal;
   self->v_73 = false;
-  self->v_72 = Robot__St_Center;
-  self->pnr_1 = false;
-  self->ck = Robot__St_1_Falling;
+  self->v_72 = Robot__St_1_Center;
+  self->pnr_2 = false;
+  self->ck = Robot__St_2_Falling;
   self->v_58 = true;
   self->v_52 = true;
   self->v_46 = true;
@@ -284,38 +287,60 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   Robot__doNotMove_out Robot__doNotMove_out_st;
   Robot__setMotorArm_out Robot__setMotorArm_out_st;
   
-  int nr_St_Center;
-  Robot__st ns_St_Center;
-  float kneeRspeed_St_1_Standard_St_Center;
-  float kneeLspeed_St_1_Standard_St_Center;
-  float hipRspeed_St_1_Standard_St_Center;
-  float hipLspeed_St_1_Standard_St_Center;
-  Robot__st ck_1;
-  int v_71;
-  Robot__st_1 v_70;
-  int v_69;
-  int v_68;
-  int v_67;
-  int r_4;
-  Robot__st ns;
-  int r_2;
-  int nr;
-  int pnr;
+  int nr_1_St_1_Center;
+  Robot__st_1 ns_1_St_1_Center;
+  float kneeRspeed_St_2_Standard_St_1_Center;
+  float kneeLspeed_St_2_Standard_St_1_Center;
+  float hipRspeed_St_2_Standard_St_1_Center;
+  float hipLspeed_St_2_Standard_St_1_Center;
+  Robot__st_1 ck_1;
+  int v_74;
+  int r_5;
   float theta1;
   float theta2;
   float theta3;
   float theta4;
+  int r_6;
+  int nr_St_Move;
+  Robot__st ns_St_Move;
+  float arm4speed_St_2_Standard_St_Move;
+  float arm3speed_St_2_Standard_St_Move;
+  float arm2speed_St_2_Standard_St_Move;
+  float arm1speed_St_2_Standard_St_Move;
+  int nr_St_Normal;
+  Robot__st ns_St_Normal;
+  float arm4speed_St_2_Standard_St_Normal;
+  float arm3speed_St_2_Standard_St_Normal;
+  float arm2speed_St_2_Standard_St_Normal;
+  float arm1speed_St_2_Standard_St_Normal;
+  Robot__st ck_2;
+  int v_71;
+  Robot__st_2 v_70;
+  int v_69;
+  int v_68;
+  int v_67;
+  Robot__st_1 ns_1;
+  int r_3;
+  int nr_1;
+  int pnr_1;
+  Robot__st ns;
+  int r_2;
+  int nr;
+  int pnr;
+  float v_83;
+  float v_82;
+  float v_81;
   float v_80;
-  float v_79;
-  float v_78;
-  float v_77;
-  int v_76;
-  int v_75;
-  int v_74;
-  int r_5;
-  float v_94;
+  int v_79;
+  int v_78;
+  int v_77;
+  int r_7;
+  float v_97;
+  int v_95;
+  Robot__st_2 v_94;
+  int v_93;
   int v_92;
-  Robot__st_1 v_91;
+  int v_91;
   int v_90;
   int v_89;
   int v_88;
@@ -323,14 +348,14 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   int v_86;
   int v_85;
   int v_84;
-  int v_83;
-  int v_82;
-  int v_81;
-  int r_6;
+  int r_8;
   float time_1;
-  float v_108;
+  float v_111;
+  int v_109;
+  Robot__st_2 v_108;
+  int v_107;
   int v_106;
-  Robot__st_1 v_105;
+  int v_105;
   int v_104;
   int v_103;
   int v_102;
@@ -338,17 +363,17 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   int v_100;
   int v_99;
   int v_98;
-  int v_97;
-  int v_96;
-  int v_95;
-  int r_7;
+  int r_9;
   float time;
-  int v_125;
+  int v_128;
+  int v_127;
+  int v_126;
+  Robot__st_2 v_125;
   int v_124;
-  int v_123;
-  Robot__st_1 v_122;
+  Robot__st_2 v_123;
+  int v_122;
   int v_121;
-  Robot__st_1 v_120;
+  int v_120;
   int v_119;
   int v_118;
   int v_117;
@@ -357,74 +382,71 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   int v_114;
   int v_113;
   int v_112;
-  int v_111;
-  int v_110;
-  int v_109;
-  int r_8;
+  int r_10;
   int isStatic;
-  int v_127;
-  int v_126;
-  int r_9;
-  int nr_1_St_1_Standard;
-  Robot__st_1 ns_1_St_1_Standard;
-  float arm4speed_St_1_Standard;
-  float arm3speed_St_1_Standard;
-  float arm2speed_St_1_Standard;
-  float arm1speed_St_1_Standard;
-  float kneeRspeed_St_1_Standard;
-  float kneeLspeed_St_1_Standard;
-  float hipRspeed_St_1_Standard;
-  float hipLspeed_St_1_Standard;
-  int nr_1_St_1_Jump;
-  Robot__st_1 ns_1_St_1_Jump;
-  float arm4speed_St_1_Jump;
-  float arm3speed_St_1_Jump;
-  float arm2speed_St_1_Jump;
-  float arm1speed_St_1_Jump;
-  float kneeRspeed_St_1_Jump;
-  float kneeLspeed_St_1_Jump;
-  float hipRspeed_St_1_Jump;
-  float hipLspeed_St_1_Jump;
-  int nr_1_St_1_Upside_Down_Right;
-  Robot__st_1 ns_1_St_1_Upside_Down_Right;
-  float arm4speed_St_1_Upside_Down_Right;
-  float arm3speed_St_1_Upside_Down_Right;
-  float arm2speed_St_1_Upside_Down_Right;
-  float arm1speed_St_1_Upside_Down_Right;
-  float kneeRspeed_St_1_Upside_Down_Right;
-  float kneeLspeed_St_1_Upside_Down_Right;
-  float hipRspeed_St_1_Upside_Down_Right;
-  float hipLspeed_St_1_Upside_Down_Right;
-  int nr_1_St_1_Upside_Down_Left;
-  Robot__st_1 ns_1_St_1_Upside_Down_Left;
-  float arm4speed_St_1_Upside_Down_Left;
-  float arm3speed_St_1_Upside_Down_Left;
-  float arm2speed_St_1_Upside_Down_Left;
-  float arm1speed_St_1_Upside_Down_Left;
-  float kneeRspeed_St_1_Upside_Down_Left;
-  float kneeLspeed_St_1_Upside_Down_Left;
-  float hipRspeed_St_1_Upside_Down_Left;
-  float hipLspeed_St_1_Upside_Down_Left;
-  int nr_1_St_1_Upside_Down_Init;
-  Robot__st_1 ns_1_St_1_Upside_Down_Init;
-  float arm4speed_St_1_Upside_Down_Init;
-  float arm3speed_St_1_Upside_Down_Init;
-  float arm2speed_St_1_Upside_Down_Init;
-  float arm1speed_St_1_Upside_Down_Init;
-  float kneeRspeed_St_1_Upside_Down_Init;
-  float kneeLspeed_St_1_Upside_Down_Init;
-  float hipRspeed_St_1_Upside_Down_Init;
-  float hipLspeed_St_1_Upside_Down_Init;
-  int nr_1_St_1_Falling;
-  Robot__st_1 ns_1_St_1_Falling;
-  float arm4speed_St_1_Falling;
-  float arm3speed_St_1_Falling;
-  float arm2speed_St_1_Falling;
-  float arm1speed_St_1_Falling;
-  float kneeRspeed_St_1_Falling;
-  float kneeLspeed_St_1_Falling;
-  float hipRspeed_St_1_Falling;
-  float hipLspeed_St_1_Falling;
+  int v_130;
+  int v_129;
+  int r_11;
+  int nr_2_St_2_Standard;
+  Robot__st_2 ns_2_St_2_Standard;
+  float arm4speed_St_2_Standard;
+  float arm3speed_St_2_Standard;
+  float arm2speed_St_2_Standard;
+  float arm1speed_St_2_Standard;
+  float kneeRspeed_St_2_Standard;
+  float kneeLspeed_St_2_Standard;
+  float hipRspeed_St_2_Standard;
+  float hipLspeed_St_2_Standard;
+  int nr_2_St_2_Jump;
+  Robot__st_2 ns_2_St_2_Jump;
+  float arm4speed_St_2_Jump;
+  float arm3speed_St_2_Jump;
+  float arm2speed_St_2_Jump;
+  float arm1speed_St_2_Jump;
+  float kneeRspeed_St_2_Jump;
+  float kneeLspeed_St_2_Jump;
+  float hipRspeed_St_2_Jump;
+  float hipLspeed_St_2_Jump;
+  int nr_2_St_2_Upside_Down_Right;
+  Robot__st_2 ns_2_St_2_Upside_Down_Right;
+  float arm4speed_St_2_Upside_Down_Right;
+  float arm3speed_St_2_Upside_Down_Right;
+  float arm2speed_St_2_Upside_Down_Right;
+  float arm1speed_St_2_Upside_Down_Right;
+  float kneeRspeed_St_2_Upside_Down_Right;
+  float kneeLspeed_St_2_Upside_Down_Right;
+  float hipRspeed_St_2_Upside_Down_Right;
+  float hipLspeed_St_2_Upside_Down_Right;
+  int nr_2_St_2_Upside_Down_Left;
+  Robot__st_2 ns_2_St_2_Upside_Down_Left;
+  float arm4speed_St_2_Upside_Down_Left;
+  float arm3speed_St_2_Upside_Down_Left;
+  float arm2speed_St_2_Upside_Down_Left;
+  float arm1speed_St_2_Upside_Down_Left;
+  float kneeRspeed_St_2_Upside_Down_Left;
+  float kneeLspeed_St_2_Upside_Down_Left;
+  float hipRspeed_St_2_Upside_Down_Left;
+  float hipLspeed_St_2_Upside_Down_Left;
+  int nr_2_St_2_Upside_Down_Init;
+  Robot__st_2 ns_2_St_2_Upside_Down_Init;
+  float arm4speed_St_2_Upside_Down_Init;
+  float arm3speed_St_2_Upside_Down_Init;
+  float arm2speed_St_2_Upside_Down_Init;
+  float arm1speed_St_2_Upside_Down_Init;
+  float kneeRspeed_St_2_Upside_Down_Init;
+  float kneeLspeed_St_2_Upside_Down_Init;
+  float hipRspeed_St_2_Upside_Down_Init;
+  float hipLspeed_St_2_Upside_Down_Init;
+  int nr_2_St_2_Falling;
+  Robot__st_2 ns_2_St_2_Falling;
+  float arm4speed_St_2_Falling;
+  float arm3speed_St_2_Falling;
+  float arm2speed_St_2_Falling;
+  float arm1speed_St_2_Falling;
+  float kneeRspeed_St_2_Falling;
+  float kneeLspeed_St_2_Falling;
+  float hipRspeed_St_2_Falling;
+  float hipLspeed_St_2_Falling;
   float v_66;
   float v_65;
   float v_64;
@@ -448,13 +470,13 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   float v_38;
   float v_37;
   float v_36;
-  Robot__st_1 ns_1;
-  int r_3;
-  int nr_1;
+  Robot__st_2 ns_2;
+  int r_4;
+  int nr_2;
   float dgyroscope;
   float body_target_y;
   float alti;
-  r_3 = self->pnr_1;
+  r_4 = self->pnr_2;
   Robot__mux_step(action_rb, -1.000000, 0.000000, &Robot__mux_out_st);
   v_61 = Robot__mux_out_st.r;
   Robot__mux_step(action_lb, 1.000000, 0.000000, &Robot__mux_out_st);
@@ -513,403 +535,462 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
     dgyroscope = v_39;
   };
   switch (self->ck) {
-    case Robot__St_1_Falling:
+    case Robot__St_2_Falling:
       Robot__setMotorLegs_step(hipLangle, hipRangle, kneeLangle, kneeRangle,
                                -40.000000, 40.000000, 100.000000,
                                -100.000000, &Robot__setMotorLegs_out_st);
-      hipLspeed_St_1_Falling = Robot__setMotorLegs_out_st.hipLspeed;
-      hipRspeed_St_1_Falling = Robot__setMotorLegs_out_st.hipRspeed;
-      kneeLspeed_St_1_Falling = Robot__setMotorLegs_out_st.kneeLspeed;
-      kneeRspeed_St_1_Falling = Robot__setMotorLegs_out_st.kneeRspeed;
-      v_126 = (footLcontact||footRcontact);
-      v_127 = (v_126||bodyContact);
-      if (v_127) {
-        nr_1_St_1_Falling = true;
-        ns_1_St_1_Falling = Robot__St_1_Standard;
+      hipLspeed_St_2_Falling = Robot__setMotorLegs_out_st.hipLspeed;
+      hipRspeed_St_2_Falling = Robot__setMotorLegs_out_st.hipRspeed;
+      kneeLspeed_St_2_Falling = Robot__setMotorLegs_out_st.kneeLspeed;
+      kneeRspeed_St_2_Falling = Robot__setMotorLegs_out_st.kneeRspeed;
+      v_129 = (footLcontact||footRcontact);
+      v_130 = (v_129||bodyContact);
+      if (v_130) {
+        nr_2_St_2_Falling = true;
+        ns_2_St_2_Falling = Robot__St_2_Standard;
       } else {
-        nr_1_St_1_Falling = false;
-        ns_1_St_1_Falling = Robot__St_1_Falling;
+        nr_2_St_2_Falling = false;
+        ns_2_St_2_Falling = Robot__St_2_Falling;
       };
-      r_9 = r_3;
-      if (r_9) {
-        Robot__setMotorArm_reset(&self->setMotorArm_5);
+      r_11 = r_4;
+      if (r_11) {
+        Robot__setMotorArm_reset(&self->setMotorArm_6);
       };
       Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
                               -40.000000, 30.000000, 80.000000, 60.000000,
                               &Robot__setMotorArm_out_st,
-                              &self->setMotorArm_5);
-      arm1speed_St_1_Falling = Robot__setMotorArm_out_st.arm1speed;
-      arm2speed_St_1_Falling = Robot__setMotorArm_out_st.arm2speed;
-      arm3speed_St_1_Falling = Robot__setMotorArm_out_st.arm3speed;
-      arm4speed_St_1_Falling = Robot__setMotorArm_out_st.arm4speed;
-      _out->arm1speed = arm1speed_St_1_Falling;
-      _out->arm2speed = arm2speed_St_1_Falling;
-      _out->arm3speed = arm3speed_St_1_Falling;
-      _out->arm4speed = arm4speed_St_1_Falling;
-      _out->hipLspeed = hipLspeed_St_1_Falling;
-      _out->hipRspeed = hipRspeed_St_1_Falling;
-      _out->kneeLspeed = kneeLspeed_St_1_Falling;
-      _out->kneeRspeed = kneeRspeed_St_1_Falling;
-      ns_1 = ns_1_St_1_Falling;
-      nr_1 = nr_1_St_1_Falling;
+                              &self->setMotorArm_6);
+      arm1speed_St_2_Falling = Robot__setMotorArm_out_st.arm1speed;
+      arm2speed_St_2_Falling = Robot__setMotorArm_out_st.arm2speed;
+      arm3speed_St_2_Falling = Robot__setMotorArm_out_st.arm3speed;
+      arm4speed_St_2_Falling = Robot__setMotorArm_out_st.arm4speed;
+      _out->hipLspeed = hipLspeed_St_2_Falling;
+      _out->hipRspeed = hipRspeed_St_2_Falling;
+      _out->kneeLspeed = kneeLspeed_St_2_Falling;
+      _out->kneeRspeed = kneeRspeed_St_2_Falling;
+      _out->arm1speed = arm1speed_St_2_Falling;
+      _out->arm2speed = arm2speed_St_2_Falling;
+      _out->arm3speed = arm3speed_St_2_Falling;
+      _out->arm4speed = arm4speed_St_2_Falling;
+      ns_2 = ns_2_St_2_Falling;
+      nr_2 = nr_2_St_2_Falling;
       break;
-    case Robot__St_1_Upside_Down_Init:
+    case Robot__St_2_Upside_Down_Init:
       Robot__setMotorLegs_step(hipLangle, hipRangle, kneeLangle, kneeRangle,
                                -40.000000, 40.000000, 100.000000,
                                -100.000000, &Robot__setMotorLegs_out_st);
-      hipLspeed_St_1_Upside_Down_Init = Robot__setMotorLegs_out_st.hipLspeed;
-      hipRspeed_St_1_Upside_Down_Init = Robot__setMotorLegs_out_st.hipRspeed;
-      kneeLspeed_St_1_Upside_Down_Init = Robot__setMotorLegs_out_st.kneeLspeed;
-      kneeRspeed_St_1_Upside_Down_Init = Robot__setMotorLegs_out_st.kneeRspeed;
-      v_118 = (gyroscope>40.000000);
-      v_116 = (gyroscope<180.000000);
-      v_114 = (gyroscope<320.000000);
-      v_112 = (gyroscope>=180.000000);
-      v_110 = (gyroscope>=320.000000);
-      v_109 = (gyroscope<=40.000000);
-      v_111 = (v_109&&v_110);
-      r_8 = r_3;
-      if (r_8) {
-        Robot__setMotorArm_reset(&self->setMotorArm_4);
+      hipLspeed_St_2_Upside_Down_Init = Robot__setMotorLegs_out_st.hipLspeed;
+      hipRspeed_St_2_Upside_Down_Init = Robot__setMotorLegs_out_st.hipRspeed;
+      kneeLspeed_St_2_Upside_Down_Init = Robot__setMotorLegs_out_st.kneeLspeed;
+      kneeRspeed_St_2_Upside_Down_Init = Robot__setMotorLegs_out_st.kneeRspeed;
+      v_121 = (gyroscope>40.000000);
+      v_119 = (gyroscope<180.000000);
+      v_117 = (gyroscope<320.000000);
+      v_115 = (gyroscope>=180.000000);
+      v_113 = (gyroscope>=320.000000);
+      v_112 = (gyroscope<=40.000000);
+      v_114 = (v_112&&v_113);
+      r_10 = r_4;
+      if (r_10) {
+        Robot__setMotorArm_reset(&self->setMotorArm_5);
       };
       Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
                               -0.000000, 0.000000, 0.000000, 0.000000,
                               &Robot__setMotorArm_out_st,
-                              &self->setMotorArm_4);
-      arm1speed_St_1_Upside_Down_Init = Robot__setMotorArm_out_st.arm1speed;
-      arm2speed_St_1_Upside_Down_Init = Robot__setMotorArm_out_st.arm2speed;
-      arm3speed_St_1_Upside_Down_Init = Robot__setMotorArm_out_st.arm3speed;
-      arm4speed_St_1_Upside_Down_Init = Robot__setMotorArm_out_st.arm4speed;
-      _out->arm1speed = arm1speed_St_1_Upside_Down_Init;
-      _out->arm2speed = arm2speed_St_1_Upside_Down_Init;
-      _out->arm3speed = arm3speed_St_1_Upside_Down_Init;
-      _out->arm4speed = arm4speed_St_1_Upside_Down_Init;
-      Robot__doNotMove_step(1.000000, _out->arm1speed, _out->arm2speed,
-                            _out->arm3speed, _out->arm4speed,
-                            &Robot__doNotMove_out_st);
-      v_125 = Robot__doNotMove_out_st.ok;
-      _out->hipLspeed = hipLspeed_St_1_Upside_Down_Init;
-      _out->hipRspeed = hipRspeed_St_1_Upside_Down_Init;
-      _out->kneeLspeed = kneeLspeed_St_1_Upside_Down_Init;
-      _out->kneeRspeed = kneeRspeed_St_1_Upside_Down_Init;
+                              &self->setMotorArm_5);
+      arm1speed_St_2_Upside_Down_Init = Robot__setMotorArm_out_st.arm1speed;
+      arm2speed_St_2_Upside_Down_Init = Robot__setMotorArm_out_st.arm2speed;
+      arm3speed_St_2_Upside_Down_Init = Robot__setMotorArm_out_st.arm3speed;
+      arm4speed_St_2_Upside_Down_Init = Robot__setMotorArm_out_st.arm4speed;
+      _out->hipLspeed = hipLspeed_St_2_Upside_Down_Init;
+      _out->hipRspeed = hipRspeed_St_2_Upside_Down_Init;
+      _out->kneeLspeed = kneeLspeed_St_2_Upside_Down_Init;
+      _out->kneeRspeed = kneeRspeed_St_2_Upside_Down_Init;
       Robot__doNotMove_step(1.000000, _out->hipLspeed, _out->hipRspeed,
                             _out->kneeLspeed, _out->kneeRspeed,
                             &Robot__doNotMove_out_st);
-      v_124 = Robot__doNotMove_out_st.ok;
-      isStatic = (v_124&&v_125);
-      v_117 = (isStatic&&v_116);
-      v_119 = (v_117&&v_118);
-      if (v_119) {
-        v_121 = true;
-        v_120 = Robot__St_1_Upside_Down_Right;
+      v_127 = Robot__doNotMove_out_st.ok;
+      _out->arm1speed = arm1speed_St_2_Upside_Down_Init;
+      _out->arm2speed = arm2speed_St_2_Upside_Down_Init;
+      _out->arm3speed = arm3speed_St_2_Upside_Down_Init;
+      _out->arm4speed = arm4speed_St_2_Upside_Down_Init;
+      Robot__doNotMove_step(1.000000, _out->arm1speed, _out->arm2speed,
+                            _out->arm3speed, _out->arm4speed,
+                            &Robot__doNotMove_out_st);
+      v_128 = Robot__doNotMove_out_st.ok;
+      isStatic = (v_127&&v_128);
+      v_120 = (isStatic&&v_119);
+      v_122 = (v_120&&v_121);
+      if (v_122) {
+        v_124 = true;
+        v_123 = Robot__St_2_Upside_Down_Right;
       } else {
-        v_121 = false;
-        v_120 = Robot__St_1_Upside_Down_Init;
+        v_124 = false;
+        v_123 = Robot__St_2_Upside_Down_Init;
       };
-      v_113 = (isStatic&&v_112);
-      v_115 = (v_113&&v_114);
-      if (v_115) {
-        v_123 = true;
+      v_116 = (isStatic&&v_115);
+      v_118 = (v_116&&v_117);
+      if (v_118) {
+        v_126 = true;
       } else {
-        v_123 = v_121;
+        v_126 = v_124;
       };
-      if (v_111) {
-        nr_1_St_1_Upside_Down_Init = true;
+      if (v_114) {
+        nr_2_St_2_Upside_Down_Init = true;
       } else {
-        nr_1_St_1_Upside_Down_Init = v_123;
+        nr_2_St_2_Upside_Down_Init = v_126;
       };
-      if (v_115) {
-        v_122 = Robot__St_1_Upside_Down_Left;
+      if (v_118) {
+        v_125 = Robot__St_2_Upside_Down_Left;
       } else {
-        v_122 = v_120;
+        v_125 = v_123;
       };
-      if (v_111) {
-        ns_1_St_1_Upside_Down_Init = Robot__St_1_Standard;
+      if (v_114) {
+        ns_2_St_2_Upside_Down_Init = Robot__St_2_Standard;
       } else {
-        ns_1_St_1_Upside_Down_Init = v_122;
+        ns_2_St_2_Upside_Down_Init = v_125;
       };
-      ns_1 = ns_1_St_1_Upside_Down_Init;
-      nr_1 = nr_1_St_1_Upside_Down_Init;
+      ns_2 = ns_2_St_2_Upside_Down_Init;
+      nr_2 = nr_2_St_2_Upside_Down_Init;
       break;
-    case Robot__St_1_Upside_Down_Left:
+    case Robot__St_2_Upside_Down_Left:
       Robot__setMotorLegs_step(hipLangle, hipRangle, kneeLangle, kneeRangle,
                                60.000000, 40.000000, 40.000000, -100.000000,
                                &Robot__setMotorLegs_out_st);
-      hipLspeed_St_1_Upside_Down_Left = Robot__setMotorLegs_out_st.hipLspeed;
-      hipRspeed_St_1_Upside_Down_Left = Robot__setMotorLegs_out_st.hipRspeed;
-      kneeLspeed_St_1_Upside_Down_Left = Robot__setMotorLegs_out_st.kneeLspeed;
-      kneeRspeed_St_1_Upside_Down_Left = Robot__setMotorLegs_out_st.kneeRspeed;
-      v_108 = (self->v_107+dt);
-      if (r_3) {
+      hipLspeed_St_2_Upside_Down_Left = Robot__setMotorLegs_out_st.hipLspeed;
+      hipRspeed_St_2_Upside_Down_Left = Robot__setMotorLegs_out_st.hipRspeed;
+      kneeLspeed_St_2_Upside_Down_Left = Robot__setMotorLegs_out_st.kneeLspeed;
+      kneeRspeed_St_2_Upside_Down_Left = Robot__setMotorLegs_out_st.kneeRspeed;
+      v_111 = (self->v_110+dt);
+      if (r_4) {
         time = 0.000000;
       } else {
-        time = v_108;
+        time = v_111;
       };
-      v_103 = (time>=5.000000);
-      v_101 = (dgyroscope<=1.000000);
-      v_99 = (arm1angle<=-20.000000);
-      v_96 = (gyroscope>=320.000000);
-      v_95 = (gyroscope<=40.000000);
-      v_97 = (v_95||v_96);
-      r_7 = r_3;
-      if (r_7) {
-        Robot__setMotorArm_reset(&self->setMotorArm_3);
+      v_106 = (time>=5.000000);
+      v_104 = (dgyroscope<=1.000000);
+      v_102 = (arm1angle<=-20.000000);
+      v_99 = (gyroscope>=320.000000);
+      v_98 = (gyroscope<=40.000000);
+      v_100 = (v_98||v_99);
+      r_9 = r_4;
+      if (r_9) {
+        Robot__setMotorArm_reset(&self->setMotorArm_4);
       };
       Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
                               -65.000000, -0.000000, -10.000000, -30.000000,
                               &Robot__setMotorArm_out_st,
-                              &self->setMotorArm_3);
-      arm1speed_St_1_Upside_Down_Left = Robot__setMotorArm_out_st.arm1speed;
-      arm2speed_St_1_Upside_Down_Left = Robot__setMotorArm_out_st.arm2speed;
-      arm3speed_St_1_Upside_Down_Left = Robot__setMotorArm_out_st.arm3speed;
-      arm4speed_St_1_Upside_Down_Left = Robot__setMotorArm_out_st.arm4speed;
-      _out->arm1speed = arm1speed_St_1_Upside_Down_Left;
-      _out->arm2speed = arm2speed_St_1_Upside_Down_Left;
-      _out->arm3speed = arm3speed_St_1_Upside_Down_Left;
-      _out->arm4speed = arm4speed_St_1_Upside_Down_Left;
+                              &self->setMotorArm_4);
+      arm1speed_St_2_Upside_Down_Left = Robot__setMotorArm_out_st.arm1speed;
+      arm2speed_St_2_Upside_Down_Left = Robot__setMotorArm_out_st.arm2speed;
+      arm3speed_St_2_Upside_Down_Left = Robot__setMotorArm_out_st.arm3speed;
+      arm4speed_St_2_Upside_Down_Left = Robot__setMotorArm_out_st.arm4speed;
+      _out->hipLspeed = hipLspeed_St_2_Upside_Down_Left;
+      _out->hipRspeed = hipRspeed_St_2_Upside_Down_Left;
+      _out->kneeLspeed = kneeLspeed_St_2_Upside_Down_Left;
+      _out->kneeRspeed = kneeRspeed_St_2_Upside_Down_Left;
+      _out->arm1speed = arm1speed_St_2_Upside_Down_Left;
+      _out->arm2speed = arm2speed_St_2_Upside_Down_Left;
+      _out->arm3speed = arm3speed_St_2_Upside_Down_Left;
+      _out->arm4speed = arm4speed_St_2_Upside_Down_Left;
       Robot__doNotMove_step(0.100000, _out->arm1speed, _out->arm2speed,
                             _out->arm3speed, _out->arm4speed,
                             &Robot__doNotMove_out_st);
-      v_98 = Robot__doNotMove_out_st.ok;
-      v_100 = (v_98&&v_99);
-      v_102 = (v_100&&v_101);
-      v_104 = (v_102&&v_103);
-      if (v_104) {
-        v_106 = true;
+      v_101 = Robot__doNotMove_out_st.ok;
+      v_103 = (v_101&&v_102);
+      v_105 = (v_103&&v_104);
+      v_107 = (v_105&&v_106);
+      if (v_107) {
+        v_109 = true;
       } else {
-        v_106 = false;
+        v_109 = false;
       };
-      if (v_97) {
-        nr_1_St_1_Upside_Down_Left = true;
+      if (v_100) {
+        nr_2_St_2_Upside_Down_Left = true;
       } else {
-        nr_1_St_1_Upside_Down_Left = v_106;
+        nr_2_St_2_Upside_Down_Left = v_109;
       };
-      if (v_104) {
-        v_105 = Robot__St_1_Upside_Down_Right;
+      if (v_107) {
+        v_108 = Robot__St_2_Upside_Down_Right;
       } else {
-        v_105 = Robot__St_1_Upside_Down_Left;
+        v_108 = Robot__St_2_Upside_Down_Left;
       };
-      if (v_97) {
-        ns_1_St_1_Upside_Down_Left = Robot__St_1_Standard;
+      if (v_100) {
+        ns_2_St_2_Upside_Down_Left = Robot__St_2_Standard;
       } else {
-        ns_1_St_1_Upside_Down_Left = v_105;
+        ns_2_St_2_Upside_Down_Left = v_108;
       };
-      _out->hipLspeed = hipLspeed_St_1_Upside_Down_Left;
-      _out->hipRspeed = hipRspeed_St_1_Upside_Down_Left;
-      _out->kneeLspeed = kneeLspeed_St_1_Upside_Down_Left;
-      _out->kneeRspeed = kneeRspeed_St_1_Upside_Down_Left;
-      ns_1 = ns_1_St_1_Upside_Down_Left;
-      nr_1 = nr_1_St_1_Upside_Down_Left;
-      self->v_107 = time;
+      ns_2 = ns_2_St_2_Upside_Down_Left;
+      nr_2 = nr_2_St_2_Upside_Down_Left;
+      self->v_110 = time;
       break;
-    case Robot__St_1_Upside_Down_Right:
+    case Robot__St_2_Upside_Down_Right:
       Robot__setMotorLegs_step(hipLangle, hipRangle, kneeLangle, kneeRangle,
                                -40.000000, -60.000000, 100.000000,
                                -40.000000, &Robot__setMotorLegs_out_st);
-      hipLspeed_St_1_Upside_Down_Right = Robot__setMotorLegs_out_st.hipLspeed;
-      hipRspeed_St_1_Upside_Down_Right = Robot__setMotorLegs_out_st.hipRspeed;
-      kneeLspeed_St_1_Upside_Down_Right = Robot__setMotorLegs_out_st.kneeLspeed;
-      kneeRspeed_St_1_Upside_Down_Right = Robot__setMotorLegs_out_st.kneeRspeed;
-      v_94 = (self->v_93+dt);
-      if (r_3) {
+      hipLspeed_St_2_Upside_Down_Right = Robot__setMotorLegs_out_st.hipLspeed;
+      hipRspeed_St_2_Upside_Down_Right = Robot__setMotorLegs_out_st.hipRspeed;
+      kneeLspeed_St_2_Upside_Down_Right = Robot__setMotorLegs_out_st.kneeLspeed;
+      kneeRspeed_St_2_Upside_Down_Right = Robot__setMotorLegs_out_st.kneeRspeed;
+      v_97 = (self->v_96+dt);
+      if (r_4) {
         time_1 = 0.000000;
       } else {
-        time_1 = v_94;
+        time_1 = v_97;
       };
-      v_89 = (time_1>=5.000000);
-      v_87 = (dgyroscope<=1.000000);
-      v_85 = (arm1angle>=20.000000);
-      v_82 = (gyroscope>=320.000000);
-      v_81 = (gyroscope<=40.000000);
-      v_83 = (v_81||v_82);
-      r_6 = r_3;
-      if (r_6) {
-        Robot__setMotorArm_reset(&self->setMotorArm_2);
+      v_92 = (time_1>=5.000000);
+      v_90 = (dgyroscope<=1.000000);
+      v_88 = (arm1angle>=20.000000);
+      v_85 = (gyroscope>=320.000000);
+      v_84 = (gyroscope<=40.000000);
+      v_86 = (v_84||v_85);
+      r_8 = r_4;
+      if (r_8) {
+        Robot__setMotorArm_reset(&self->setMotorArm_3);
       };
       Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
                               65.000000, 0.000000, 10.000000, 30.000000,
                               &Robot__setMotorArm_out_st,
-                              &self->setMotorArm_2);
-      arm1speed_St_1_Upside_Down_Right = Robot__setMotorArm_out_st.arm1speed;
-      arm2speed_St_1_Upside_Down_Right = Robot__setMotorArm_out_st.arm2speed;
-      arm3speed_St_1_Upside_Down_Right = Robot__setMotorArm_out_st.arm3speed;
-      arm4speed_St_1_Upside_Down_Right = Robot__setMotorArm_out_st.arm4speed;
-      _out->arm1speed = arm1speed_St_1_Upside_Down_Right;
-      _out->arm2speed = arm2speed_St_1_Upside_Down_Right;
-      _out->arm3speed = arm3speed_St_1_Upside_Down_Right;
-      _out->arm4speed = arm4speed_St_1_Upside_Down_Right;
+                              &self->setMotorArm_3);
+      arm1speed_St_2_Upside_Down_Right = Robot__setMotorArm_out_st.arm1speed;
+      arm2speed_St_2_Upside_Down_Right = Robot__setMotorArm_out_st.arm2speed;
+      arm3speed_St_2_Upside_Down_Right = Robot__setMotorArm_out_st.arm3speed;
+      arm4speed_St_2_Upside_Down_Right = Robot__setMotorArm_out_st.arm4speed;
+      _out->hipLspeed = hipLspeed_St_2_Upside_Down_Right;
+      _out->hipRspeed = hipRspeed_St_2_Upside_Down_Right;
+      _out->kneeLspeed = kneeLspeed_St_2_Upside_Down_Right;
+      _out->kneeRspeed = kneeRspeed_St_2_Upside_Down_Right;
+      _out->arm1speed = arm1speed_St_2_Upside_Down_Right;
+      _out->arm2speed = arm2speed_St_2_Upside_Down_Right;
+      _out->arm3speed = arm3speed_St_2_Upside_Down_Right;
+      _out->arm4speed = arm4speed_St_2_Upside_Down_Right;
       Robot__doNotMove_step(0.100000, _out->arm1speed, _out->arm2speed,
                             _out->arm3speed, _out->arm4speed,
                             &Robot__doNotMove_out_st);
-      v_84 = Robot__doNotMove_out_st.ok;
-      v_86 = (v_84&&v_85);
-      v_88 = (v_86&&v_87);
-      v_90 = (v_88&&v_89);
-      if (v_90) {
-        v_92 = true;
+      v_87 = Robot__doNotMove_out_st.ok;
+      v_89 = (v_87&&v_88);
+      v_91 = (v_89&&v_90);
+      v_93 = (v_91&&v_92);
+      if (v_93) {
+        v_95 = true;
       } else {
-        v_92 = false;
+        v_95 = false;
       };
-      if (v_83) {
-        nr_1_St_1_Upside_Down_Right = true;
+      if (v_86) {
+        nr_2_St_2_Upside_Down_Right = true;
       } else {
-        nr_1_St_1_Upside_Down_Right = v_92;
+        nr_2_St_2_Upside_Down_Right = v_95;
       };
-      if (v_90) {
-        v_91 = Robot__St_1_Upside_Down_Left;
+      if (v_93) {
+        v_94 = Robot__St_2_Upside_Down_Left;
       } else {
-        v_91 = Robot__St_1_Upside_Down_Right;
+        v_94 = Robot__St_2_Upside_Down_Right;
       };
-      if (v_83) {
-        ns_1_St_1_Upside_Down_Right = Robot__St_1_Standard;
+      if (v_86) {
+        ns_2_St_2_Upside_Down_Right = Robot__St_2_Standard;
       } else {
-        ns_1_St_1_Upside_Down_Right = v_91;
+        ns_2_St_2_Upside_Down_Right = v_94;
       };
-      _out->hipLspeed = hipLspeed_St_1_Upside_Down_Right;
-      _out->hipRspeed = hipRspeed_St_1_Upside_Down_Right;
-      _out->kneeLspeed = kneeLspeed_St_1_Upside_Down_Right;
-      _out->kneeRspeed = kneeRspeed_St_1_Upside_Down_Right;
-      ns_1 = ns_1_St_1_Upside_Down_Right;
-      nr_1 = nr_1_St_1_Upside_Down_Right;
-      self->v_93 = time_1;
+      ns_2 = ns_2_St_2_Upside_Down_Right;
+      nr_2 = nr_2_St_2_Upside_Down_Right;
+      self->v_96 = time_1;
       break;
-    case Robot__St_1_Jump:
-      v_79 = (kneeRangle+hipRangle);
-      v_80 = (v_79+gyroscope);
-      Robot__setMotorFast_step(v_80, -90.000000, 300.000000,
+    case Robot__St_2_Jump:
+      v_82 = (kneeRangle+hipRangle);
+      v_83 = (v_82+gyroscope);
+      Robot__setMotorFast_step(v_83, -90.000000, 300.000000,
                                &Robot__setMotorFast_out_st);
-      kneeRspeed_St_1_Jump = Robot__setMotorFast_out_st.power;
-      v_77 = (kneeLangle+hipLangle);
-      v_78 = (v_77+gyroscope);
-      Robot__setMotorFast_step(v_78, 90.000000, 300.000000,
+      kneeRspeed_St_2_Jump = Robot__setMotorFast_out_st.power;
+      v_80 = (kneeLangle+hipLangle);
+      v_81 = (v_80+gyroscope);
+      Robot__setMotorFast_step(v_81, 90.000000, 300.000000,
                                &Robot__setMotorFast_out_st);
-      kneeLspeed_St_1_Jump = Robot__setMotorFast_out_st.power;
+      kneeLspeed_St_2_Jump = Robot__setMotorFast_out_st.power;
       Robot__setMotorFast_step(hipRangle, -90.000000, 300.000000,
                                &Robot__setMotorFast_out_st);
-      hipRspeed_St_1_Jump = Robot__setMotorFast_out_st.power;
+      hipRspeed_St_2_Jump = Robot__setMotorFast_out_st.power;
       Robot__setMotorFast_step(hipLangle, 90.000000, 300.000000,
                                &Robot__setMotorFast_out_st);
-      hipLspeed_St_1_Jump = Robot__setMotorFast_out_st.power;
-      v_75 = !(footRcontact);
-      v_74 = !(footLcontact);
-      v_76 = (v_74&&v_75);
-      if (v_76) {
-        nr_1_St_1_Jump = true;
-        ns_1_St_1_Jump = Robot__St_1_Falling;
+      hipLspeed_St_2_Jump = Robot__setMotorFast_out_st.power;
+      v_78 = !(footRcontact);
+      v_77 = !(footLcontact);
+      v_79 = (v_77&&v_78);
+      if (v_79) {
+        nr_2_St_2_Jump = true;
+        ns_2_St_2_Jump = Robot__St_2_Falling;
       } else {
-        nr_1_St_1_Jump = false;
-        ns_1_St_1_Jump = Robot__St_1_Jump;
+        nr_2_St_2_Jump = false;
+        ns_2_St_2_Jump = Robot__St_2_Jump;
       };
-      r_5 = r_3;
-      if (r_5) {
-        Robot__setMotorArm_reset(&self->setMotorArm_1);
+      r_7 = r_4;
+      if (r_7) {
+        Robot__setMotorArm_reset(&self->setMotorArm_2);
       };
       Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
                               -10.000000, 10.000000, -10.000000, 10.000000,
                               &Robot__setMotorArm_out_st,
-                              &self->setMotorArm_1);
-      arm1speed_St_1_Jump = Robot__setMotorArm_out_st.arm1speed;
-      arm2speed_St_1_Jump = Robot__setMotorArm_out_st.arm2speed;
-      arm3speed_St_1_Jump = Robot__setMotorArm_out_st.arm3speed;
-      arm4speed_St_1_Jump = Robot__setMotorArm_out_st.arm4speed;
-      _out->arm1speed = arm1speed_St_1_Jump;
-      _out->arm2speed = arm2speed_St_1_Jump;
-      _out->arm3speed = arm3speed_St_1_Jump;
-      _out->arm4speed = arm4speed_St_1_Jump;
-      _out->hipLspeed = hipLspeed_St_1_Jump;
-      _out->hipRspeed = hipRspeed_St_1_Jump;
-      _out->kneeLspeed = kneeLspeed_St_1_Jump;
-      _out->kneeRspeed = kneeRspeed_St_1_Jump;
-      ns_1 = ns_1_St_1_Jump;
-      nr_1 = nr_1_St_1_Jump;
+                              &self->setMotorArm_2);
+      arm1speed_St_2_Jump = Robot__setMotorArm_out_st.arm1speed;
+      arm2speed_St_2_Jump = Robot__setMotorArm_out_st.arm2speed;
+      arm3speed_St_2_Jump = Robot__setMotorArm_out_st.arm3speed;
+      arm4speed_St_2_Jump = Robot__setMotorArm_out_st.arm4speed;
+      _out->hipLspeed = hipLspeed_St_2_Jump;
+      _out->hipRspeed = hipRspeed_St_2_Jump;
+      _out->kneeLspeed = kneeLspeed_St_2_Jump;
+      _out->kneeRspeed = kneeRspeed_St_2_Jump;
+      _out->arm1speed = arm1speed_St_2_Jump;
+      _out->arm2speed = arm2speed_St_2_Jump;
+      _out->arm3speed = arm3speed_St_2_Jump;
+      _out->arm4speed = arm4speed_St_2_Jump;
+      ns_2 = ns_2_St_2_Jump;
+      nr_2 = nr_2_St_2_Jump;
       break;
-    case Robot__St_1_Standard:
-      Lib__arm_ik_step(_out->arm_target_x, _out->arm_target_y, 0.000000,
-                       arm1angle, arm2angle, arm3angle, arm4angle, 0.260000,
-                       0.260000, 0.260000, 0.260000, &Lib__arm_ik_out_st);
-      theta1 = Lib__arm_ik_out_st.theta1;
-      theta2 = Lib__arm_ik_out_st.theta2;
-      theta3 = Lib__arm_ik_out_st.theta3;
-      theta4 = Lib__arm_ik_out_st.theta4;
-      if (r_3) {
+    case Robot__St_2_Standard:
+      if (r_4) {
         pnr = false;
       } else {
-        pnr = self->v_73;
+        pnr = self->v_76;
       };
       r_2 = pnr;
-      if (r_3) {
-        ck_1 = Robot__St_Center;
+      if (r_4) {
+        ck_2 = Robot__St_Normal;
+        pnr_1 = false;
+      } else {
+        ck_2 = self->v_75;
+        pnr_1 = self->v_73;
+      };
+      r_3 = pnr_1;
+      if (r_4) {
+        ck_1 = Robot__St_1_Center;
       } else {
         ck_1 = self->v_72;
       };
       if (action_a) {
         v_71 = true;
-        v_70 = Robot__St_1_Jump;
+        v_70 = Robot__St_2_Jump;
       } else {
         v_71 = false;
-        v_70 = Robot__St_1_Standard;
+        v_70 = Robot__St_2_Standard;
       };
       v_68 = (gyroscope<=260.000000);
       v_67 = (gyroscope>=90.000000);
       v_69 = (v_67&&v_68);
       if (v_69) {
-        nr_1_St_1_Standard = true;
-        ns_1_St_1_Standard = Robot__St_1_Upside_Down_Init;
+        nr_2_St_2_Standard = true;
+        ns_2_St_2_Standard = Robot__St_2_Upside_Down_Init;
       } else {
-        nr_1_St_1_Standard = v_71;
-        ns_1_St_1_Standard = v_70;
+        nr_2_St_2_Standard = v_71;
+        ns_2_St_2_Standard = v_70;
       };
-      r_4 = r_3;
-      if (r_4) {
-        Robot__setMotorArm_reset(&self->setMotorArm);
-      };
-      Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
-                              theta1, theta2, theta3, theta4,
-                              &Robot__setMotorArm_out_st, &self->setMotorArm);
-      arm1speed_St_1_Standard = Robot__setMotorArm_out_st.arm1speed;
-      arm2speed_St_1_Standard = Robot__setMotorArm_out_st.arm2speed;
-      arm3speed_St_1_Standard = Robot__setMotorArm_out_st.arm3speed;
-      arm4speed_St_1_Standard = Robot__setMotorArm_out_st.arm4speed;
-      _out->arm1speed = arm1speed_St_1_Standard;
-      _out->arm2speed = arm2speed_St_1_Standard;
-      _out->arm3speed = arm3speed_St_1_Standard;
-      _out->arm4speed = arm4speed_St_1_Standard;
-      switch (ck_1) {
-        case Robot__St_Center:
-          Robot__setMotorLegs_step(hipLangle, hipRangle, kneeLangle,
-                                   kneeRangle, -40.000000, 40.000000,
-                                   100.000000, -100.000000,
-                                   &Robot__setMotorLegs_out_st);
-          hipLspeed_St_1_Standard_St_Center = Robot__setMotorLegs_out_st.hipLspeed;
-          hipRspeed_St_1_Standard_St_Center = Robot__setMotorLegs_out_st.hipRspeed;
-          kneeLspeed_St_1_Standard_St_Center = Robot__setMotorLegs_out_st.kneeLspeed;
-          kneeRspeed_St_1_Standard_St_Center = Robot__setMotorLegs_out_st.kneeRspeed;
-          nr_St_Center = false;
-          ns_St_Center = Robot__St_Center;
-          hipLspeed_St_1_Standard = hipLspeed_St_1_Standard_St_Center;
-          hipRspeed_St_1_Standard = hipRspeed_St_1_Standard_St_Center;
-          kneeLspeed_St_1_Standard = kneeLspeed_St_1_Standard_St_Center;
-          kneeRspeed_St_1_Standard = kneeRspeed_St_1_Standard_St_Center;
-          ns = ns_St_Center;
-          nr = nr_St_Center;
+      switch (ck_2) {
+        case Robot__St_Normal:
+          if (action_b) {
+            nr_St_Normal = true;
+            ns_St_Normal = Robot__St_Move;
+          } else {
+            nr_St_Normal = false;
+            ns_St_Normal = Robot__St_Normal;
+          };
+          r_6 = (r_4||r_2);
+          if (r_6) {
+            Robot__setMotorArm_reset(&self->setMotorArm_1);
+          };
+          Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
+                                  -40.000000, 30.000000, 80.000000,
+                                  60.000000, &Robot__setMotorArm_out_st,
+                                  &self->setMotorArm_1);
+          arm1speed_St_2_Standard_St_Normal = Robot__setMotorArm_out_st.arm1speed;
+          arm2speed_St_2_Standard_St_Normal = Robot__setMotorArm_out_st.arm2speed;
+          arm3speed_St_2_Standard_St_Normal = Robot__setMotorArm_out_st.arm3speed;
+          arm4speed_St_2_Standard_St_Normal = Robot__setMotorArm_out_st.arm4speed;
+          arm1speed_St_2_Standard = arm1speed_St_2_Standard_St_Normal;
+          arm2speed_St_2_Standard = arm2speed_St_2_Standard_St_Normal;
+          arm3speed_St_2_Standard = arm3speed_St_2_Standard_St_Normal;
+          arm4speed_St_2_Standard = arm4speed_St_2_Standard_St_Normal;
+          ns = ns_St_Normal;
+          nr = nr_St_Normal;
+          break;
+        case Robot__St_Move:
+          Lib__arm_ik_step(_out->arm_target_x, _out->arm_target_y, 0.000000,
+                           arm1angle, arm2angle, arm3angle, arm4angle,
+                           0.260000, 0.260000, 0.260000, 0.260000,
+                           &Lib__arm_ik_out_st);
+          theta1 = Lib__arm_ik_out_st.theta1;
+          theta2 = Lib__arm_ik_out_st.theta2;
+          theta3 = Lib__arm_ik_out_st.theta3;
+          theta4 = Lib__arm_ik_out_st.theta4;
+          v_74 = !(action_b);
+          if (v_74) {
+            nr_St_Move = true;
+            ns_St_Move = Robot__St_Move;
+          } else {
+            nr_St_Move = false;
+            ns_St_Move = Robot__St_Move;
+          };
+          r_5 = (r_4||r_2);
+          if (r_5) {
+            Robot__setMotorArm_reset(&self->setMotorArm);
+          };
+          Robot__setMotorArm_step(arm1angle, arm2angle, arm3angle, arm4angle,
+                                  theta1, theta2, theta3, theta4,
+                                  &Robot__setMotorArm_out_st,
+                                  &self->setMotorArm);
+          arm1speed_St_2_Standard_St_Move = Robot__setMotorArm_out_st.arm1speed;
+          arm2speed_St_2_Standard_St_Move = Robot__setMotorArm_out_st.arm2speed;
+          arm3speed_St_2_Standard_St_Move = Robot__setMotorArm_out_st.arm3speed;
+          arm4speed_St_2_Standard_St_Move = Robot__setMotorArm_out_st.arm4speed;
+          arm1speed_St_2_Standard = arm1speed_St_2_Standard_St_Move;
+          arm2speed_St_2_Standard = arm2speed_St_2_Standard_St_Move;
+          arm3speed_St_2_Standard = arm3speed_St_2_Standard_St_Move;
+          arm4speed_St_2_Standard = arm4speed_St_2_Standard_St_Move;
+          ns = ns_St_Move;
+          nr = nr_St_Move;
           break;
         default:
           break;
       };
-      _out->hipLspeed = hipLspeed_St_1_Standard;
-      _out->hipRspeed = hipRspeed_St_1_Standard;
-      _out->kneeLspeed = kneeLspeed_St_1_Standard;
-      _out->kneeRspeed = kneeRspeed_St_1_Standard;
-      ns_1 = ns_1_St_1_Standard;
-      nr_1 = nr_1_St_1_Standard;
-      self->v_73 = nr;
-      self->v_72 = ns;
+      switch (ck_1) {
+        case Robot__St_1_Center:
+          Robot__setMotorLegs_step(hipLangle, hipRangle, kneeLangle,
+                                   kneeRangle, -40.000000, 40.000000,
+                                   100.000000, -100.000000,
+                                   &Robot__setMotorLegs_out_st);
+          hipLspeed_St_2_Standard_St_1_Center = Robot__setMotorLegs_out_st.hipLspeed;
+          hipRspeed_St_2_Standard_St_1_Center = Robot__setMotorLegs_out_st.hipRspeed;
+          kneeLspeed_St_2_Standard_St_1_Center = Robot__setMotorLegs_out_st.kneeLspeed;
+          kneeRspeed_St_2_Standard_St_1_Center = Robot__setMotorLegs_out_st.kneeRspeed;
+          nr_1_St_1_Center = false;
+          ns_1_St_1_Center = Robot__St_1_Center;
+          hipLspeed_St_2_Standard = hipLspeed_St_2_Standard_St_1_Center;
+          hipRspeed_St_2_Standard = hipRspeed_St_2_Standard_St_1_Center;
+          kneeLspeed_St_2_Standard = kneeLspeed_St_2_Standard_St_1_Center;
+          kneeRspeed_St_2_Standard = kneeRspeed_St_2_Standard_St_1_Center;
+          ns_1 = ns_1_St_1_Center;
+          nr_1 = nr_1_St_1_Center;
+          break;
+        default:
+          break;
+      };
+      _out->hipLspeed = hipLspeed_St_2_Standard;
+      _out->hipRspeed = hipRspeed_St_2_Standard;
+      _out->kneeLspeed = kneeLspeed_St_2_Standard;
+      _out->kneeRspeed = kneeRspeed_St_2_Standard;
+      _out->arm1speed = arm1speed_St_2_Standard;
+      _out->arm2speed = arm2speed_St_2_Standard;
+      _out->arm3speed = arm3speed_St_2_Standard;
+      _out->arm4speed = arm4speed_St_2_Standard;
+      ns_2 = ns_2_St_2_Standard;
+      nr_2 = nr_2_St_2_Standard;
+      self->v_76 = nr;
+      self->v_75 = ns;
+      self->v_73 = nr_1;
+      self->v_72 = ns_1;
       break;
     default:
       break;
   };
-  self->pnr_1 = nr_1;
-  self->ck = ns_1;
+  self->pnr_2 = nr_2;
+  self->ck = ns_2;
   self->v_59 = _out->arm_target_angle;
   self->v_58 = false;
   self->v_53 = body_target_y;

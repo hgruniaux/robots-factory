@@ -1,4 +1,4 @@
-/* --- Generated the 13/1/2025 at 17:49 --- */
+/* --- Generated the 14/1/2025 at 13:7 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -95,11 +95,13 @@ void Robot__setMotorLegs_step(float hipLangle, float hipRangle,
                               Robot__setMotorLegs_out* _out);
 
 typedef struct Robot__robot_mem {
-  Robot__st v_72;
+  Robot__st_1 v_72;
+  Robot__st v_75;
+  int v_76;
   int v_73;
-  float v_93;
-  float v_107;
-  Robot__st_1 ck;
+  float v_96;
+  float v_110;
+  Robot__st_2 ck;
   float v_59;
   int v_58;
   float v_53;
@@ -110,13 +112,14 @@ typedef struct Robot__robot_mem {
   int v_40;
   float v_35;
   int v;
-  int pnr_1;
+  int pnr_2;
   Robot__setMotorArm_mem setMotorArm;
   Robot__setMotorArm_mem setMotorArm_1;
   Robot__setMotorArm_mem setMotorArm_2;
   Robot__setMotorArm_mem setMotorArm_3;
   Robot__setMotorArm_mem setMotorArm_4;
   Robot__setMotorArm_mem setMotorArm_5;
+  Robot__setMotorArm_mem setMotorArm_6;
 } Robot__robot_mem;
 
 typedef struct Robot__robot_out {
