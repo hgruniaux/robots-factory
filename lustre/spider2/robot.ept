@@ -270,6 +270,6 @@ let
 
 
             until gyroscope >=. 90.0 and gyroscope <=. 260.0 then Upside_Down_Init
-                | action_a then Jump
+                | action_a and hipLangle >=. 180.0 and hipRangle <=. 180.0 then Jump
     end;
 tel
