@@ -176,7 +176,7 @@ let
     arm_target_x = clamp(   0.0 -> pre arm_target_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
     arm_target_y = clamp(   0.2 -> pre arm_target_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
     body_target_y = clamp(  0.7 -> pre body_target_y +. (main_y *. dt *. 0.5), 0.0, 2.0);
-    arm_target_angle = 0.0 -> fmod( pre arm_target_angle +. ( mux(action_lb, 1.0, 0.0) +. mux(action_rb, -.1.0, 0.0)) *. dt *. 10.0 , 360.0);
+    arm_target_angle = 90.0 -> fmod( pre arm_target_angle +. ( mux(action_lb, 1.0, 0.0) +. mux(action_rb, -.1.0, 0.0)) *. dt *. 10.0 , 360.0);
     
     automaton
         state Hand_Open

@@ -1,4 +1,4 @@
-/* --- Generated the 14/1/2025 at 22:52 --- */
+/* --- Generated the 14/1/2025 at 23:23 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -768,7 +768,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
   Lib__fmod_step(v_84, 360.000000, &Lib__fmod_out_st);
   v_85 = Lib__fmod_out_st.x;
   if (self->v_77) {
-    _out->arm_target_angle = 0.000000;
+    _out->arm_target_angle = 90.000000;
   } else {
     _out->arm_target_angle = v_85;
   };
