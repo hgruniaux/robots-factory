@@ -79,7 +79,7 @@ public:
 
         ImGui::SeparatorText("State (automaton)");
         char buffer[512] = {0};
-        //string_of_Robot__st_1(m_memory.ck, buffer);
+        string_of_Robot__st_2(m_memory.ck, buffer);
         ImGui::Text("Main state: %s", buffer);
 
         ImGui::SeparatorText("Input parameters");

@@ -1,4 +1,4 @@
-/* --- Generated the 14/1/2025 at 13:30 --- */
+/* --- Generated the 14/1/2025 at 13:45 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -34,20 +34,39 @@ void Robot__sgn_step(float x, Robot__sgn_out* _out) {
   };;
 }
 
+void Robot__mod2_step(float x, float y, Robot__mod2_out* _out) {
+  Lib__fmod_out Lib__fmod_out_st;
+  
+  float v_4;
+  int v_3;
+  float v;
+  float x2;
+  Lib__fmod_step(x, y, &Lib__fmod_out_st);
+  x2 = Lib__fmod_out_st.x;
+  v_4 = (x2-y);
+  v = (2.000000*x2);
+  v_3 = (v<=y);
+  if (v_3) {
+    _out->r = x2;
+  } else {
+    _out->r = v_4;
+  };;
+}
+
 void Robot__setMotor_step(float current, float goal, float maxi,
                           Robot__setMotor_out* _out) {
   Lib__fmod_out Lib__fmod_out_st;
   Lib__min_out Lib__min_out_st;
   Lib__abs_out Lib__abs_out_st;
   
+  float v_12;
+  float v_11;
   float v_10;
   float v_9;
   float v_8;
-  float v_7;
-  float v_6;
-  int v_5;
-  int v_4;
-  float v_3;
+  int v_7;
+  int v_6;
+  float v_5;
   float v;
   float delta;
   float delta2;
@@ -55,27 +74,27 @@ void Robot__setMotor_step(float current, float goal, float maxi,
   Lib__fmod_step(v, 360.000000, &Lib__fmod_out_st);
   delta = Lib__fmod_out_st.x;
   Lib__abs_step(delta, &Lib__abs_out_st);
-  v_3 = Lib__abs_out_st.x;
-  v_4 = (v_3<=1.000000);
-  if (v_4) {
+  v_5 = Lib__abs_out_st.x;
+  v_6 = (v_5<=1.000000);
+  if (v_6) {
     delta2 = 0.000000;
   } else {
     delta2 = delta;
   };
   Lib__abs_step(delta2, &Lib__abs_out_st);
+  v_10 = Lib__abs_out_st.x;
+  Lib__min_step(v_10, maxi, &Lib__min_out_st);
+  v_11 = Lib__min_out_st.x;
+  v_12 = -(v_11);
+  Lib__abs_step(delta2, &Lib__abs_out_st);
   v_8 = Lib__abs_out_st.x;
   Lib__min_step(v_8, maxi, &Lib__min_out_st);
   v_9 = Lib__min_out_st.x;
-  v_10 = -(v_9);
-  Lib__abs_step(delta2, &Lib__abs_out_st);
-  v_6 = Lib__abs_out_st.x;
-  Lib__min_step(v_6, maxi, &Lib__min_out_st);
-  v_7 = Lib__min_out_st.x;
-  v_5 = (delta2<180.000000);
-  if (v_5) {
-    _out->power = v_7;
+  v_7 = (delta2<180.000000);
+  if (v_7) {
+    _out->power = v_9;
   } else {
-    _out->power = v_10;
+    _out->power = v_12;
   };;
 }
 
@@ -83,19 +102,19 @@ void Robot__setMotorFast_step(float current, float goal, float maxi,
                               Robot__setMotorFast_out* _out) {
   Lib__fmod_out Lib__fmod_out_st;
   
-  float v_12;
-  int v_11;
+  float v_14;
+  int v_13;
   float v;
   float delta;
-  v_12 = -(maxi);
+  v_14 = -(maxi);
   v = (goal-current);
   Lib__fmod_step(v, 360.000000, &Lib__fmod_out_st);
   delta = Lib__fmod_out_st.x;
-  v_11 = (delta<180.000000);
-  if (v_11) {
+  v_13 = (delta<180.000000);
+  if (v_13) {
     _out->power = maxi;
   } else {
-    _out->power = v_12;
+    _out->power = v_14;
   };;
 }
 
@@ -108,7 +127,7 @@ void Robot__setMotorPID_step(float currentAngle, float goalAngle,
                              float maxSpeed, float kp, float ki, float kd,
                              Robot__setMotorPID_out* _out,
                              Robot__setMotorPID_mem* self) {
-  Lib__fmod_out Lib__fmod_out_st;
+  Robot__mod2_out Robot__mod2_out_st;
   Lib__abs_out Lib__abs_out_st;
   
   float v_32;
@@ -125,11 +144,8 @@ void Robot__setMotorPID_step(float currentAngle, float goalAngle,
   float v_21;
   float v_20;
   float v_17;
-  float v_14;
-  int v_13;
   float v;
-  float error1;
-  float error2;
+  float error;
   float integral;
   float derivative;
   float lastError;
@@ -137,25 +153,18 @@ void Robot__setMotorPID_step(float currentAngle, float goalAngle,
   v_28 = -(maxSpeed);
   v_26 = -(maxSpeed);
   v = (goalAngle-currentAngle);
-  Lib__fmod_step(v, 360.000000, &Lib__fmod_out_st);
-  error1 = Lib__fmod_out_st.x;
-  v_14 = (error1-360.000000);
-  v_13 = (error1<=180.000000);
-  if (v_13) {
-    error2 = error1;
-  } else {
-    error2 = v_14;
-  };
-  lastError = error2;
-  v_21 = (kp*error2);
-  v_20 = (error2-self->v_19);
+  Robot__mod2_step(v, 360.000000, &Robot__mod2_out_st);
+  error = Robot__mod2_out_st.r;
+  lastError = error;
+  v_21 = (kp*error);
+  v_20 = (error-self->v_19);
   if (self->v_18) {
     derivative = 0.000000;
   } else {
     derivative = v_20;
   };
   v_24 = (kd*derivative);
-  v_17 = (self->v_16+error2);
+  v_17 = (self->v_16+error);
   if (self->v_15) {
     integral = 0.000000;
   } else {
@@ -617,7 +626,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
       v_121 = (gyroscope>=180.000000);
       v_119 = (gyroscope>=320.000000);
       v_118 = (gyroscope<=40.000000);
-      v_120 = (v_118&&v_119);
+      v_120 = (v_118||v_119);
       r_10 = r_4;
       if (r_10) {
         Robot__setMotorArm_reset(&self->setMotorArm_5);
@@ -941,7 +950,7 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
         case Robot__St_Move:
           Lib__arm_ik_step(_out->arm_target_x, _out->arm_target_y, 0.000000,
                            arm1angle, arm2angle, arm3angle, arm4angle,
-                           0.260000, 0.260000, 0.260000, 0.260000,
+                           0.260000, 0.260000, 0.260000, 0.300000,
                            &Lib__arm_ik_out_st);
           theta1 = Lib__arm_ik_out_st.theta1;
           theta2 = Lib__arm_ik_out_st.theta2;

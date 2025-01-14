@@ -10,6 +10,14 @@ let
     r = if x >. 0.0 then 1.0 else (if x <. 0.0 then -.1.0 else 0.0);
 tel
 
+fun mod2(x : float; y : float) returns (r : float);
+var x2 : float;
+let
+    x2 = fmod(x,y);
+    r = if 2.0 *. x2 <=. y then x2 else x2 -. y;
+tel
+    
+
 fun setMotor(current : float; goal : float ; maxi : float) returns (power : float);
 var delta : float; delta2 : float;
 let 
@@ -34,23 +42,23 @@ node setMotorPID(
     kd: float;
 ) returns (motorSpeed: float);
 var
-    error1: float;
-    error2: float;
+    error: float;
     integral: float;
     derivative: float;
     lastError: float;
     rawSpeed: float;
 let
-    error1 = fmod(goalAngle -. currentAngle,360.0);
-    error2 = if error1 <=. 180.0 then error1 else error1 -. 360.0;
-    integral = 0.0 -> pre integral +. error2;
-    derivative = 0.0 -> (error2 -. pre lastError);
-    rawSpeed = (kp *. error2) +. (ki *. integral) +. (kd *. derivative);
+    (*error1 = fmod(goalAngle -. currentAngle,360.0);
+    error2 = if error1 <=. 180.0 then error1 else error1 -. 360.0;*)
+    error = mod2(goalAngle -. currentAngle, 360.0);
+    integral = 0.0 -> pre integral +. error;
+    derivative = 0.0 -> (error -. pre lastError);
+    rawSpeed = (kp *. error) +. (ki *. integral) +. (kd *. derivative);
     motorSpeed = if rawSpeed >. maxSpeed then maxSpeed 
                  else if rawSpeed <. -.maxSpeed then -.maxSpeed 
                  else if abs(rawSpeed) <. 1.0 then 0.0
                  else rawSpeed;
-    lastError = error2;
+    lastError = error;
 tel
 
 
@@ -162,7 +170,7 @@ let
                     setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 0.0, 0.0 , 0.0, 0.0);
 
                 isStatic = doNotMove(1.0, hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) and doNotMove(1.0, arm1speed, arm2speed, arm3speed, arm4speed) ;
-                until gyroscope <=. 40.0 and gyroscope >=. 320.0 then Standard
+                until gyroscope <=. 40.0 or gyroscope >=. 320.0 then Standard
                     | isStatic and gyroscope >=. 180.0 and gyroscope <. 320.0 then Upside_Down_Left
                     | isStatic and gyroscope <. 180.0  and gyroscope >. 40.0 then Upside_Down_Right
 
@@ -229,7 +237,7 @@ let
                     state Move
                         var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
                         do
-                            (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.26);
+                            (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.3);
                             (arm1speed, arm2speed, arm3speed, arm4speed) =
                                 setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
                         until not action_b then Normal
