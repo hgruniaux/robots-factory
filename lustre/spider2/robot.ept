@@ -272,7 +272,7 @@ let
                             
                             (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
                                  setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, funHip(factor), -.funHip(factor), funKnee(factor), -.funKnee(factor));
-                        until abs(main_x) >=. 0.1 then Go_Down
+                        until abs(main_x) >=. 0.8 then Go_Down
                     state Go_Down
                         var finished : bool;
                         do
@@ -280,8 +280,8 @@ let
                                  setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, 310.0, -.310.0, 340.0, 20.0);
                         
                         finished = bodyContact and hipLangle >=. 180.0 and hipRangle <=. 180.0 and kneeLangle >=. 180.0 and kneeRangle <=. 180.0;
-                        until finished and abs(main_x) >=. 0.1 then Go_Off_Center_Down
-                            | finished and abs(main_x) <=. 0.1 then Center
+                        until finished and abs(main_x) >=. 0.8 then Go_Off_Center_Down
+                            | finished and abs(main_x) <=. 0.8 then Center
                     state Go_Off_Center_Down
                         var factorL : float; factorR : float; hipOk : bool;
                         do
@@ -291,7 +291,7 @@ let
                             (hipRspeed,kneeRspeed) = legSpeedsWithoutContact(hipRangle, kneeRangle, -.funHip(factorR), -.funKnee(factorR), footRcontact, calfRdistance);
                             hipOk = if main_x >=. 0.1 then (hipLangle >=. 180.0 and hipLangle <=. 330.0) else (hipRangle <=. 180.0 and hipRangle >=. 30.0);
                         until footLcontact and footRcontact and hipOk then Go_Off_Center_Up
-                            | abs(main_x) <=. 0.1 then Center
+                            | abs(main_x) <=. 0.8 then Center
                     state Go_Off_Center_Up
                         var factorL : float; factorR : float; kneeLspeed2 : float; hipRspeed2 : float; kneeRspeed2 : float; hipLspeed2 : float;
                         do
@@ -305,7 +305,7 @@ let
                             hipRspeed = if main_x >. 0.0 then 0.5 *. hipRspeed2 else hipRspeed2;
 
                             until doNotMove(5.0, hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) then Go_Down
-                                | abs(main_x) <. 0.1 then Center
+                                | abs(main_x) <. 0.8 then Center
                         
                    
                 end;
@@ -318,14 +318,14 @@ let
                         do
                             (arm1speed, arm2speed, arm3speed, arm4speed) =
                                 setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 320.0, 30.0 , 80.0, 80.0);
-                        until action_b then Move
+                        until false -> not pre action_b and action_b then Move
                     state Move
                         var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
                         do
                             (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,arm_target_angle, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.3);
                             (arm1speed, arm2speed, arm3speed, arm4speed) =
                                 setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
-                        until not action_b then Normal
+                        until false -> not pre action_b and action_b then Normal
                 end;
 
 

@@ -1,4 +1,4 @@
-/* --- Generated the 14/1/2025 at 18:4 --- */
+/* --- Generated the 14/1/2025 at 22:52 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -137,11 +137,13 @@ typedef struct Robot__robot_mem {
   int v_90;
   Robot__st_3 ck;
   Robot__st_1 v_168;
-  Robot__st v_171;
-  int v_172;
+  int v_171;
+  int v_176;
+  Robot__st v_180;
+  int v_181;
   int v_169;
-  float v_192;
-  float v_206;
+  float v_201;
+  float v_215;
   Robot__st_2 ck_1;
   float v_78;
   int v_77;
