@@ -1,4 +1,4 @@
-/* --- Generated the 14/1/2025 at 14:12 --- */
+/* --- Generated the 14/1/2025 at 16:45 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -78,6 +78,15 @@ char* string_of_Robot__st_2(Robot__st_2 x, char* buf) {
 }
 
 Robot__st_1 Robot__st_1_of_string(char* s) {
+  if ((strcmp(s, "St_1_Go_Off_Center_Up")==0)) {
+    return Robot__St_1_Go_Off_Center_Up;
+  };
+  if ((strcmp(s, "St_1_Go_Off_Center_Down")==0)) {
+    return Robot__St_1_Go_Off_Center_Down;
+  };
+  if ((strcmp(s, "St_1_Go_Down")==0)) {
+    return Robot__St_1_Go_Down;
+  };
   if ((strcmp(s, "St_1_Center")==0)) {
     return Robot__St_1_Center;
   };
@@ -85,6 +94,15 @@ Robot__st_1 Robot__st_1_of_string(char* s) {
 
 char* string_of_Robot__st_1(Robot__st_1 x, char* buf) {
   switch (x) {
+    case Robot__St_1_Go_Off_Center_Up:
+      strcpy(buf, "St_1_Go_Off_Center_Up");
+      break;
+    case Robot__St_1_Go_Off_Center_Down:
+      strcpy(buf, "St_1_Go_Off_Center_Down");
+      break;
+    case Robot__St_1_Go_Down:
+      strcpy(buf, "St_1_Go_Down");
+      break;
     case Robot__St_1_Center:
       strcpy(buf, "St_1_Center");
       break;

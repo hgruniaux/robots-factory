@@ -18,13 +18,16 @@ let
 tel
     
 
-fun setMotor(current : float; goal : float ; maxi : float) returns (power : float);
-var delta : float; delta2 : float;
+fun setMotor(current2 : float; goal2 : float ; maxi : float) returns (power : float);
+var delta : float; delta2 : float; current : float; goal : float;
 let 
-    delta = fmod(goal -. current, 360.0);
+    current = mod2(current2, 360.0);
+    goal = mod2(goal2, 360.0);
+
+    delta = goal -. current;
     delta2 = if abs(delta) <=. 1.0 then 0.0 else delta;
-    (*power = if abs(delta) >=. 20.0 then -.maxi *.sgn(delta) *. 0.1 else -.delta;*)
-    power = if delta2 <. 180.0 then min(abs(delta2),maxi) else -.min(abs(delta2), maxi);
+
+    power = if delta >=. 0.0 then min(abs(delta2),maxi) else -.min(abs(delta2), maxi);
 tel
 
 fun setMotorFast(current : float; goal : float ; maxi : float) returns (power : float);
@@ -62,22 +65,6 @@ let
 tel
 
 
-(*
-fun step( hipLangle, hipRangle, kneeLangle, kneeRangle, gyroscope : float ; goLeft : bool ) returns (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed : float);
-var hipLgoal, hipRgoal, kneeLgoal, kneeRgoal : float;
-let
-    hipLgoal = mux(goLeft, -.0.0, -.80.0);
-    hipRgoal = mux(goLeft, 80.0, 0.0);
-    kneeLgoal = mux(goLeft, 20.0, 80.0);
-    kneeRgoal = mux(goLeft, -.80.0, -.20.0);
-
-    hipLspeed = setMotor(hipLangle, hipLgoal, 60.0);
-    hipRspeed = setMotor(hipRangle, hipRgoal, 60.0);
-    kneeLspeed = setMotor(kneeLangle +. hipLgoal, kneeLgoal, 300.0);
-    kneeRspeed = setMotor(kneeRangle +. hipRgoal, kneeRgoal, 300.0);
-tel
-*)
-
 fun doNotMove(limit, speedA, speedB, speedC, speedD : float) returns (ok : bool);
 let
     ok = (speedA <=. limit) and (speedB <=. limit) and (speedC <=. limit) and (speedD <=. limit);
@@ -99,6 +86,40 @@ let
     kneeRspeed = setMotor(kneeRangle, kneeRgoal, 60.0);
 tel
 
+fun funHip(x : float) returns (y : float)
+var x2: float;
+let
+    x2 = clamp(x,0.0,2.0); 
+    y = if x2 <=. 1.0 then
+            -.x2 *. 80.0
+        else
+            160.0 *. x2 -. 240.0;
+tel
+fun funKnee(x : float) returns (y : float)
+var x2: float;
+let
+    x2 = clamp(x,0.0,2.0); 
+    y = if x2 <=. 1.0 then
+            160.0 *. x2
+        else
+            -.150.0 *. x2 +. 310.0;
+tel
+
+node legSpeedsWithoutContact(hipAngle : float; kneeAngle : float; hipGoal : float ; kneeGoal : float; footContact : bool ; calfDistance : float) returns (hipSpeed : float; kneeSpeed : float);
+var kneeSpeed2 : float;
+let
+    hipSpeed = setMotor(hipAngle, hipGoal, 60.0);
+    kneeSpeed2 = setMotor(kneeAngle, kneeGoal, 60.0);
+    kneeSpeed = if (footContact or calfDistance <=. 0.20) and abs(hipSpeed) >=. 1.0 then 0.0 else kneeSpeed2;
+tel
+
+node legSpeedsWithContact(hipAngle : float; kneeAngle : float; hipGoal : float ; kneeGoal : float; footContact : bool ; calfDistance : float) returns (hipSpeed : float; kneeSpeed : float);
+var hipSpeed2 : float;
+let
+    hipSpeed2 = setMotor(hipAngle, hipGoal, 60.0);
+    kneeSpeed = setMotor(kneeAngle, kneeGoal, 60.0);
+    hipSpeed = if (not footContact) and abs(kneeSpeed) >=. 1.0 then 0.0 else hipSpeed2;
+tel
 
 
 node robot(dt : float;
@@ -154,7 +175,7 @@ let
 
     arm_target_x = clamp(   0.0 -> pre arm_target_x +. (secondary_x *. dt *. 0.5) , -.1.0, 1.0);
     arm_target_y = clamp(   0.2 -> pre arm_target_y +. (secondary_y *. dt *. 0.5) , 0.25, 1.0);
-    body_target_y = clamp(  0.2 -> pre body_target_y +. (main_y *. dt *. 0.5), 0.0, 0.4);
+    body_target_y = clamp(  0.2 -> pre body_target_y +. (main_y *. dt *. 0.5), 0.0, 2.0);
     arm_target_angle = 0.0 -> fmod( pre arm_target_angle +. ( mux(action_lb, 1.0, 0.0) +. mux(action_rb, -.1.0, 0.0)) *. dt *. 10.0 , 360.0);
     
     automaton
@@ -245,9 +266,54 @@ let
                 automaton
                     
                     state Center
+                        var factor : float;
                         do
+                            factor = body_target_y;
+                            
                             (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
-                                 setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, -.40.0, 40.0, 100.0, -.100.0);
+                                 setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, funHip(factor), -.funHip(factor), funKnee(factor), -.funKnee(factor));
+                        until main_x >=. 0.1 then Go_Down
+                    state Go_Down
+                        (*var factorL : float; factorR : float; kneeLspeed2 : float; kneeRspeed2 : float;*)
+                        do
+                            (*factorL = 0.0;
+                            factorR = 0.0;
+                            
+                            (hipLspeed, hipRspeed, kneeLspeed2, kneeRspeed2) =
+                                 setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, funHip(factorL), -.funHip(factorR), funKnee(factorL), -.funKnee(factorR));
+                            kneeLspeed = kneeLspeed2 *. 0.5;
+                            kneeRspeed = kneeRspeed2 *. 0.5;*)
+                            
+                            (hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) =
+                                 setMotorLegs(hipLangle, hipRangle, kneeLangle, kneeRangle, 310.0, -.310.0, 340.0, 20.0);
+ 
+                            (*hipLspeed = -.30.0;
+                            hipRspeed = 30.0;
+                            kneeLspeed = -.30.0;
+                            kneeRspeed = 30.0;*)
+                     
+
+                        until bodyContact and hipLangle >=. 180.0 and hipRangle <=. 180.0 and kneeLangle >=. 180.0 and kneeRangle <=. 180.0 then Go_Off_Center_Down
+                    state Go_Off_Center_Down
+                        var factorL : float; factorR : float;
+                        do
+                            factorL = 1.0;
+                            factorR = 0.1;
+                            (hipLspeed,kneeLspeed) = legSpeedsWithoutContact(hipLangle, kneeLangle, funHip(factorL), funKnee(factorL), footLcontact, calfLdistance);
+                            (hipRspeed,kneeRspeed) = legSpeedsWithoutContact(hipRangle, kneeRangle, -.funHip(factorR), -.funKnee(factorR), footRcontact, calfRdistance);
+                        until footLcontact and footRcontact and hipLangle >=. 180.0 and hipLangle <=. 330.0 then Go_Off_Center_Up
+                    state Go_Off_Center_Up
+                        var factorL : float; factorR : float; kneeLspeed2 : float; hipRspeed2 : float;
+                        do
+                            factorL = 0.2;
+                            factorR = 1.0;
+                            (hipLspeed,kneeLspeed2) = legSpeedsWithContact(hipLangle, kneeLangle, funHip(factorL), funKnee(factorL), footLcontact, calfLdistance);
+                            (hipRspeed2,kneeRspeed) = legSpeedsWithContact(hipRangle, kneeRangle, -.funHip(factorR), -.funKnee(factorR), footRcontact, calfRdistance);
+                            kneeLspeed = 0.5 *. kneeLspeed2;
+                            hipRspeed = 0.5 *. hipRspeed2;
+                            until doNotMove(1.0, hipLspeed, hipRspeed, kneeLspeed, kneeRspeed) then Go_Down
+                        
+                   
                 end;
 
                
@@ -257,7 +323,7 @@ let
                     state Normal
                         do
                             (arm1speed, arm2speed, arm3speed, arm4speed) =
-                                setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 320.0, 30.0 , 80.0, 60.0);
+                                setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, 320.0, 30.0 , 80.0, 80.0);
                         until action_b then Move
                     state Move
                         var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
