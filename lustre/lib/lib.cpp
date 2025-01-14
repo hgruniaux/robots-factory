@@ -4,6 +4,9 @@
 #include <cmath>
 #include <numbers>
 
+#include <fmt/format.h>
+#include <lbfgs.h>
+
 /*
  * Math functions
  */
@@ -87,7 +90,7 @@ void Lib__atan_step(float x, Lib__atan_out *out) {
  * Arm control
  */
 
-#define DEBUG_IK 0
+#define DEBUG_IK 1
 
 void Lib__arm_end_effector_step(float theta1, float theta2, float theta3, float theta4,
                                 float L1, float L2, float L3, float L4,
@@ -119,7 +122,11 @@ void Lib__arm_end_effector_step(float theta1, float theta2, float theta3, float 
     out->phi = our_fmod(rad2deg(out->phi), 360.0f);
 }
 
-#include <lbfgs.h>
+
+struct IKOptiInputs {
+    float xe, ye, phi;   // target state
+    float L1, L2, L3, L4;// arm lengths
+};// struct IKOptiInputs
 
 static lbfgsfloatval_t ik_solver_evaluate(
         void *instance,
@@ -127,49 +134,44 @@ static lbfgsfloatval_t ik_solver_evaluate(
         lbfgsfloatval_t *g,
         const int n,
         const lbfgsfloatval_t step) {
-    const float *input = (const float *) instance;
-
     const auto theta1 = (float) x[0];
     const auto theta2 = (float) x[1];
     const auto theta3 = (float) x[2];
     const auto theta4 = (float) x[3];
 
-    const float xe = input[0];
-    const float ye = input[1];
-    const float phi = input[2];
+    const auto *inputs = (const IKOptiInputs *) instance;
+    const float xe = inputs->xe;
+    const float ye = inputs->ye;
+    const float phi = inputs->phi;
 
-    const float L1 = input[3];
-    const float L2 = input[4];
-    const float L3 = input[5];
-    const float L4 = input[6];
+    const float L1 = inputs->L1;
+    const float L2 = inputs->L2;
+    const float L3 = inputs->L3;
+    const float L4 = inputs->L4;
 
-    auto cost = [=](const auto &effector) {
+    auto cost = [=](float t1, float t2, float t3, float t4) {
+        // Forward kinematics
+        Lib__arm_end_effector_out effector;
+        Lib__arm_end_effector_step(t1, t2, t3, t4, L1, L2, L3, L4, &effector);
+
         const float dx = effector.x - xe;
         const float dy = effector.y - ye;
-        // const float dphi = our_fmod(effector.phi - phi + 180.0f, 360.0f) - 180.0f;
-        return dx * dx + dy * dy;
-    };
-
-    auto fk = [=](float t1, float t2, float t3, float t4) {
-        Lib__arm_end_effector_out end_effector;
-        Lib__arm_end_effector_step(t1, t2, t3, t4, L1, L2, L3, L4, &end_effector);
-        return end_effector;
+        const float dphi = (our_fmod(effector.phi - phi + 180.0f, 360.0f) - 180.0f) / 180.f;
+        return (dx * dx + dy * dy + dphi * dphi) * 1000.f;
     };
 
     // Forward kinematics.
-    const auto current_cost = cost(fk(theta1, theta2, theta3, theta4));
+    const auto current_cost = cost(theta1, theta2, theta3, theta4);
 
     // Compute the gradient.
-    const float dtheta = 1e-3f;
-    g[0] = (cost(fk(theta1 + dtheta, theta2, theta3, theta4)) - current_cost) / dtheta;
-    g[1] = (cost(fk(theta1, theta2 + dtheta, theta3, theta4)) - current_cost) / dtheta;
-    g[2] = (cost(fk(theta1, theta2, theta3 + dtheta, theta4)) - current_cost) / dtheta;
-    g[3] = (cost(fk(theta1, theta2, theta3, theta4 + dtheta)) - current_cost) / dtheta;
+    const float dtheta = 1e-2f;
+    g[0] = (cost(theta1 + dtheta, theta2, theta3, theta4) - current_cost) / dtheta;
+    g[1] = (cost(theta1, theta2 + dtheta, theta3, theta4) - current_cost) / dtheta;
+    g[2] = (cost(theta1, theta2, theta3 + dtheta, theta4) - current_cost) / dtheta;
+    g[3] = (cost(theta1, theta2, theta3, theta4 + dtheta) - current_cost) / dtheta;
 
     return current_cost;
 }
-
-#include <fmt/format.h>
 
 static int ik_solver_progress(void *instance,
                               const lbfgsfloatval_t *x,
@@ -187,6 +189,7 @@ static int ik_solver_progress(void *instance,
     fmt::print("  g = [{}, {}, {}, {}]\n", g[0], g[1], g[2], g[3]);
     fmt::print("  fx = {}\n", fx);
 #endif
+
     return 0;
 }
 
@@ -215,16 +218,16 @@ void Lib__arm_ik_step(float xe, float ye, float phi,
     lbfgs_parameter_t param;
     lbfgs_parameter_init(&param);
 
-    float input[7] = {
-            xe,
-            ye,
-            phi,
-            L1,
-            L2,
-            L3,
-            L4};
+    IKOptiInputs inputs;
+    inputs.xe = xe;
+    inputs.ye = ye;
+    inputs.phi = phi;
+    inputs.L1 = L1;
+    inputs.L2 = L2;
+    inputs.L3 = L3;
+    inputs.L4 = L4;
 
-    lbfgs(N, x, &fx, &ik_solver_evaluate, &ik_solver_progress, input, &param);
+    lbfgs(N, x, &fx, &ik_solver_evaluate, &ik_solver_progress, &inputs, &param);
 #if DEBUG_IK
     fmt::print("L-BFGS optimization terminated with cost = {}\n", fx);
     fmt::print("  x = [{}, {}, {}, {}]\n", x[0], x[1], x[2], x[3]);
