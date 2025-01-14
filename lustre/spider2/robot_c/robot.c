@@ -1,4 +1,4 @@
-/* --- Generated the 14/1/2025 at 17:9 --- */
+/* --- Generated the 14/1/2025 at 18:4 --- */
 /* --- heptagon compiler, version 1.05.00 (compiled mon. sep. 23 14:27:43 CET 2024) --- */
 /* --- Command line: /home/vincent/.opam/heptagon/bin/heptc -target c robot.ept --- */
 
@@ -1186,10 +1186,10 @@ void Robot__robot_step(float dt, float hipLangle, float hipRangle,
           nr = nr_St_Normal;
           break;
         case Robot__St_Move:
-          Lib__arm_ik_step(_out->arm_target_x, _out->arm_target_y, 0.000000,
-                           arm1angle, arm2angle, arm3angle, arm4angle,
-                           0.260000, 0.260000, 0.260000, 0.300000,
-                           &Lib__arm_ik_out_st);
+          Lib__arm_ik_step(_out->arm_target_x, _out->arm_target_y,
+                           _out->arm_target_angle, arm1angle, arm2angle,
+                           arm3angle, arm4angle, 0.260000, 0.260000,
+                           0.260000, 0.300000, &Lib__arm_ik_out_st);
           theta1 = Lib__arm_ik_out_st.theta1;
           theta2 = Lib__arm_ik_out_st.theta2;
           theta3 = Lib__arm_ik_out_st.theta3;

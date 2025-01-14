@@ -322,7 +322,7 @@ let
                     state Move
                         var theta1 : float; theta2 : float; theta3 : float; theta4 : float;
                         do
-                            (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,0.0, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.3);
+                            (theta1, theta2, theta3, theta4) = arm_ik (arm_target_x, arm_target_y ,arm_target_angle, arm1angle, arm2angle, arm3angle, arm4angle, 0.26, 0.26, 0.26, 0.3);
                             (arm1speed, arm2speed, arm3speed, arm4speed) =
                                 setMotorArm(arm1angle, arm2angle, arm3angle, arm4angle, theta1, theta2 , theta3, theta4);
                         until not action_b then Normal
