@@ -19,81 +19,16 @@ bodies:
         size: [ 50, 100 ]
     position: [ 225, 0 ]
 
-  # Stairs
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.1 ]
-    position: [ 0.5, 0.05 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.2 ]
-    position: [ 1.0, 0.10 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.3 ]
-    position: [ 1.5, 0.15 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.4 ]
-    position: [ 2.0, 0.20 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.5 ]
-    position: [ 2.5, 0.25 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.6 ]
-    position: [ 3.0, 0.30 ]
-  - type: static # TOP
-    shapes:
-      - type: box
-        size: [ 1.0, 0.7 ]
-    position: [ 3.75, 0.35 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.6 ]
-    position: [ 4.5, 0.30 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.5 ]
-    position: [ 5.0, 0.25 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.4 ]
-    position: [ 5.5, 0.20 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.3 ]
-    position: [ 6.0, 0.15 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.2 ]
-    position: [ 6.5, 0.10 ]
-  - type: static
-    shapes:
-      - type: box
-        size: [ 0.5, 0.1 ]
-    position: [ 7.0, 0.05 ]
 
   # Ball
   - type: static
     shapes:
       - type: box
         size: [ 0.5, 0.1 ]
-    position: [ -2, 1 ]
+    position: [ -0.8, 0.6 ]
   - type: dynamic
     shapes:
       - type: box
-        size: [ 0.2, 0.025 ]
-    position: [ -2, 1.1 ]
+        size: [ 0.4, 0.025 ]
+        density: 0.01
+    position: [ -0.65, 0.7 ]
