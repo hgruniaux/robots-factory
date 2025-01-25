@@ -88,6 +88,25 @@ static void ApplyGrayModernTheme(float font_size, ImVec4 accent_color = ImVec4(0
     style.FramePadding = ImVec2(8.0f, 4.0f);
 }
 
+#ifdef _WIN32
+#include <dwmapi.h>
+#pragma comment (lib, "Dwmapi")
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+#endif // DWMWA_USE_IMMERSIVE_DARK_MODE
+
+static void enable_dark_title_bar(GLFWwindow* window) {
+    // Enable dark title bar on Windows
+    HWND hwnd = glfwGetWin32Window(window);
+    BOOL enable = TRUE;
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &enable, sizeof(enable));
+}
+#endif // _WIN32
+
 bool BaseApplication::init() {
     // Initialize GLFW
     if (!glfwInit()) {
@@ -107,6 +126,10 @@ bool BaseApplication::init() {
         shutdown();
         return false;
     }
+
+#ifdef _WIN32
+    enable_dark_title_bar(m_window);
+#endif // _WIN32
 
     // Load OpenGL functions
     glfwMakeContextCurrent(m_window);
