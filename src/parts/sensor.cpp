@@ -59,21 +59,18 @@ void Sensor::draw(Renderer2D &renderer, const DrawPartContext &context) {
     renderer.draw_anchor(get_world_anchor());
 }
 
-void Sensor::load(const YAML::Node &node) {
-    Part::load(node);
+void Sensor::load(const nlohmann::json &object) {
+    Part::load(object);
 
-    if (node["part"])
-        m_part = node["part"].as<std::string>();
-    if (node["local_anchor"])
-        from_yaml(node["local_anchor"], m_local_anchor);
+    m_part = object.value("part", m_part);
+    m_local_anchor = object.value("local_anchor", m_local_anchor);
 }
 
-void Sensor::save(YAML::Emitter &emitter) const {
-    Part::save(emitter);
+void Sensor::save(nlohmann::json &object) const {
+    Part::save(object);
 
-    emitter << YAML::Key << "part" << YAML::Value << m_part;
-    emitter << YAML::Key << "local_anchor" << YAML::Value;
-    to_yaml(emitter, m_local_anchor);
+    object["part"] = m_part;
+    object["local_anchor"] = m_local_anchor;
 }
 
 /*
@@ -96,20 +93,18 @@ bool AngleSensor::show_inspector() {
     return changed;
 }
 
-void AngleSensor::load(const YAML::Node &node) {
-    Sensor::load(node);
+void AngleSensor::load(const nlohmann::json &object) {
+    Sensor::load(object);
 
-    if (node["min_angle"])
-        m_min_angle = node["min_angle"].as<float>();
-    if (node["max_angle"])
-        m_max_angle = node["max_angle"].as<float>();
+    m_min_angle = object.value("min_angle", m_min_angle);
+    m_max_angle = object.value("max_angle", m_max_angle);
 }
 
-void AngleSensor::save(YAML::Emitter &emitter) const {
-    Sensor::save(emitter);
+void AngleSensor::save(nlohmann::json &object) const {
+    Sensor::save(object);
 
-    emitter << YAML::Key << "min_angle" << YAML::Value << m_min_angle;
-    emitter << YAML::Key << "max_angle" << YAML::Value << m_max_angle;
+    object["min_angle"] = m_min_angle;
+    object["max_angle"] = m_max_angle;
 }
 
 /*
@@ -153,29 +148,28 @@ void DistanceSensor::draw(Renderer2D &renderer, const DrawPartContext &context) 
     renderer.draw_line(world_anchor + direction * m_min_distance, world_anchor + direction * max_distance, marker_width, marker_color);
 }
 
-void DistanceSensor::load(const YAML::Node &node) {
-    Sensor::load(node);
+void DistanceSensor::load(const nlohmann::json &object) {
+    Sensor::load(object);
 
-    if (node["min_distance"])
-        m_min_distance = node["min_distance"].as<float>();
-    if (node["max_distance"])
-        m_max_distance = node["max_distance"].as<float>();
+    m_min_distance = object.value("min_distance", m_min_distance);
+    m_max_distance = object.value("max_distance", m_max_distance);
+    if (m_max_distance >= 1e30f) // JSON doesn't support inf
+        m_max_distance = INFINITY;
 
     check_constraints();
 }
 
-void DistanceSensor::save(YAML::Emitter &emitter) const {
-    Sensor::save(emitter);
+void DistanceSensor::save(nlohmann::json &object) const {
+    Sensor::save(object);
 
-    emitter << YAML::Key << "min_distance" << YAML::Value << m_min_distance;
-    emitter << YAML::Key << "max_distance" << YAML::Value << m_max_distance;
+    object["min_distance"] = m_min_distance;
+    if (m_max_distance == INFINITY)
+        object["max_distance"] = std::numeric_limits<float>::max();
+    else
+        object["max_distance"] = m_max_distance;
 }
 
 void DistanceSensor::check_constraints() {
     m_min_distance = std::max(0.0f, std::min(m_max_distance, m_min_distance));
     m_max_distance = std::max(m_min_distance, m_max_distance);
 }
-
-/*
- * The ContactSensor class
- */

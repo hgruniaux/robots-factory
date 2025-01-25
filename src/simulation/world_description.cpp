@@ -4,6 +4,7 @@
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
+#if 0
 bool load_shape_description(b2World *world, b2Body *body, const YAML::Node &node) {
     assert(world != nullptr && body != nullptr);
 
@@ -171,3 +172,10 @@ bool load_world_description(b2World *world, const std::string &path) {
         return false;
     }
 }
+#else
+bool load_world_description(b2World *world, const std::string &path) {
+    assert(world != nullptr);
+
+    return false;
+}
+#endif

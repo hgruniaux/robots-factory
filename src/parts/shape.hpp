@@ -25,8 +25,8 @@ public:
     void set_restitution_threshold(float restitution_threshold) { m_restitution_threshold = std::max(restitution_threshold, 0.f); }
 
     bool show_inspector() override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json& object) override;
+    void save(nlohmann::json& object) const override;
 
 private:
     void check_constraints();
@@ -52,8 +52,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json& object) override;
+    void save(nlohmann::json& object) const override;
 
 private:
     void check_constraints();
@@ -77,8 +77,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json& object) override;
+    void save(nlohmann::json& object) const override;
 
 private:
     void check_constraints();
@@ -103,8 +103,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json& object) override;
+    void save(nlohmann::json& object) const override;
 
 private:
     void center_vertices();

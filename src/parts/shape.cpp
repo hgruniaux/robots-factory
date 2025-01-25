@@ -31,32 +31,26 @@ bool Shape::show_inspector() {
     return changed;
 }
 
-void Shape::load(const YAML::Node &node) {
-    Part::load(node);
+void Shape::load(const nlohmann::json& object) {
+    Part::load(object);
 
-    if (node["color"])
-        from_yaml(node["color"], m_color);
-    if (node["density"])
-        m_density = node["density"].as<float>();
-    if (node["friction"])
-        m_friction = node["friction"].as<float>();
-    if (node["restitution"])
-        m_restitution = node["restitution"].as<float>();
-    if (node["restitution_threshold"])
-        m_restitution_threshold = node["restitution_threshold"].as<float>();
+    m_color = object.value("color", m_color);
+    m_density = object.value("density", m_density);
+    m_friction = object.value("friction", m_friction);
+    m_restitution = object.value("restitution", m_restitution);
+    m_restitution_threshold = object.value("restitution_threshold", m_restitution_threshold);
 
     check_constraints();
 }
 
-void Shape::save(YAML::Emitter &emitter) const {
-    Part::save(emitter);
+void Shape::save(nlohmann::json& object) const {
+    Part::save(object);
 
-    emitter << YAML::Key << "color" << YAML::Value;
-    to_yaml(emitter, m_color);
-    emitter << YAML::Key << "density" << YAML::Value << m_density;
-    emitter << YAML::Key << "friction" << YAML::Value << m_friction;
-    emitter << YAML::Key << "restitution" << YAML::Value << m_restitution;
-    emitter << YAML::Key << "restitution_threshold" << YAML::Value << m_restitution_threshold;
+    object["color"] = m_color;
+    object["density"] = m_density;
+    object["friction"] = m_friction;
+    object["restitution"] = m_restitution;
+    object["restitution_threshold"] = m_restitution_threshold;
 }
 
 void Shape::check_constraints() {
@@ -93,19 +87,18 @@ void CircleShape::draw(Renderer2D &renderer, const DrawPartContext &context) {
     renderer.unset_transform();
 }
 
-void CircleShape::load(const YAML::Node &node) {
-    Shape::load(node);
+void CircleShape::load(const nlohmann::json& object) {
+    Shape::load(object);
 
-    if (node["radius"])
-        m_radius = node["radius"].as<float>();
+    m_radius = object.value("radius", m_radius);
 
     check_constraints();
 }
 
-void CircleShape::save(YAML::Emitter &emitter) const {
-    Shape::save(emitter);
+void CircleShape::save(nlohmann::json& object) const {
+    Shape::save(object);
 
-    emitter << YAML::Key << "radius" << YAML::Value << m_radius;
+    object["radius"] = m_radius;
 }
 
 void CircleShape::check_constraints() {
@@ -141,20 +134,18 @@ void RectangleShape::draw(Renderer2D &renderer, const DrawPartContext &context) 
     renderer.unset_transform();
 }
 
-void RectangleShape::load(const YAML::Node &node) {
-    Shape::load(node);
+void RectangleShape::load(const nlohmann::json& object) {
+    Shape::load(object);
 
-    if (node["size"])
-        from_yaml(node["size"], m_size);
+    m_size = object.value("size", m_size);
 
     check_constraints();
 }
 
-void RectangleShape::save(YAML::Emitter &emitter) const {
-    Shape::save(emitter);
+void RectangleShape::save(nlohmann::json& object) const {
+    Shape::save(object);
 
-    emitter << YAML::Key << "size" << YAML::Value;
-    to_yaml(emitter, m_size);
+    object["size"] = m_size;
 }
 
 void RectangleShape::check_constraints() {
@@ -212,27 +203,26 @@ void PolygonShape::draw(Renderer2D &renderer, const DrawPartContext &context) {
     renderer.unset_transform();
 }
 
-void PolygonShape::load(const YAML::Node &node) {
-    Shape::load(node);
+void PolygonShape::load(const nlohmann::json& object) {
+    Shape::load(object);
 
-    if (node["vertices"]) {
+    if (object.contains("vertices")) {
         m_vertices.clear();
-        for (const auto &vertex: node["vertices"]) {
+        for (const auto &vertex: object["vertices"]) {
             glm::vec2 v;
-            from_yaml(vertex, v);
+            from_json(vertex, v);
             m_vertices.push_back(v);
         }
     }
 }
 
-void PolygonShape::save(YAML::Emitter &emitter) const {
-    Shape::save(emitter);
+void PolygonShape::save(nlohmann::json& object) const {
+    Shape::save(object);
 
-    emitter << YAML::Key << "vertices" << YAML::Value;
-    emitter << YAML::BeginSeq;
+    auto vertices = nlohmann::json::array();
     for (const auto &vertex: m_vertices)
-        to_yaml(emitter, vertex);
-    emitter << YAML::EndSeq;
+        vertices.push_back(vertex);
+    object["vertices"] = vertices;
 }
 
 void PolygonShape::center_vertices() {

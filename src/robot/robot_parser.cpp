@@ -1,26 +1,15 @@
 #include "robot_parser.hpp"
 
-#include "parts/joint.hpp"
-#include "parts/sensor.hpp"
-#include "parts/shape.hpp"
+#include "parts/part.hpp"
 
 #include <fstream>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/mat4x4.hpp>
 #include <spdlog/spdlog.h>
-#include <yaml-cpp/yaml.h>
-
-// Parse the 'meta' section of the Robot YAML document.
-static void parse_robot_meta(const YAML::Node &meta, const std::shared_ptr<Robot> &robot) {
-    robot->set_name(meta["name"].as<std::string>());
-}
 
 // Parse a node of the 'parts' section of the Robot YAML document.
-static std::unique_ptr<Part> parse_robot_part(const YAML::Node &yaml_node) {
-    auto kind = yaml_node["kind"].as<std::string>();
+static std::unique_ptr<Part> parse_robot_part(const nlohmann::json &yaml_node) {
+    std::string kind = yaml_node["kind"];
     auto *part_meta = PartManager::get_part_meta_info(kind);
-    if (part_meta == nullptr)
-        throw YAML::RepresentationException(yaml_node["kind"].Mark(), "unknown node kind '" + kind + "'");
+    assert(part_meta != nullptr);
 
     auto part = part_meta->create_function();
     part->load(yaml_node);
@@ -28,7 +17,7 @@ static std::unique_ptr<Part> parse_robot_part(const YAML::Node &yaml_node) {
 }
 
 // Parse the 'parts' section of the Robot YAML document.
-static void parse_robot_parts(const YAML::Node &parts, const std::shared_ptr<Robot> &robot) {
+static void parse_robot_parts(const nlohmann::json &parts, const std::shared_ptr<Robot> &robot) {
     for (const auto &part: parts) {
         auto node = parse_robot_part(part);
         robot->add_part(std::move(node));
@@ -36,15 +25,24 @@ static void parse_robot_parts(const YAML::Node &parts, const std::shared_ptr<Rob
 }
 
 // Parse the root of the Robot YAML document.
-static void parse_robot(const YAML::Node &root, const std::shared_ptr<Robot> &robot) {
-    parse_robot_meta(root["meta"], robot);
-    parse_robot_parts(root["parts"], robot);
+static void parse_robot(const nlohmann::json &root, const std::shared_ptr<Robot> &robot) {
+    robot->set_name(root.at("name"));
+    parse_robot_parts(root.at("parts"), robot);
 }
 
 std::shared_ptr<Robot> parse_robot(const std::string &path) {
     SPDLOG_TRACE("Loading robot at '{}'...", path);
+
+    nlohmann::json root;
+    std::ifstream stream(path);
+    if (!stream.is_open()) {
+        SPDLOG_ERROR("Failed to open file '{}'", path);
+        return nullptr;
+    }
+
     try {
-        YAML::Node root = YAML::LoadFile(path);
+        stream >> root;
+
         auto robot = std::make_shared<Robot>();
         robot->set_source_file(path);
         parse_robot(root, robot);
@@ -53,11 +51,8 @@ std::shared_ptr<Robot> parse_robot(const std::string &path) {
             SPDLOG_TRACE("Successfully loaded robot '{}' at '{}'", robot->get_name(), path);
 
         return robot;
-    } catch (const YAML::Exception &err) {
-        if (err.mark.is_null())
-            SPDLOG_ERROR("Failed to load robot description\n{}: {}", path, err.what());
-        else
-            SPDLOG_ERROR("Failed to load robot description\n{}:{}:{}: {}", path, err.mark.line, err.mark.column, err.what());
+    } catch (const nlohmann::json::exception &e) {
+        SPDLOG_ERROR("Failed to parse JSON:\n{}", e.what());
         return nullptr;
     }
 }

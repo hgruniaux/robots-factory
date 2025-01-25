@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 #include <random>
-#include <yaml-cpp/yaml.h>
+#include <nlohmann/json.hpp>
 
 struct AccuracyInfo {
     // The accuracy of the sensor (in whatever units the sensor is).
@@ -27,22 +27,7 @@ struct AccuracyInfo {
         return changed;
     }
 
-    void load(const YAML::Node &node) {
-        if (node["accuracy"])
-            accuracy = node["accuracy"].as<float>();
-        if (node["resolution"])
-            resolution = node["resolution"].as<float>();
-        if (node["sigma"])
-            sigma = node["sigma"].as<float>();
-    }
-
-    void save(YAML::Emitter &emitter) const {
-        emitter << YAML::Key << "accuracy" << YAML::Value << accuracy;
-        emitter << YAML::Key << "resolution" << YAML::Value << resolution;
-        emitter << YAML::Key << "sigma" << YAML::Value << sigma;
-    }
-
-    [[nodiscard]] float apply(float true_value) {
+    [[nodiscard]] float apply(float true_value) const {
         static std::default_random_engine rd(std::random_device{}());
 
         float n_bias = std::normal_distribution<float>(0.f, accuracy / 2.f)(rd);
@@ -51,3 +36,17 @@ struct AccuracyInfo {
         return true_value + n_bias + n_quantization + n_random;
     }
 };
+
+static void to_json(nlohmann::json &j, const AccuracyInfo &v) {
+    j = nlohmann::json{
+        {"accuracy", v.accuracy},
+        {"resolution", v.resolution},
+        {"sigma", v.sigma}
+    };
+}
+
+static void from_json(const nlohmann::json &j, AccuracyInfo &v) {
+    j.at("accuracy").get_to(v.accuracy);
+    j.at("resolution").get_to(v.resolution);
+    j.at("sigma").get_to(v.sigma);
+}

@@ -17,8 +17,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
 
 protected:
     [[nodiscard]] bool should_draw(const DrawPartContext &context) const;
@@ -44,8 +44,8 @@ public:
     void set_max_angle(float max_angle) { m_max_angle = max_angle; }
 
     bool show_inspector() override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
 
 private:
     // The minimum and maximum angle (in radians) the sensor can detect.
@@ -62,7 +62,7 @@ public:
 
     // The minimum and maximum distance (in meters) the sensor can detect.
     // The distance is measured from the sensor to the detected object.
-    // The default values are 0.0 and INFINITY.
+    // The default values are 0.0 and FLT_MAX.
     [[nodiscard]] float get_min_distance() const { return m_min_distance; }
     [[nodiscard]] float get_max_distance() const { return m_max_distance; }
     void set_min_distance(float min_distance) { m_min_distance = min_distance; }
@@ -70,15 +70,15 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
 
 private:
     void check_constraints();
 
 private:
     float m_min_distance = 0.0f;
-    float m_max_distance = INFINITY;
+    float m_max_distance = std::numeric_limits<float>::max();
 };// class DistanceSensor
 
 /**

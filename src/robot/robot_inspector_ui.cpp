@@ -252,8 +252,6 @@ bool RobotInspectorUI::show_add_part_menu() {
     new_node = std::make_unique<class_name>()
 
     if (ImGui::BeginMenu(ICON_FA_CIRCLE_PLUS " Add part...")) {
-        MENU_ITEM(Led, "LED");
-
         if (ImGui::BeginMenu(ICON_FA_RULER " Sensors")) {
             MENU_ITEM(AngleSensor, "Angle sensor");
             MENU_ITEM(DistanceSensor, "Distance sensor");

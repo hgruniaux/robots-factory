@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <yaml-cpp/yaml.h>
+#include <nlohmann/json.hpp>
 
 #include "IconsFontAwesome6.h"
 #include "part_manager.hpp"
@@ -49,8 +50,8 @@ public:
     virtual void draw(Renderer2D &renderer, const DrawPartContext &context);
 
     // YAML serialization/deserialization.
-    virtual void load(const YAML::Node &node);
-    virtual void save(YAML::Emitter &emitter) const;
+    virtual void load(const nlohmann::json &object);
+    virtual void save(nlohmann::json &object) const;
 
 private:
     friend class Robot;
@@ -81,30 +82,3 @@ public:
 
     Ground() { set_name("@ground@"); }
 };// class Ground
-
-/**
- * A LED is a node that emits light.
- */
-class Led : public Part {
-public:
-    DECLARE_PART(Led, ICON_FA_LIGHTBULB);
-
-    // The state of the LED (on or off).
-    [[nodiscard]] bool is_on() const { return m_state; }
-    void set_state(bool state) { m_state = state; }
-    void turn_on() { m_state = true; }
-    void turn_off() { m_state = false; }
-
-    // The RGB color of the LED (when on).
-    [[nodiscard]] glm::vec3 get_color() const { return m_color; }
-    void set_color(const glm::vec3 &color) { m_color = color; }
-
-    bool show_inspector() override;
-    void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
-
-private:
-    glm::vec3 m_color = {1.0f, 0.0f, 0.0f};
-    bool m_state = false;
-};// class Led

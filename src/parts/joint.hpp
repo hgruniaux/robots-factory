@@ -35,8 +35,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
 
 protected:
     [[nodiscard]] bool should_draw(const DrawPartContext &context) const;
@@ -81,8 +81,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
 
 private:
     void ensure_constraints();
@@ -125,8 +125,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
 
 private:
     void ensure_constraints();
@@ -174,8 +174,8 @@ public:
 
     bool show_inspector() override;
     void draw(Renderer2D &renderer, const DrawPartContext &context) override;
-    void load(const YAML::Node &node) override;
-    void save(YAML::Emitter &emitter) const override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
 
 private:
     void ensure_constraints();

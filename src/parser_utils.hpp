@@ -2,63 +2,38 @@
 
 #include <glm/glm.hpp>
 #include <yaml-cpp/yaml.h>
+#include <nlohmann/json.hpp>
 
-inline void from_yaml(const YAML::Node &node, glm::vec2 &v) {
-    if (node.IsMap()) {
-        v.x = node["x"].as<float>();
-        v.y = node["y"].as<float>();
-        return;
-    } else if (node.IsSequence()) {
-        v.x = node[0].as<float>();
-        v.y = node[1].as<float>();
-    } else {
-        throw YAML::RepresentationException(node.Mark(), "Expected a vec2");
+using json = nlohmann::json;
+
+namespace glm {
+    static void to_json(json &j, const glm::vec2 &v) {
+        j = json::array({v.x, v.y});
     }
-}
 
-inline void to_yaml(YAML::Emitter &emitter, const glm::vec2 &v) {
-    emitter << YAML::Flow;
-    emitter << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
-}
-
-inline void from_yaml(const YAML::Node &node, glm::vec3 &v) {
-    if (node.IsMap()) {
-        v.x = node["x"].as<float>();
-        v.y = node["y"].as<float>();
-        v.z = node["z"].as<float>();
-        return;
-    } else if (node.IsSequence()) {
-        v.x = node[0].as<float>();
-        v.y = node[1].as<float>();
-        v.z = node[2].as<float>();
-    } else {
-        throw YAML::RepresentationException(node.Mark(), "Expected a vec3");
+    static void from_json(const json &j, glm::vec2 &v) {
+        j.at(0).get_to(v.x);
+        j.at(1).get_to(v.y);
     }
-}
 
-inline void to_yaml(YAML::Emitter &emitter, const glm::vec3 &v) {
-    emitter << YAML::Flow;
-    emitter << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
-}
-
-inline void from_yaml(const YAML::Node &node, glm::vec4 &v) {
-    if (node.IsMap()) {
-        v.x = node["x"].as<float>();
-        v.y = node["y"].as<float>();
-        v.z = node["z"].as<float>();
-        v.w = node["w"].as<float>();
-        return;
-    } else if (node.IsSequence()) {
-        v.x = node[0].as<float>();
-        v.y = node[1].as<float>();
-        v.z = node[2].as<float>();
-        v.w = node[3].as<float>();
-    } else {
-        throw YAML::RepresentationException(node.Mark(), "Expected a vec4");
+    static void to_json(json &j, const glm::vec3 &v) {
+        j = json::array({v.x, v.y, v.z});
     }
-}
 
-inline void to_yaml(YAML::Emitter &emitter, const glm::vec4 &v) {
-    emitter << YAML::Flow;
-    emitter << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
+    static void from_json(const json &j, glm::vec3 &v) {
+        j.at(0).get_to(v.x);
+        j.at(1).get_to(v.y);
+        j.at(2).get_to(v.z);
+    }
+
+    static void to_json(json &j, const glm::vec4 &v) {
+        j = json::array({v.x, v.y, v.z, v.w});
+    }
+
+    static void from_json(const json &j, glm::vec4 &v) {
+        j.at(0).get_to(v.x);
+        j.at(1).get_to(v.y);
+        j.at(2).get_to(v.z);
+        j.at(3).get_to(v.w);
+    }
 }

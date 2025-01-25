@@ -2,36 +2,24 @@
 
 #include <fstream>
 #include <spdlog/spdlog.h>
-#include <yaml-cpp/yaml.h>
-
-void save_robot_meta(YAML::Emitter &emitter, const std::shared_ptr<Robot> &robot) {
-    emitter << YAML::BeginMap;
-    emitter << YAML::Key << "name" << YAML::Value << robot->get_name();
-    emitter << YAML::EndMap;
-}
-
-void save_robot_part(YAML::Emitter &emitter, const Part *part) {
-    emitter << YAML::BeginMap;
-    emitter << YAML::Key << "kind" << YAML::Value << part->get_kind_name();
-    part->save(emitter);
-    emitter << YAML::EndMap;
-}
 
 void save_robot(const std::shared_ptr<Robot> &robot, const std::string &path) {
     SPDLOG_TRACE("Saving robot '{}' to '{}'", robot->get_name(), path);
 
-    YAML::Emitter emitter;
+    nlohmann::json json;
+    json["name"] = robot->get_name();
 
-    emitter << YAML::BeginMap;
-    emitter << YAML::Key << "meta" << YAML::Value;
-    save_robot_meta(emitter, robot);
-    emitter << YAML::Key << "parts" << YAML::Value << YAML::BeginSeq;
-    for (const auto &part: robot->get_parts())
-        save_robot_part(emitter, part.get());
-    emitter << YAML::EndSeq << YAML::EndMap;
+    auto parts = nlohmann::json::array();
+    for (const auto &part: robot->get_parts()) {
+        nlohmann::json part_json;
+        part_json["kind"] = part->get_kind_name();
+        part->save(part_json);
+        parts.push_back(part_json);
+    }
+    json["parts"] = parts;
 
     std::ofstream file(path);
-    file << emitter.c_str();
+    file << json.dump(4);
 }
 
 void save_robot(const std::shared_ptr<Robot> &robot) {

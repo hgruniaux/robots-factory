@@ -370,9 +370,7 @@ void PhysicsRobot::build_part(const BuildContext &ctx, Part *part) {
         build_shape_part(ctx, shape);
     } else if (auto *joint = dynamic_cast<Joint *>(part); joint != nullptr) {
         build_joint_part(ctx, joint);
-    } else if (auto *led = dynamic_cast<Led *>(part); led != nullptr) {
-        // Nothing to do, the LED has no physics representation.
-    } else if (auto *ground = dynamic_cast<Ground *>(part); ground != nullptr) {
+    }else if (auto *ground = dynamic_cast<Ground *>(part); ground != nullptr) {
         m_bodies[ground] = m_ground_body;
     } else if (auto *sensor = dynamic_cast<Sensor *>(part); sensor != nullptr) {
         // Nothing to do, the sensor has no physics representation.

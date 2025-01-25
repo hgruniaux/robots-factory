@@ -108,46 +108,36 @@ void Joint::draw(Renderer2D &renderer, const DrawPartContext &context) {
         renderer.draw_anchor(get_world_anchor_b());
 }
 
-void Joint::load(const YAML::Node &node) {
-    Part::load(node);
+void Joint::load(const nlohmann::json &object) {
+    Part::load(object);
 
-    if (node["part_a"])
-        m_part_a = node["part_a"].as<std::string>();
-    if (node["part_b"])
-        m_part_b = node["part_b"].as<std::string>();
+    m_part_a = object.value("part_a", m_part_a);
+    m_part_b = object.value("part_b", m_part_b);
 
-    if (node["local_anchor_a"])
-        from_yaml(node["local_anchor_a"], m_local_anchor_a);
-    if (node["local_anchor_b"])
-        from_yaml(node["local_anchor_b"], m_local_anchor_b);
+    m_local_anchor_a = object.value("local_anchor_a", m_local_anchor_a);
+    m_local_anchor_b = object.value("local_anchor_b", m_local_anchor_b);
 
-    if (node["should_collide"])
-        m_should_collide = node["should_collide"].as<bool>();
+    m_should_collide = object.value("should_collide", m_should_collide);
 
-    if (node["accuracy_info"]) {
+    if (object.contains("accuracy_info")) {
         m_has_accuracy_info = true;
-        m_accuracy_info.load(node["accuracy_info"]);
+        m_accuracy_info = object["accuracy_info"];
     }
 }
 
-void Joint::save(YAML::Emitter &emitter) const {
-    Part::save(emitter);
+void Joint::save(nlohmann::json &object) const {
+    Part::save(object);
 
-    emitter << YAML::Key << "part_a" << YAML::Value << m_part_a;
-    emitter << YAML::Key << "part_b" << YAML::Value << m_part_b;
+    object["part_a"] = m_part_a;
+    object["part_b"] = m_part_b;
 
-    emitter << YAML::Key << "local_anchor_a" << YAML::Value;
-    to_yaml(emitter, m_local_anchor_a);
-    emitter << YAML::Key << "local_anchor_b" << YAML::Value;
-    to_yaml(emitter, m_local_anchor_b);
+    object["local_anchor_a"] = m_local_anchor_a;
+    object["local_anchor_b"] = m_local_anchor_b;
 
-    emitter << YAML::Key << "should_collide" << YAML::Value << m_should_collide;
+    object["should_collide"] = m_should_collide;
 
-    if (m_has_accuracy_info) {
-        emitter << YAML::Key << "accuracy_info" << YAML::Value << YAML::BeginMap;
-        m_accuracy_info.save(emitter);
-        emitter << YAML::EndMap;
-    }
+    if (m_has_accuracy_info)
+        object["accuracy_info"] = m_accuracy_info;
 }
 
 /*
@@ -206,38 +196,33 @@ void DistanceJoint::draw(Renderer2D &renderer, const DrawPartContext &context) {
     renderer.draw_line(world_anchor_a, world_anchor_a + direction * m_length, marker_width, marker_color);
 }
 
-void DistanceJoint::load(const YAML::Node &node) {
-    Joint::load(node);
+void DistanceJoint::load(const nlohmann::json &object) {
+    Joint::load(object);
 
-    if (node["length"])
-        m_length = node["length"].as<float>();
-
-    if (node["min_length"])
-        m_min_length = node["min_length"].as<float>();
-    else
-        m_min_length = m_length;
-
-    if (node["max_length"])
-        m_max_length = node["max_length"].as<float>();
-    else
-        m_max_length = m_length;
-
-    if (node["frequency"])
-        m_frequency = node["frequency"].as<float>();
-    if (node["damping_ratio"])
-        m_damping_ratio = node["damping_ratio"].as<float>();
+    m_length = object.value("length", m_length);
+    m_min_length = object.value("min_length", m_min_length);
+    m_max_length = object.value("max_length", m_max_length);
+    if (m_max_length >= 1e30f) // JSON doesn't support inf
+        m_max_length = std::numeric_limits<float>::infinity();
+    m_frequency = object.value("frequency", m_frequency);
+    m_damping_ratio = object.value("damping_ratio", m_damping_ratio);
 
     ensure_constraints();
 }
 
-void DistanceJoint::save(YAML::Emitter &emitter) const {
-    Joint::save(emitter);
+void DistanceJoint::save(nlohmann::json &object) const {
+    Joint::save(object);
 
-    emitter << YAML::Key << "length" << YAML::Value << m_length;
-    emitter << YAML::Key << "min_length" << YAML::Value << m_min_length;
-    emitter << YAML::Key << "max_length" << YAML::Value << m_max_length;
-    emitter << YAML::Key << "frequency" << YAML::Value << m_frequency;
-    emitter << YAML::Key << "damping_ratio" << YAML::Value << m_damping_ratio;
+    object["length"] = m_length;
+    object["min_length"] = m_min_length;
+
+    if (m_max_length == std::numeric_limits<float>::infinity()) // JSON doesn't support inf
+        object["max_length"] = std::numeric_limits<float>::max();
+    else
+        object["max_length"] = m_max_length;
+
+    object["frequency"] = m_frequency;
+    object["damping_ratio"] = m_damping_ratio;
 }
 
 void DistanceJoint::ensure_constraints() {
@@ -306,38 +291,31 @@ void RevoluteJoint::draw(Renderer2D &renderer, const DrawPartContext &context) {
     }
 }
 
-void RevoluteJoint::load(const YAML::Node &node) {
-    Joint::load(node);
+void RevoluteJoint::load(const nlohmann::json &object) {
+    Joint::load(object);
 
-    if (node["lower_angle"])
-        m_lower_angle = node["lower_angle"].as<float>();
-    if (node["upper_angle"])
-        m_upper_angle = node["upper_angle"].as<float>();
-    if (node["limit_enabled"])
-        m_limit_enabled = node["limit_enabled"].as<bool>();
+    m_lower_angle = object.value("lower_angle", m_lower_angle);
+    m_upper_angle = object.value("upper_angle", m_upper_angle);
+    m_limit_enabled = object.value("limit_enabled", m_limit_enabled);
 
-    if (node["is_motor"])
-        m_is_motor = node["is_motor"].as<bool>();
-    if (node["min_motor_speed"])
-        m_min_motor_speed = node["min_motor_speed"].as<float>();
-    if (node["max_motor_speed"])
-        m_max_motor_speed = node["max_motor_speed"].as<float>();
-    if (node["max_motor_torque"])
-        m_max_motor_torque = node["max_motor_torque"].as<float>();
+    m_is_motor = object.value("is_motor", m_is_motor);
+    m_min_motor_speed = object.value("min_motor_speed", m_min_motor_speed);
+    m_max_motor_speed = object.value("max_motor_speed", m_max_motor_speed);
+    m_max_motor_torque = object.value("max_motor_torque", m_max_motor_torque);
 
     ensure_constraints();
 }
 
-void RevoluteJoint::save(YAML::Emitter &emitter) const {
-    Joint::save(emitter);
+void RevoluteJoint::save(nlohmann::json &object) const {
+    Joint::save(object);
 
-    emitter << YAML::Key << "lower_angle" << YAML::Value << m_lower_angle;
-    emitter << YAML::Key << "upper_angle" << YAML::Value << m_upper_angle;
-    emitter << YAML::Key << "limit_enabled" << YAML::Value << m_limit_enabled;
-    emitter << YAML::Key << "is_motor" << YAML::Value << m_is_motor;
-    emitter << YAML::Key << "min_motor_speed" << YAML::Value << m_min_motor_speed;
-    emitter << YAML::Key << "max_motor_speed" << YAML::Value << m_max_motor_speed;
-    emitter << YAML::Key << "max_motor_torque" << YAML::Value << m_max_motor_torque;
+    object["lower_angle"] = m_lower_angle;
+    object["upper_angle"] = m_upper_angle;
+    object["limit_enabled"] = m_limit_enabled;
+    object["is_motor"] = m_is_motor;
+    object["min_motor_speed"] = m_min_motor_speed;
+    object["max_motor_speed"] = m_max_motor_speed;
+    object["max_motor_torque"] = m_max_motor_torque;
 }
 
 void RevoluteJoint::ensure_constraints() {
@@ -405,43 +383,34 @@ void PrismaticJoint::draw(Renderer2D &renderer, const DrawPartContext &context) 
     }
 }
 
-void PrismaticJoint::load(const YAML::Node &node) {
-    Joint::load(node);
+void PrismaticJoint::load(const nlohmann::json &object) {
+    Joint::load(object);
 
-    if (node["local_axis_a"])
-        from_yaml(node["local_axis_a"], m_local_axis_a);
+    m_local_axis_a = object.value("local_axis_a", m_local_axis_a);
 
-    if (node["lower_translation"])
-        m_lower_translation = node["lower_translation"].as<float>();
-    if (node["upper_translation"])
-        m_upper_translation = node["upper_translation"].as<float>();
-    if (node["limit_enabled"])
-        m_limit_enabled = node["limit_enabled"].as<bool>();
+    m_lower_translation = object.value("lower_translation", m_lower_translation);
+    m_upper_translation = object.value("upper_translation", m_upper_translation);
+    m_limit_enabled = object.value("limit_enabled", m_limit_enabled);
 
-    if (node["is_motor"])
-        m_is_motor = node["is_motor"].as<bool>();
-    if (node["min_motor_speed"])
-        m_min_motor_speed = node["min_motor_speed"].as<float>();
-    if (node["max_motor_speed"])
-        m_max_motor_speed = node["max_motor_speed"].as<float>();
-    if (node["max_motor_force"])
-        m_max_motor_force = node["max_motor_force"].as<float>();
+    m_is_motor = object.value("is_motor", m_is_motor);
+    m_min_motor_speed = object.value("min_motor_speed", m_min_motor_speed);
+    m_max_motor_speed = object.value("max_motor_speed", m_max_motor_speed);
+    m_max_motor_force = object.value("max_motor_force", m_max_motor_force);
 
     ensure_constraints();
 }
 
-void PrismaticJoint::save(YAML::Emitter &emitter) const {
-    Joint::save(emitter);
+void PrismaticJoint::save(nlohmann::json &object) const {
+    Joint::save(object);
 
-    emitter << YAML::Key << "local_axis_a" << YAML::Value;
-    to_yaml(emitter, m_local_axis_a);
-    emitter << YAML::Key << "lower_translation" << YAML::Value << m_lower_translation;
-    emitter << YAML::Key << "upper_translation" << YAML::Value << m_upper_translation;
-    emitter << YAML::Key << "limit_enabled" << YAML::Value << m_limit_enabled;
-    emitter << YAML::Key << "is_motor" << YAML::Value << m_is_motor;
-    emitter << YAML::Key << "min_motor_speed" << YAML::Value << m_min_motor_speed;
-    emitter << YAML::Key << "max_motor_speed" << YAML::Value << m_max_motor_speed;
-    emitter << YAML::Key << "max_motor_force" << YAML::Value << m_max_motor_force;
+    object["local_axis_a"] = m_local_axis_a;
+    object["lower_translation"] = m_lower_translation;
+    object["upper_translation"] = m_upper_translation;
+    object["limit_enabled"] = m_limit_enabled;
+    object["is_motor"] = m_is_motor;
+    object["min_motor_speed"] = m_min_motor_speed;
+    object["max_motor_speed"] = m_max_motor_speed;
+    object["max_motor_force"] = m_max_motor_force;
 }
 
 void PrismaticJoint::ensure_constraints() {
