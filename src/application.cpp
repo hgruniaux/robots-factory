@@ -268,7 +268,7 @@ void Application::save_robot_as() {
 }
 
 void Application::load_robot_ai() {
-    const char *filter_patterns[] = {"*.dll", "*.so", "*.dylib", "*.lua"};
+    const char *filter_patterns[] = {"*.dll", "*.so", "*.dylib"};
     const char *robot_ai_path = tinyfd_openFileDialog("Load robot AI", "", std::size(filter_patterns), filter_patterns, nullptr, false);
     if (robot_ai_path == nullptr)
         return;
