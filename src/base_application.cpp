@@ -117,6 +117,7 @@ bool BaseApplication::init() {
     SPDLOG_INFO("GLFW version {}", glfwGetVersionString());
 
     // Create window
+    glfwWindowHint(GLFW_MAXIMIZED, true);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, true);
