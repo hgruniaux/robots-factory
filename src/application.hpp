@@ -33,8 +33,6 @@ private:
 
     void load_robot_ai();
     void load_robot_ai(const std::string &path);
-
-    void load_lua_robot_ai(const std::string &path);
     void load_native_robot_ai(const std::string &path);
 
     void reload_robot_ai();

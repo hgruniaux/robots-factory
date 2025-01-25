@@ -3,8 +3,6 @@
 #include "robot/robot_inspector_ui.hpp"
 #include "simulation/simulation_view.hpp"
 
-#include "robot/lua_robot_ai.hpp"
-
 #include "robot/robot_parser.hpp"
 #include "robot/robot_saver.hpp"
 
@@ -25,7 +23,6 @@ bool Application::start() {
     m_simulation_view = std::make_unique<SimulationView>();
 
     load_robot("robots/spider/robot.yml");
-    load_robot_ai("robots/spider/robot.lua");
     return true;
 }
 
@@ -281,33 +278,8 @@ void Application::load_robot_ai() {
 
 void Application::load_robot_ai(const std::string &path) {
     SPDLOG_TRACE("Loading robot AI from '{}'", path);
-
-    if (path.ends_with(".lua")) {
-        // Load Lua script
-        load_lua_robot_ai(path);
-    } else {
-        // Load shared library
-        load_native_robot_ai(path);
-    }
-}
-
-void Application::load_lua_robot_ai(const std::string &path) {
-    auto robot_ai = std::make_shared<LuaRobotAI>();
-    if (!robot_ai->load_from_file(path)) {
-        SPDLOG_ERROR("Failed to load Lua robot AI from '{}'", path);
-        tinyfd_messageBox("Error", "Failed to load Lua robot AI", "ok", "error", 1);
-        return;
-    }
-
-    m_robot_ai = robot_ai;
-    m_simulation_view->set_robot_ai(m_robot_ai);
-    m_robot_ai_lib.reset();// free the shared library as not needed anymore
-    m_robot_ai_path = path;
-
-    // Pause the simulation
-    m_simulation_view->pause();
-
-    SPDLOG_INFO("Lua robot AI loaded successfully");
+    // Load shared library
+    load_native_robot_ai(path);
 }
 
 using CreateRobotAIFunction = RobotAI *(*) ();

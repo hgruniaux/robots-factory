@@ -40,9 +40,6 @@ add_library(robots_core SHARED
         src/robot/physics_robot.cpp
         src/robot/robot_ai.hpp
         src/robot/robot_ai.cpp
-        src/robot/lua_robot_ai.hpp
-        src/robot/lua_robot_ai.cpp
-        src/robot/lua_robot_ai.hpp
         src/application.hpp
         src/application.cpp
         src/parts/accuracy.hpp
@@ -73,9 +70,6 @@ target_link_libraries(robots_core PUBLIC yaml-cpp::yaml-cpp)
 
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(robots_core PUBLIC glm::glm)
-
-find_package(Lua REQUIRED)
-target_link_libraries(robots_core PUBLIC ${LUA_LIBRARIES})
 
 find_package(tinyfiledialogs CONFIG REQUIRED)
 target_link_libraries(robots_core PUBLIC tinyfiledialogs::tinyfiledialogs)
