@@ -151,9 +151,13 @@ bool BaseApplication::init() {
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;  // Enable Multi-Viewport / Platform Windows
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;// Enable Keyboard Controls
 
+    // Get the window content scale (for high-DPI displays)
+    float scale_x, scale_y;
+    glfwGetWindowContentScale(m_window, &scale_x, &scale_y);
+
     // Configure the icon font
-    constexpr float FONT_SIZE = 16.0f;
-    constexpr float ICON_SIZE = 14.0f;
+    const float FONT_SIZE = 16.0f * scale_y;
+    const float ICON_SIZE = 14.0f * scale_y;
     ImFontConfig config;
     config.MergeMode = true;
     config.GlyphMinAdvanceX = ICON_SIZE;// Use if you want to make the icon monospaced
@@ -171,10 +175,8 @@ bool BaseApplication::init() {
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    float scale_x, scale_y;
-    glfwGetWindowContentScale(m_window, &scale_x, &scale_y);
     io.DisplayFramebufferScale = {scale_x, scale_y};
-    io.FontGlobalScale = scale_x;
+    // io.FontGlobalScale = scale_x;
     ImGui::GetStyle().ScaleAllSizes(scale_x);
 
     SPDLOG_INFO("Box2D version {}.{}.{}", b2_version.major, b2_version.minor, b2_version.revision);
