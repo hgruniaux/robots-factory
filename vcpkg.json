@@ -40,5 +40,8 @@
   }, {
     "name" : "liblbfgs",
     "version>=" : "1.10#2"
+  }, {
+    "name" : "nlohmann-json",
+    "version>=" : "3.11.3#1"
   } ]
 }

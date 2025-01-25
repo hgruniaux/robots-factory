@@ -16,6 +16,7 @@ public:
 
 protected:
     bool start() override;
+    void stop() override;
     void update() override;
 
 private:
@@ -37,6 +38,9 @@ private:
 
     void reload_robot_ai();
     void unload_robot_ai();
+
+    void load_settings();
+    void save_settings();
 
 private:
     std::shared_ptr<Robot> m_robot;

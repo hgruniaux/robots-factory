@@ -205,6 +205,8 @@ void BaseApplication::run() {
 }
 
 void BaseApplication::shutdown() {
+    stop();
+
     // Shutdown ImGui
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

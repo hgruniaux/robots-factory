@@ -74,6 +74,9 @@ target_link_libraries(robots_core PUBLIC glm::glm)
 find_package(tinyfiledialogs CONFIG REQUIRED)
 target_link_libraries(robots_core PUBLIC tinyfiledialogs::tinyfiledialogs)
 
+find_package(nlohmann_json  CONFIG REQUIRED)
+target_link_libraries(robots_core PUBLIC nlohmann_json::nlohmann_json)
+
 #find_library(LBFGS_LIBRARIES REQUIRED NAMES liblbfgs)
 find_library(LBFGS_LIBRARIES REQUIRED NAMES lbfgs liblbfgs)
 target_link_libraries(robots_core PUBLIC ${LBFGS_LIBRARIES})

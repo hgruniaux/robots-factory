@@ -8,9 +8,12 @@
 
 #include "shared_library.hpp"
 
+#include <fstream>
 #include <imgui.h>
+#include <imgui_stdlib.h>
 #include <spdlog/spdlog.h>
 #include <tinyfiledialogs.h>
+#include <nlohmann/json.hpp>
 
 Application::Application() = default;
 
@@ -22,8 +25,12 @@ bool Application::start() {
     m_robot_inspector_ui = std::make_unique<RobotInspectorUI>();
     m_simulation_view = std::make_unique<SimulationView>();
 
-    load_robot("robots/spider/robot.yml");
+    load_settings();
     return true;
+}
+
+void Application::stop() {
+    save_settings();
 }
 
 void Application::update() {
@@ -141,23 +148,36 @@ void Application::show_new_robot_modal() {
     }
 
     if (ImGui::BeginPopupModal("New robot")) {
-        static char name[256] = "New robot";
+        static std::string name = "My robot";
+        static std::string path = "my_robot.yml";
+        static bool is_default_path = true;
+
         ImGui::AlignTextToFramePadding();
         ImGui::Text("Name:");
         ImGui::SameLine();
-        ImGui::InputText("##name", name, std::size(name));
+        if (ImGui::InputText("##name", &name) && is_default_path) {
+            path = name;
+            for (char &c : path) {
+                c = (char)std::tolower(c);
+                if (c == ' ')
+                    c = '_';
+            }
 
-        static char path[256] = "robot.yml";
+            path = path + ".json";
+        }
+
         ImGui::AlignTextToFramePadding();
         ImGui::Text("Path:");
         ImGui::SameLine();
-        ImGui::InputText("##path", path, std::size(path));
+        if (ImGui::InputText("##path", &path))
+            is_default_path = false;
+
         ImGui::SameLine();
         if (ImGui::Button("...")) {
             const char *filter_patterns[] = {"*.json", "*.yml", "*.yaml"};
-            const char *robot_path = tinyfd_saveFileDialog("Save robot", path, std::size(filter_patterns), filter_patterns, nullptr);
+            const char *robot_path = tinyfd_saveFileDialog("Choose robot save path", path.c_str(), std::size(filter_patterns), filter_patterns, nullptr);
             if (robot_path != nullptr)
-                std::strncpy(path, robot_path, std::size(path));
+                path = robot_path;
         }
 
         if (ImGui::Button("Create")) {
@@ -329,4 +349,55 @@ void Application::unload_robot_ai() {
     m_simulation_view->set_robot_ai(nullptr);
     m_robot_ai = nullptr;
     m_robot_ai_lib.reset();
+}
+
+static constexpr const char *SETTINGS_FILENAME = "settings.json";
+
+void Application::load_settings() {
+    nlohmann::json settings;
+    std::ifstream stream(SETTINGS_FILENAME);
+    if (stream.is_open()) {
+        stream >> settings;
+    } else {
+        return;
+    }
+
+    if (settings.contains("Layout")) {
+        m_show_robot_inspector = settings["Layout"].value("show_robot_inspector", true);
+        m_show_robot_part_inspector = settings["Layout"].value("show_robot_part_inspector", true);
+        m_show_robot_preview = settings["Layout"].value("show_robot_preview", true);
+        m_show_robot_ai_inspector = settings["Layout"].value("show_robot_ai_inspector", true);
+        m_show_simulation_view = settings["Layout"].value("show_simulation_view", true);
+    }
+
+    if (settings.contains("LastLoaded")) {
+        if (settings["LastLoaded"].contains("robot")) {
+            std::string robot_path = settings["LastLoaded"]["robot"];
+            if (!robot_path.empty())
+                load_robot(robot_path);
+        }
+
+        if (settings["LastLoaded"].contains("robot_ai")) {
+            std::string robot_ai_path = settings["LastLoaded"]["robot_ai"];
+            if (!robot_ai_path.empty())
+                load_robot_ai(robot_ai_path);
+        }
+    }
+}
+
+void Application::save_settings() {
+    nlohmann::json settings;
+    settings["Layout"]["show_robot_inspector"] = m_show_robot_inspector;
+    settings["Layout"]["show_robot_part_inspector"] = m_show_robot_part_inspector;
+    settings["Layout"]["show_robot_preview"] = m_show_robot_preview;
+    settings["Layout"]["show_robot_ai_inspector"] = m_show_robot_ai_inspector;
+    settings["Layout"]["show_simulation_view"] = m_show_simulation_view;
+
+    if (m_robot != nullptr && !m_robot->get_source_file().empty())
+        settings["LastLoaded"]["robot"] = m_robot->get_source_file();
+    if (!m_robot_ai_path.empty())
+        settings["LastLoaded"]["robot_ai"] = m_robot_ai_path;
+
+    std::ofstream stream(SETTINGS_FILENAME);
+    stream << settings.dump(4);
 }

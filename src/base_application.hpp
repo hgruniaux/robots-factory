@@ -15,6 +15,7 @@ public:
 protected:
     // Functions to be reimplemented by concrete applications.
     virtual bool start() = 0;
+    virtual void stop() = 0;
     virtual void update() = 0;
 
 private:
