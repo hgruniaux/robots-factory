@@ -20,9 +20,10 @@ PhysicsRobot::PhysicsRobot(const std::shared_ptr<Robot> &robot, const glm::vec2 
     build(ctx);
 
     auto *main_body_part = robot->get_part_by_name("body");
-    if (main_body_part == nullptr)// no body found, get the first part
+    if (main_body_part == nullptr && !robot->get_parts().empty())// no body found, get the first part
         main_body_part = robot->get_parts()[0].get();
-    m_main_body = m_bodies[main_body_part];
+    if (main_body_part != nullptr)
+        m_main_body = m_bodies[main_body_part];
 }
 
 void PhysicsRobot::sync_to_box2d() {

@@ -38,6 +38,7 @@ bool load_shape_description(b2World *world, b2Body *body, const YAML::Node &node
         // TODO: avoid changing the Box2D skin radius (for CCD).
         shape.m_radius = 0.0001f;
 
+        fixture_def.density = 1.0f;
         fixture_def.shape = &shape;
         body->CreateFixture(&fixture_def);
     } else if (type == "circle") {
