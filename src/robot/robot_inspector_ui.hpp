@@ -11,7 +11,7 @@ public:
     [[nodiscard]] const std::shared_ptr<Robot> &get_robot() const { return m_robot; }
     void set_robot(const std::shared_ptr<Robot> &robot);
 
-    void show();
+    void show(bool &should_show_robot_inspector, bool &should_show_part_inspector, bool &should_show_preview);
 
     // Dirty flag.
     [[nodiscard]] bool is_dirty() const { return m_dirty; }
@@ -24,9 +24,9 @@ public:
     void save();
 
 private:
-    bool show_preview();
-    bool show_robot_inspector();
-    bool show_part_inspector();
+    bool show_preview(bool &should_show);
+    bool show_robot_inspector(bool &should_show);
+    bool show_part_inspector(bool &should_show);
     bool show_part_list();
     bool show_part_list_item(Part *node);
     bool show_add_part_menu();

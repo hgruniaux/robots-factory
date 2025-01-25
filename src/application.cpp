@@ -37,9 +37,12 @@ void Application::update() {
 
     show_new_robot_modal();
 
-    m_robot_inspector_ui->show();
-    show_robot_ai_inspector();
-    m_simulation_view->show();
+    m_robot_inspector_ui->show(m_show_robot_inspector, m_show_robot_part_inspector, m_show_robot_preview);
+
+    if (m_show_robot_ai_inspector)
+        show_robot_ai_inspector();
+
+    m_simulation_view->show(m_show_simulation_view);
 }
 
 void Application::show_main_menu_bar() {
@@ -55,8 +58,49 @@ void Application::show_main_menu_bar() {
         if (ImGui::MenuItem("Load robot AI"))
             load_robot_ai();
 
+        ImGui::Separator();
+
         if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save robot", nullptr, nullptr, has_robot))
             save_robot();
+
+        if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save robot as...", nullptr, nullptr, has_robot))
+            save_robot_as();
+
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("View")) {
+        if (ImGui::MenuItem("Default windows")) {
+            m_show_robot_inspector = true;
+            m_show_robot_part_inspector = true;
+            m_show_robot_preview = true;
+            m_show_robot_ai_inspector = true;
+            m_show_simulation_view = true;
+        }
+
+        if (ImGui::MenuItem("Simulation layout")) {
+            m_show_robot_inspector = false;
+            m_show_robot_part_inspector = false;
+            m_show_robot_preview = false;
+            m_show_robot_ai_inspector = true;
+            m_show_simulation_view = true;
+        }
+
+        if (ImGui::MenuItem("Robot layout")) {
+            m_show_robot_inspector = true;
+            m_show_robot_part_inspector = true;
+            m_show_robot_preview = true;
+            m_show_robot_ai_inspector = false;
+            m_show_simulation_view = false;
+        }
+
+        ImGui::Separator();
+
+        ImGui::MenuItem(ICON_FA_ROBOT " Robot inspector", nullptr, &m_show_robot_inspector);
+        ImGui::MenuItem(ICON_FA_PUZZLE_PIECE " Robot part inspector", nullptr, &m_show_robot_part_inspector);
+        ImGui::MenuItem(ICON_FA_ROBOT " Robot preview", nullptr, &m_show_robot_preview);
+        ImGui::MenuItem(ICON_FA_BRAIN " Robot AI inspector", nullptr, &m_show_robot_ai_inspector);
+        ImGui::MenuItem(ICON_FA_FLASK " Simulation view", nullptr, &m_show_simulation_view);
 
         ImGui::EndMenu();
     }
@@ -71,10 +115,14 @@ void Application::show_main_menu_bar() {
                     m_simulation_view->pause();
             }
 
+            ImGui::Separator();
+
             if (ImGui::MenuItem(ICON_FA_ROTATE_RIGHT " Restart"))
                 m_simulation_view->start();
             if (ImGui::MenuItem(ICON_FA_STOP " Stop"))
                 m_simulation_view->stop();
+
+            ImGui::Separator();
 
             if (ImGui::MenuItem(ICON_FA_FORWARD_STEP " Step forward"))
                 m_simulation_view->step_forward();
@@ -140,7 +188,7 @@ void Application::show_new_robot_modal() {
 }
 
 void Application::show_robot_ai_inspector() {
-    if (ImGui::Begin(ICON_FA_BRAIN " Robot AI")) {
+    if (ImGui::Begin(ICON_FA_BRAIN " Robot AI", &m_show_robot_ai_inspector)) {
         if (m_robot_ai == nullptr) {
             ImGui::Text("No robot AI loaded");
         } else {

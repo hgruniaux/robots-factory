@@ -15,7 +15,10 @@ void SimulationView::set_robot_ai(const std::shared_ptr<RobotAI> &robot_ai) {
     restart_if_needed();
 }
 
-void SimulationView::show() {
+void SimulationView::show(bool& should_show) {
+    if (!should_show)
+        return;
+
     handle_shortcuts();
 
     // Simulate the simulation by one step
@@ -43,7 +46,7 @@ void SimulationView::show() {
     show_robot_info();
 
     ImGui::PushID(this);
-    if (ImGui::Begin(ICON_FA_FLASK " Simulation")) {
+    if (ImGui::Begin(ICON_FA_FLASK " Simulation", &should_show)) {
         if (m_robot != nullptr) {
             show_toolbar();
             show_world();

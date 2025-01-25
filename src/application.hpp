@@ -51,4 +51,11 @@ private:
 
     // Used by the UI.
     bool m_open_new_robot_modal = false;
+
+    // UI windows.
+    bool m_show_robot_inspector = true;
+    bool m_show_robot_part_inspector = true;
+    bool m_show_robot_preview = true;
+    bool m_show_robot_ai_inspector = true;
+    bool m_show_simulation_view = true;
 };// class Application

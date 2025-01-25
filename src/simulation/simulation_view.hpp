@@ -8,7 +8,7 @@ public:
     void set_robot(const std::shared_ptr<Robot> &robot);
     void set_robot_ai(const std::shared_ptr<RobotAI> &robot_ai);
 
-    void show();
+    void show(bool& should_show);
 
     [[nodiscard]] bool is_started() const { return m_simulation != nullptr; }
     void start();

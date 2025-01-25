@@ -30,16 +30,17 @@ void RobotInspectorUI::set_robot(const std::shared_ptr<Robot> &robot) {
         check_constraints();
 }
 
-void RobotInspectorUI::show() {
+void RobotInspectorUI::show(bool &should_show_robot_inspector, bool &should_show_part_inspector, bool &should_show_preview) {
     bool changed = false;
 
-    if (m_show_preview)
-        changed |= show_preview();
+    if (should_show_preview)
+        changed |= show_preview(should_show_preview);
 
-    changed |= show_robot_inspector();
+    if (should_show_robot_inspector)
+        changed |= show_robot_inspector(should_show_robot_inspector);
 
-    if (m_show_part_inspector)
-        changed |= show_part_inspector();
+    if (should_show_part_inspector)
+        changed |= show_part_inspector(should_show_part_inspector);
 
     m_dirty |= changed;
     execute_delayed_operation();
@@ -67,8 +68,8 @@ void RobotInspectorUI::save() {
     save_robot(m_robot);
 }
 
-bool RobotInspectorUI::show_preview() {
-    if (ImGui::Begin(ICON_FA_ROBOT " Robot Preview")) {
+bool RobotInspectorUI::show_preview(bool &should_show) {
+    if (ImGui::Begin(ICON_FA_ROBOT " Robot Preview", &should_show)) {
         m_scene_view.begin();
 
         if (m_robot != nullptr) {
@@ -88,9 +89,9 @@ bool RobotInspectorUI::show_preview() {
     return false;
 }
 
-bool RobotInspectorUI::show_robot_inspector() {
+bool RobotInspectorUI::show_robot_inspector(bool &should_show) {
     if (m_robot == nullptr) {
-        ImGui::Begin(ICON_FA_ROBOT " Robot inspector");
+        ImGui::Begin(ICON_FA_ROBOT " Robot inspector", &should_show);
         ImGui::Text("No robot loaded...");
         ImGui::End();
         return false;
@@ -98,7 +99,7 @@ bool RobotInspectorUI::show_robot_inspector() {
 
     bool changed = false;
 
-    if (ImGui::Begin(ICON_FA_ROBOT " Robot inspector")) {
+    if (ImGui::Begin(ICON_FA_ROBOT " Robot inspector", &should_show)) {
         ImGui::Text("Name:   %s", m_robot->get_name().c_str());
         ImGui::Text("Source: %s", m_robot->get_source_file().c_str());
 
@@ -129,10 +130,10 @@ bool RobotInspectorUI::show_robot_inspector() {
     return changed;
 }
 
-bool RobotInspectorUI::show_part_inspector() {
+bool RobotInspectorUI::show_part_inspector(bool &should_show) {
     bool changed = false;
 
-    if (ImGui::Begin(ICON_FA_PUZZLE_PIECE " Part inspector")) {
+    if (ImGui::Begin(ICON_FA_PUZZLE_PIECE " Part inspector", &should_show)) {
         if (m_selected_node) {
             ImGui::PushID(m_selected_node);
             changed = m_selected_node->show_inspector();
