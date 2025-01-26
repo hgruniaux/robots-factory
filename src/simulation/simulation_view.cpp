@@ -1,5 +1,6 @@
 #include "simulation_view.hpp"
 
+#include "base_application.hpp"
 #include "IconsFontAwesome6.h"
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -61,12 +62,14 @@ void SimulationView::show(bool& should_show) {
 void SimulationView::start() {
     m_simulation = std::make_unique<Simulation>(m_robot, m_robot_ai, m_world_description_path);
     m_time_since_last_step = 0.0f;
+    update_app_overlay();
 }
 
 void SimulationView::stop() {
     m_simulation.reset();
     m_simulation_paused = false;
     m_time_since_last_step = 0.0f;
+    update_app_overlay();
 }
 
 void SimulationView::pause() {
@@ -75,6 +78,7 @@ void SimulationView::pause() {
 
     m_simulation_paused = true;
     m_time_since_last_step = 0.0f;
+    update_app_overlay();
 }
 
 void SimulationView::resume() {
@@ -83,6 +87,7 @@ void SimulationView::resume() {
 
     m_simulation_paused = false;
     m_time_since_last_step = 0.0f;
+    update_app_overlay();
 }
 
 void SimulationView::step_forward() {
@@ -417,4 +422,17 @@ void SimulationView::center_robot() {
 
     auto robot_position = m_simulation->get_physics_robot()->get_position();
     m_scene_view.move_camera(robot_position.x, robot_position.y);
+}
+
+void SimulationView::update_app_overlay() {
+    if (m_simulation == nullptr) {
+        BaseApplication::get().set_overlay({ 0.0f, 0.0f, 0.0f, 0.0f });
+        return;
+    }
+
+    if (m_simulation_paused) {
+        BaseApplication::get().set_overlay(PAUSE_OVERLAY_COLOR);
+    } else {
+        BaseApplication::get().set_overlay(RUN_OVERLAY_COLOR);
+    }
 }

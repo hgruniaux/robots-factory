@@ -32,7 +32,12 @@ private:
     void handle_robot_input(float dt);
     void center_robot();
 
+    void update_app_overlay();
+
 private:
+    static constexpr glm::vec4 RUN_OVERLAY_COLOR = { 0.541f, 0.788f, 0.196f, 0.15f };
+    static constexpr glm::vec4 PAUSE_OVERLAY_COLOR = { 0.541f, 0.788f, 0.196f, 0.05f };
+
     std::string m_world_description_path;
     std::shared_ptr<Robot> m_robot;
     std::shared_ptr<RobotAI> m_robot_ai;

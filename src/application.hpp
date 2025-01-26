@@ -14,6 +14,8 @@ public:
     Application();
     ~Application() override;
 
+    static Application &get() { return *(Application *) s_instance; }
+
 protected:
     bool start() override;
     void stop() override;

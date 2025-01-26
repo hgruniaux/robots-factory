@@ -9,7 +9,12 @@
 
 #include "robot/robot_parser.hpp"
 
-static void ApplyGrayModernTheme(float font_size, ImVec4 accent_color = ImVec4(0.35f, 0.35f, 0.9f, 1.00f), ImVec4 overlay_color = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)) {
+BaseApplication::BaseApplication() {
+    assert(s_instance == nullptr);
+    s_instance = this;
+}
+
+static void ApplyGrayModernTheme(ImVec4 accent_color = ImVec4(0.35f, 0.35f, 0.9f, 1.00f), ImVec4 overlay_color = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)) {
     ImGuiStyle &style = ImGui::GetStyle();
     ImVec4 *colors = style.Colors;
 
@@ -62,6 +67,7 @@ static void ApplyGrayModernTheme(float font_size, ImVec4 accent_color = ImVec4(0
     colors[ImGuiCol_TabUnfocused] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
     colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
     colors[ImGuiCol_TabSelectedOverline] = accent_color;
+    colors[ImGuiCol_TabDimmedSelectedOverline] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
     colors[ImGuiCol_DockingPreview] = ImVec4(accent_color.x, accent_color.y, accent_color.z, 0.5f);
     colors[ImGuiCol_DockingEmptyBg] = overlay_color;
     colors[ImGuiCol_PlotLines] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
@@ -77,6 +83,10 @@ static void ApplyGrayModernTheme(float font_size, ImVec4 accent_color = ImVec4(0
 
     for (int i = 0; i < ImGuiCol_COUNT; ++i)
         colors[i] = blend(colors[i]);
+}
+
+static void ApplyModernThemeSpacing() {
+    ImGuiStyle &style = ImGui::GetStyle();
 
     // Style settings
     style.FrameRounding = 0.0f;
@@ -91,22 +101,22 @@ static void ApplyGrayModernTheme(float font_size, ImVec4 accent_color = ImVec4(0
 
 #ifdef _WIN32
 #include <dwmapi.h>
-#pragma comment (lib, "Dwmapi")
+#pragma comment(lib, "Dwmapi")
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
 #ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
 #define DWMWA_USE_IMMERSIVE_DARK_MODE 20
-#endif // DWMWA_USE_IMMERSIVE_DARK_MODE
+#endif// DWMWA_USE_IMMERSIVE_DARK_MODE
 
-static void enable_dark_title_bar(GLFWwindow* window) {
+static void enable_dark_title_bar(GLFWwindow *window) {
     // Enable dark title bar on Windows
     HWND hwnd = glfwGetWin32Window(window);
     BOOL enable = TRUE;
     DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &enable, sizeof(enable));
 }
-#endif // _WIN32
+#endif// _WIN32
 
 bool BaseApplication::init() {
     // Initialize GLFW
@@ -131,7 +141,7 @@ bool BaseApplication::init() {
 
 #ifdef _WIN32
     enable_dark_title_bar(m_window);
-#endif // _WIN32
+#endif// _WIN32
 
     // Load OpenGL functions
     glfwMakeContextCurrent(m_window);
@@ -158,20 +168,19 @@ bool BaseApplication::init() {
     glfwGetWindowContentScale(m_window, &scale_x, &scale_y);
 
     // Configure the icon font
-    const float FONT_SIZE = 16.0f * scale_y;
-    const float ICON_SIZE = 14.0f * scale_y;
+    m_font_size = 16.0f * scale_y;
+    m_icon_size = 14.0f * scale_y;
     ImFontConfig config;
     config.MergeMode = true;
-    config.GlyphMinAdvanceX = ICON_SIZE;// Use if you want to make the icon monospaced
+    config.GlyphMinAdvanceX = m_icon_size;// Use if you want to make the icon monospaced
     static const ImWchar icon_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
-    io.Fonts->AddFontFromFileTTF("fonts/OpenSans-Regular.ttf", FONT_SIZE);
-    io.Fonts->AddFontFromFileTTF("fonts/fa-solid-900.ttf", ICON_SIZE, &config, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("fonts/OpenSans-Regular.ttf", m_font_size);
+    io.Fonts->AddFontFromFileTTF("fonts/fa-solid-900.ttf", m_icon_size, &config, icon_ranges);
 
     ImGui::StyleColorsDark();
-
-    ImVec4 accentColor = ImVec4(1.00f, 0.50f, 0.20f, 1.00f);// Blue accent
-    ImVec4 overlayColor = ImVec4(1.00f, 0.00f, 0.00f, 0.00f);
-    ApplyGrayModernTheme(FONT_SIZE, accentColor, overlayColor);
+    ApplyModernThemeSpacing();
+    ApplyGrayModernTheme(ImVec4(m_accent_color.x, m_accent_color.y, m_accent_color.z, m_accent_color.w),
+                         ImVec4(m_overlay_color.x, m_overlay_color.y, m_overlay_color.z, m_overlay_color.w));
 
     // Setup ImGui Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
@@ -197,6 +206,14 @@ void BaseApplication::run() {
 
     while (!glfwWindowShouldClose(m_window)) {
         glfwPollEvents();
+
+        // Update ImGui theme if required
+        if (m_theme_changed) {
+            const ImVec4 accentColor = ImVec4(m_accent_color.x, m_accent_color.y, m_accent_color.z, m_accent_color.w);
+            const ImVec4 overlayColor = ImVec4(m_overlay_color.x, m_overlay_color.y, m_overlay_color.z, m_overlay_color.w);
+            ApplyGrayModernTheme(accentColor, overlayColor);
+            m_theme_changed = false;
+        }
 
         // Start the ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -243,4 +260,9 @@ void BaseApplication::shutdown() {
     if (m_window != nullptr)
         glfwDestroyWindow(m_window);
     glfwTerminate();
+}
+
+void BaseApplication::set_overlay(const glm::vec4 &overlay_color) {
+    m_overlay_color = overlay_color;
+    m_theme_changed = true;
 }
