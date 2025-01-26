@@ -44,9 +44,10 @@ private:
     Renderer2D m_renderer;
     std::unique_ptr<Simulation> m_simulation;
     SceneView m_scene_view{m_renderer};
+    float m_time_since_last_step = 0.0f;
+    float m_time_dilatation = 1.0f;
     bool m_simulation_paused = false;
     bool m_real_time = true;
     bool m_follow_robot = false;
-    float m_time_since_last_step = 0.0f;
-    float m_time_dilatation = 1.0f;
+    bool m_debug_view = false;
 };// class SimulationView

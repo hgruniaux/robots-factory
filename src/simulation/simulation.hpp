@@ -29,7 +29,11 @@ public:
     void step();
 
     // Draw the simulation.
-    void draw(Renderer2D &renderer);
+    void draw(Renderer2D &renderer, bool debug = false);
+
+private:
+    void debug_draw(Renderer2D &renderer);
+    void normal_draw(Renderer2D &renderer);
 
 private:
     static constexpr glm::vec2 DEFAULT_GRAVITY = {0.0f, -9.80665f};

@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 #include <tinyfiledialogs.h>
+#include <GLFW/glfw3.h>
 
 void SimulationView::set_robot(const std::shared_ptr<Robot> &robot) {
     m_robot = robot;
@@ -169,6 +170,9 @@ void SimulationView::show_toolbar() {
         ImGui::DragFloat(ICON_FA_CLOCK, &m_time_dilatation, 0.001f, 0.001f, 2.0f);
         ImGui::SetItemTooltip("Time dilatation factor");
 
+        ImGui::SameLine();
+        ImGui::Checkbox("Debug", &m_debug_view);
+
         // Show the elapsed time
         if (m_simulation != nullptr) {
             // Align the text to the right
@@ -209,7 +213,7 @@ void SimulationView::show_world() {
         return;
 
     m_scene_view.begin();
-    m_simulation->draw(m_renderer);
+    m_simulation->draw(m_renderer, m_debug_view);
     if (m_robot_ai != nullptr)
         m_robot_ai->debug_draw(m_renderer);
     m_scene_view.end();
@@ -229,7 +233,6 @@ void SimulationView::show_world() {
 }
 
 void SimulationView::show_robot_info() {
-
     if (ImGui::Begin("Simulation robot info")) {
         if (m_simulation == nullptr) {
             ImGui::Text("No simulation running...");
@@ -304,10 +307,6 @@ void SimulationView::handle_shortcuts() {
             step_forward();
     }
 }
-
-#include <GLFW/glfw3.h>
-#include <fmt/format.h>
-//#include <glfw/glfw3.h>
 
 void SimulationView::handle_robot_input(float dt) {
     int gamepad_jid = GLFW_JOYSTICK_1;

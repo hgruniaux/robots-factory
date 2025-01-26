@@ -79,7 +79,11 @@ bool CircleShape::show_inspector() {
 }
 
 void CircleShape::draw(Renderer2D &renderer, const DrawPartContext &context) {
-    renderer.set_transform(get_position(), get_angle());
+    draw(renderer, context, get_position(), get_angle());
+}
+
+void CircleShape::draw(Renderer2D &renderer, const DrawPartContext &context, const glm::vec2& position, float angle) {
+    renderer.set_transform(position, angle);
 
     renderer.draw_solid_circle({0.f, 0.f}, m_radius, m_color);
     if (context.selected_part == this) {
@@ -125,7 +129,11 @@ bool RectangleShape::show_inspector() {
 }
 
 void RectangleShape::draw(Renderer2D &renderer, const DrawPartContext &context) {
-    renderer.set_transform(get_position(), get_angle());
+    draw(renderer, context, get_position(), get_angle());
+}
+
+void RectangleShape::draw(Renderer2D &renderer, const DrawPartContext &context, const glm::vec2& position, float angle) {
+    renderer.set_transform(position, angle);
 
     renderer.draw_solid_quad({0.f, 0.f}, m_size, m_color);
     if (context.selected_part == this) {
@@ -196,7 +204,11 @@ bool PolygonShape::show_inspector() {
 }
 
 void PolygonShape::draw(Renderer2D &renderer, const DrawPartContext &context) {
-    renderer.set_transform(get_position(), get_angle());
+    draw(renderer, context, get_position(), get_angle());
+}
+
+void PolygonShape::draw(Renderer2D &renderer, const DrawPartContext &context, const glm::vec2& position, float angle) {
+    renderer.set_transform(position, angle);
 
     renderer.draw_solid_polygon(m_vertices.data(), m_vertices.size(), m_color);
     if (context.selected_part == this) {
