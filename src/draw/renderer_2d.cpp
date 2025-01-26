@@ -381,7 +381,7 @@ void SceneView::end() {
     }
 }
 
-bool SceneView::is_right_clicked(glm::vec2 &world_pos) const {
+bool SceneView::is_clicked(int button, glm::vec2 &world_pos) const {
     ImVec2 mouse_pos = ImGui::GetMousePos();
     ImVec2 cursor_screen_pos = ImGui::GetItemRectMin();
     ImVec2 viewport_size = ImGui::GetItemRectSize();
@@ -397,7 +397,7 @@ bool SceneView::is_right_clicked(glm::vec2 &world_pos) const {
 
     world_pos = {cursor_pos_in_viewport_centered.x / m_scale + m_offset.x, cursor_pos_in_viewport_centered.y / m_scale + m_offset.y};
 
-    if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+    if (ImGui::IsItemClicked(button)) {
         return true;
     }
 

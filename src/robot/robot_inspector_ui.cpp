@@ -10,6 +10,8 @@
 #include "robot_parser.hpp"
 #include "robot_saver.hpp"
 
+#include "physics_robot.hpp"
+
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
@@ -68,6 +70,24 @@ void RobotInspectorUI::save() {
     save_robot(m_robot);
 }
 
+class SelectQueryCallback : public b2QueryCallback {
+public:
+    b2Vec2 point;
+    Part* selected_part = nullptr;
+
+    bool ReportFixture(b2Fixture *fixture) override {
+        if (!fixture->TestPoint(point))
+            return true;
+
+        auto userData = fixture->GetUserData();
+        if (userData.pointer != 0)
+            selected_part = reinterpret_cast<Part*>(userData.pointer);
+
+
+        return selected_part == nullptr;
+    }
+}; // class SelectQueryCallback
+
 bool RobotInspectorUI::show_preview(bool &should_show) {
     if (ImGui::Begin(ICON_FA_ROBOT " Robot Preview", &should_show)) {
         m_scene_view.begin();
@@ -83,6 +103,27 @@ bool RobotInspectorUI::show_preview(bool &should_show) {
         }
 
         m_scene_view.end();
+
+        glm::vec2 mouse_world_position;
+        if (m_scene_view.is_clicked(0, mouse_world_position)) {
+            b2World world{b2Vec2_zero};
+
+            b2BodyDef ground_body_def;
+            b2Body *ground_body = world.CreateBody(&ground_body_def);
+
+            PhysicsRobot robot(m_robot, &world, ground_body);
+
+            // Find the part under the mouse cursor using Box2D
+            const float epsilon = 0.0001f;
+            b2AABB aabb;
+            aabb.lowerBound = b2Vec2(mouse_world_position.x - epsilon, mouse_world_position.y - epsilon);
+            aabb.upperBound = b2Vec2(mouse_world_position.x + epsilon, mouse_world_position.y + epsilon);
+            SelectQueryCallback callback;
+            callback.point = {mouse_world_position.x, mouse_world_position.y};
+            world.QueryAABB(&callback, aabb);
+            if (callback.selected_part != nullptr)
+                m_selected_node = callback.selected_part;
+        }
     }
     ImGui::End();
 
@@ -583,8 +624,6 @@ void RobotInspectorUI::execute_delayed_operation() {
 
     m_delayed_operation.kind = DelayedOperation::None;
 }
-
-#include "physics_robot.hpp"
 
 void RobotInspectorUI::check_constraints() {
     SPDLOG_TRACE("Checking robot constraints...");

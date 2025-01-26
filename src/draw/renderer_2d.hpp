@@ -84,7 +84,8 @@ public:
     void begin();
     void end();
 
-    bool is_right_clicked(glm::vec2 &world_pos) const;
+    bool is_clicked(int button, glm::vec2 &world_pos) const;
+    bool is_right_clicked(glm::vec2 &world_pos) const { return is_clicked(1, world_pos); }
 
     [[nodiscard]] glm::vec2 get_offset() const { return m_offset; }
     void offset_camera(float dx, float dy) { m_offset += glm::vec2{dx, dy}; }
