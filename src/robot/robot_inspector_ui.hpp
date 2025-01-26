@@ -93,4 +93,8 @@ private:
     bool m_first_time_renaming = false;
     bool m_check_constraints = true;
     bool m_dirty = false;
+
+    bool m_show_shapes = true;
+    bool m_show_joints = true;
+    bool m_show_sensors = true;
 };// class RobotInspectorUI

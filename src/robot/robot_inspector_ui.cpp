@@ -73,7 +73,7 @@ void RobotInspectorUI::save() {
 class SelectQueryCallback : public b2QueryCallback {
 public:
     b2Vec2 point;
-    Part* selected_part = nullptr;
+    Part *selected_part = nullptr;
 
     bool ReportFixture(b2Fixture *fixture) override {
         if (!fixture->TestPoint(point))
@@ -81,12 +81,12 @@ public:
 
         auto userData = fixture->GetUserData();
         if (userData.pointer != 0)
-            selected_part = reinterpret_cast<Part*>(userData.pointer);
+            selected_part = reinterpret_cast<Part *>(userData.pointer);
 
 
         return selected_part == nullptr;
     }
-}; // class SelectQueryCallback
+};// class SelectQueryCallback
 
 bool RobotInspectorUI::show_preview(bool &should_show) {
     if (ImGui::Begin(ICON_FA_ROBOT " Robot Preview", &should_show)) {
@@ -141,21 +141,23 @@ bool RobotInspectorUI::show_robot_inspector(bool &should_show) {
     bool changed = false;
 
     if (ImGui::Begin(ICON_FA_ROBOT " Robot inspector", &should_show)) {
-        ImGui::Text("Name:   %s", m_robot->get_name().c_str());
+        ImGui::Text("Name: %s", m_robot->get_name().c_str());
         ImGui::Text("Source: %s", m_robot->get_source_file().c_str());
 
         if (ImGui::Checkbox("Auto check constraints", &m_check_constraints))
             check_constraints();
 
-        if (ImGui::Button(ICON_FA_FLASK " Check constraints"))
+        if (ImGui::Button(ICON_FA_FLASK " Check constraints", {ImGui::GetContentRegionAvail().x, 0.f}))
             check_constraints();
 
-
         if (!m_robot->get_source_file().empty()) {
-            if (ImGui::Button(ICON_FA_ROTATE_RIGHT " Reload"))
+            const float total_width = ImGui::GetContentRegionAvail().x;
+            const float button_width = (total_width - ImGui::GetStyle().ItemSpacing.x) / 2.0f;
+
+            if (ImGui::Button(ICON_FA_ROTATE_RIGHT " Reload", {button_width, 0.f}))
                 reload();
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save"))
+            if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save", {button_width, 0.f}))
                 save();
         }
 
@@ -194,6 +196,19 @@ bool RobotInspectorUI::show_part_list() {
     bool changed = false;
 
     ImGui::Text("Parts:");
+    ImGui::SameLine();
+
+    if (ImGui::SmallButton(ICON_FA_FILTER)) {
+        ImGui::OpenPopup("Filter parts");
+    }
+
+    if (ImGui::BeginPopup("Filter parts")) {
+        ImGui::MenuItem("Shapes", nullptr, &m_show_shapes);
+        ImGui::MenuItem("Joints", nullptr, &m_show_joints);
+        ImGui::MenuItem("Sensors", nullptr, &m_show_sensors);
+        ImGui::EndPopup();
+    }
+
     if (ImGui::BeginChild("Parts", {})) {
         if (ImGui::BeginPopupContextWindow("Context menu")) {
             changed |= show_add_part_menu();
@@ -215,6 +230,13 @@ bool RobotInspectorUI::show_part_list() {
 }
 
 bool RobotInspectorUI::show_part_list_item(Part *node) {
+    if (!m_show_shapes && node->is<Shape>())
+        return false;
+    if (!m_show_joints && node->is<Joint>())
+        return false;
+    if (!m_show_sensors && node->is<Sensor>())
+        return false;
+
     ImGui::PushID(node);
 
     bool changed = false;
@@ -227,7 +249,7 @@ bool RobotInspectorUI::show_part_list_item(Part *node) {
     if (!is_folder)
         flags |= ImGuiTreeNodeFlags_Leaf;
 
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { -ImGui::GetFontSize() / 4.0f, ImGui::GetStyle().FramePadding.y });
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {-ImGui::GetFontSize() / 4.0f, ImGui::GetStyle().FramePadding.y});
     const bool is_open = ImGui::TreeNodeEx(node->get_name().c_str(), flags, "");
     ImGui::PopStyleVar();
 
@@ -264,14 +286,14 @@ bool RobotInspectorUI::show_part_list_item(Part *node) {
         m_selected_node = node;
 
     if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("PART", &node, sizeof(Part*));
+        ImGui::SetDragDropPayload("PART", &node, sizeof(Part *));
         ImGui::Text("%s %s", node->get_icon(), node->get_name().c_str());
         ImGui::EndDragDropSource();
     }
 
     if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PART")) {
-            Part* payload_node = *(Part**)payload->Data;
+        if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("PART")) {
+            Part *payload_node = *(Part **) payload->Data;
             if (payload_node != node) {
                 m_delayed_operation.kind = is_folder ? DelayedOperation::MoveInto : DelayedOperation::MoveAfter;
                 m_delayed_operation.data.move.part = payload_node;
@@ -283,16 +305,16 @@ bool RobotInspectorUI::show_part_list_item(Part *node) {
 
     // Show text, there is a special code to be able to use a custom icon color for folders.
     ImGui::SameLine();
-    const char* icon = is_folder ? (is_open ? ICON_FA_FOLDER_OPEN : ICON_FA_FOLDER) : node->get_icon();
+    const char *icon = is_folder ? (is_open ? ICON_FA_FOLDER_OPEN : ICON_FA_FOLDER) : node->get_icon();
 
     ImVec4 icon_color;
     if (is_folder) {
-        const auto* folder = node->as<FolderPart>();
+        const auto *folder = node->as<FolderPart>();
         const auto folder_color = folder->get_color();
-        icon_color = { folder_color.x, folder_color.y, folder_color.z, 1.0f };
-    } else if (auto* shape = node->as<Shape>(); shape != nullptr) {
+        icon_color = {folder_color.x, folder_color.y, folder_color.z, 1.0f};
+    } else if (auto *shape = node->as<Shape>(); shape != nullptr) {
         const auto shape_color = shape->get_color();
-        icon_color = { shape_color.x, shape_color.y, shape_color.z, 1.0f };
+        icon_color = {shape_color.x, shape_color.y, shape_color.z, 1.0f};
     } else {
         // Default icon color
         icon_color = ImGui::GetStyleColorVec4(ImGuiCol_Text);
@@ -302,10 +324,10 @@ bool RobotInspectorUI::show_part_list_item(Part *node) {
     ImGui::SameLine(0.f, 0.f);
 
     if (m_renamed_node == node) {
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0.0f, 0.0f });
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0.0f, 0.0f});
 
         std::string name = m_renamed_node->get_name();
-        if (ImGui::InputText("##rename", &name, ImGuiInputTextFlags_AutoSelectAll |ImGuiInputTextFlags_EnterReturnsTrue)) {
+        if (ImGui::InputText("##rename", &name, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue)) {
             if (name != m_renamed_node->get_name()) {
                 m_renamed_node->set_name(name);
                 changed = true;
@@ -333,14 +355,14 @@ bool RobotInspectorUI::show_part_list_item(Part *node) {
         const float button_width = ImGui::CalcTextSize(ICON_FA_ARROW_UP).x + ImGui::GetStyle().FramePadding.x;
         const float total_buttons_width = button_width * button_count + (ImGui::GetStyle().ItemSpacing.x / 2.f) * (button_count - 1);
 
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { ImGui::GetStyle().ItemSpacing.x / 2.f, ImGui::GetStyle().ItemSpacing.y});
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { ImGui::GetStyle().FramePadding.x / 2.f, 0.0f });
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {ImGui::GetStyle().ItemSpacing.x / 2.f, ImGui::GetStyle().ItemSpacing.y});
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {ImGui::GetStyle().FramePadding.x / 2.f, 0.0f});
 
         // Move up button
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - total_buttons_width);
         ImGui::BeginDisabled(!can_move_part_up(node));
-        if (ImGui::Button(ICON_FA_ARROW_UP, { button_width, button_height }))
+        if (ImGui::Button(ICON_FA_ARROW_UP, {button_width, button_height}))
             move_part_up(node);
         ImGui::SetItemTooltip("Move part up");
         ImGui::EndDisabled();
@@ -348,14 +370,14 @@ bool RobotInspectorUI::show_part_list_item(Part *node) {
         // Move down button
         ImGui::SameLine();
         ImGui::BeginDisabled(!can_move_part_down(node));
-        if (ImGui::Button(ICON_FA_ARROW_DOWN, { button_width, button_height }))
+        if (ImGui::Button(ICON_FA_ARROW_DOWN, {button_width, button_height}))
             move_part_down(node);
         ImGui::SetItemTooltip("Move part down");
         ImGui::EndDisabled();
 
         // Remove button
         ImGui::SameLine();
-        if (ImGui::Button(ICON_FA_TRASH, { button_width, button_height }))
+        if (ImGui::Button(ICON_FA_TRASH, {button_width, button_height}))
             remove_part(node);
         ImGui::SetItemTooltip("Remove part");
 
@@ -365,7 +387,7 @@ bool RobotInspectorUI::show_part_list_item(Part *node) {
     // Recursively show children for folders
     if (is_open) {
         if (is_folder) {
-            auto* folder = node->as<FolderPart>();
+            auto *folder = node->as<FolderPart>();
             for (const auto &part: folder->get_parts())
                 changed |= show_part_list_item(part);
         }
@@ -398,7 +420,7 @@ void RobotInspectorUI::show_unsaved_changes_modal() {
     }
 }
 
-bool RobotInspectorUI::show_add_part_menu(Part* parent_node) {
+bool RobotInspectorUI::show_add_part_menu(Part *parent_node) {
     std::unique_ptr<Part> new_node;
 
 #define MENU_ITEM(class_name, label)                                                      \
@@ -450,9 +472,9 @@ bool RobotInspectorUI::show_add_part_menu(Part* parent_node) {
 bool RobotInspectorUI::can_move_part_up(Part *part) const {
     assert(part != nullptr);
 
-    const auto* folder_part = part->get_folder_parent();
+    const auto *folder_part = part->get_folder_parent();
     if (folder_part != nullptr)
-        return true; // either move up or get out of folder
+        return true;// either move up or get out of folder
 
     int index = m_robot->get_part_index(part);
     return index > 0;
@@ -461,9 +483,9 @@ bool RobotInspectorUI::can_move_part_up(Part *part) const {
 bool RobotInspectorUI::can_move_part_down(Part *part) const {
     assert(part != nullptr);
 
-    const auto* folder_part = part->get_folder_parent();
+    const auto *folder_part = part->get_folder_parent();
     if (folder_part != nullptr)
-        return true; // either move down or get out of folder
+        return true;// either move down or get out of folder
 
     int index = m_robot->get_part_index(part);
     return index < m_robot->get_parts().size() - 1;
@@ -515,7 +537,7 @@ void RobotInspectorUI::insert_part(Part *after, Part *part) {
     m_delayed_operation.data.insert.part = part;
 }
 
-void RobotInspectorUI::add_part(Part *part, Part* parent_part) {
+void RobotInspectorUI::add_part(Part *part, Part *parent_part) {
     assert(part != nullptr);
 
     m_delayed_operation.kind = DelayedOperation::Add;
@@ -549,7 +571,7 @@ void RobotInspectorUI::execute_delayed_operation() {
             assert(m_delayed_operation.data.insert.part != nullptr);
             assert(m_delayed_operation.data.insert.after != nullptr);
 
-            auto* parent_folder= m_delayed_operation.data.insert.after->get_folder_parent();
+            auto *parent_folder = m_delayed_operation.data.insert.after->get_folder_parent();
             if (parent_folder != nullptr) {
                 const int index = parent_folder->get_part_index(m_delayed_operation.data.insert.after);
                 parent_folder->insert_part(index + 1, m_delayed_operation.data.insert.part);
@@ -564,7 +586,7 @@ void RobotInspectorUI::execute_delayed_operation() {
             assert(m_delayed_operation.data.add.part != nullptr);
 
             if (m_delayed_operation.data.add.parent != nullptr) {
-                auto* folder = m_delayed_operation.data.add.parent->as<FolderPart>();
+                auto *folder = m_delayed_operation.data.add.parent->as<FolderPart>();
                 assert(folder != nullptr);
                 m_robot->add_part(m_delayed_operation.data.add.part);
                 folder->add_part(m_delayed_operation.data.add.part);
@@ -578,8 +600,8 @@ void RobotInspectorUI::execute_delayed_operation() {
             assert(m_delayed_operation.data.move.part != nullptr);
             assert(m_delayed_operation.data.move.target != nullptr);
 
-            auto* part = m_delayed_operation.data.move.part;
-            auto* target = m_delayed_operation.data.move.target;
+            auto *part = m_delayed_operation.data.move.part;
+            auto *target = m_delayed_operation.data.move.target;
             if (part == target)
                 break;
 
@@ -587,7 +609,7 @@ void RobotInspectorUI::execute_delayed_operation() {
             m_robot->release_part(part);
 
             // Reinsert it after target
-            auto* target_folder_parent = target->get_folder_parent();
+            auto *target_folder_parent = target->get_folder_parent();
             if (target_folder_parent != nullptr) {
                 const int index = target_folder_parent->get_part_index(target);
                 m_robot->add_part(part);
@@ -603,15 +625,15 @@ void RobotInspectorUI::execute_delayed_operation() {
             assert(m_delayed_operation.data.move.part != nullptr);
             assert(m_delayed_operation.data.move.target != nullptr);
 
-            auto* part = m_delayed_operation.data.move.part;
-            auto* target = m_delayed_operation.data.move.target;
+            auto *part = m_delayed_operation.data.move.part;
+            auto *target = m_delayed_operation.data.move.target;
             if (part == target)
                 break;
 
-            auto* folder = target->as<FolderPart>();
+            auto *folder = target->as<FolderPart>();
             assert(folder != nullptr);
 
-            auto* parent_folder = part->get_folder_parent();
+            auto *parent_folder = part->get_folder_parent();
             if (parent_folder != nullptr)
                 parent_folder->remove_part(part);
 
