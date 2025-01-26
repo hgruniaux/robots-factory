@@ -5,6 +5,7 @@
 #include "eui.hpp"
 
 constexpr glm::vec4 OUTLINE_COLOR = {1.0f, 1.0f, 0.0f, 1.0f};
+constexpr glm::vec4 OVERLAY_COLOR = {1.0f, 1.0f, 0.0f, 0.2f};
 
 /*
  * The Shape class
@@ -81,8 +82,10 @@ void CircleShape::draw(Renderer2D &renderer, const DrawPartContext &context) {
     renderer.set_transform(get_position(), get_angle());
 
     renderer.draw_solid_circle({0.f, 0.f}, m_radius, m_color);
-    if (context.selected_part == this)
+    if (context.selected_part == this) {
+        renderer.draw_solid_circle({0.f, 0.f}, m_radius, OVERLAY_COLOR);
         renderer.draw_circle({0.f, 0.f}, m_radius, OUTLINE_COLOR);
+    }
 
     renderer.unset_transform();
 }
@@ -125,8 +128,10 @@ void RectangleShape::draw(Renderer2D &renderer, const DrawPartContext &context) 
     renderer.set_transform(get_position(), get_angle());
 
     renderer.draw_solid_quad({0.f, 0.f}, m_size, m_color);
-    if (context.selected_part == this)
+    if (context.selected_part == this) {
+        renderer.draw_solid_quad({0.f, 0.f}, m_size, OVERLAY_COLOR);
         renderer.draw_quad({0.f, 0.f}, m_size, OUTLINE_COLOR);
+    }
 
     renderer.unset_transform();
 }
@@ -194,8 +199,10 @@ void PolygonShape::draw(Renderer2D &renderer, const DrawPartContext &context) {
     renderer.set_transform(get_position(), get_angle());
 
     renderer.draw_solid_polygon(m_vertices.data(), m_vertices.size(), m_color);
-    if (context.selected_part == this)
+    if (context.selected_part == this) {
+        renderer.draw_solid_polygon(m_vertices.data(), m_vertices.size(), OVERLAY_COLOR);
         renderer.draw_polygon(m_vertices.data(), m_vertices.size(), OUTLINE_COLOR);
+    }
 
     renderer.unset_transform();
 }
