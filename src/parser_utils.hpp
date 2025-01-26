@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <yaml-cpp/yaml.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;

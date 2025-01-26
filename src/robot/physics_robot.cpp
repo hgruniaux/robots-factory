@@ -8,6 +8,19 @@
 PhysicsRobot::PhysicsRobot(const std::shared_ptr<Robot> &robot, b2World *world, b2Body *ground_body, bool lax)
     : PhysicsRobot(robot, {0.f, 0.f}, 0.f, world, ground_body, lax) {}
 
+static Part* find_main_body_part(const std::shared_ptr<Robot> &robot) {
+    auto *main_body_part = robot->get_part_by_name("body");
+    if (main_body_part->is<Shape>())
+        return main_body_part;
+
+    for (const auto &part : robot->get_parts()) {
+        if (part->is<Shape>())
+            return part.get();
+    }
+
+    return nullptr;
+}
+
 PhysicsRobot::PhysicsRobot(const std::shared_ptr<Robot> &robot, const glm::vec2 &position, float angle, b2World *world, b2Body *ground_body, bool lax)
     : m_robot(robot), m_world(world), m_ground_body(ground_body) {
     assert(m_robot != nullptr);
@@ -19,9 +32,7 @@ PhysicsRobot::PhysicsRobot(const std::shared_ptr<Robot> &robot, const glm::vec2 
     ctx.lax = lax;
     build(ctx);
 
-    auto *main_body_part = robot->get_part_by_name("body");
-    if (main_body_part == nullptr && !robot->get_parts().empty())// no body found, get the first part
-        main_body_part = robot->get_parts()[0].get();
+    auto *main_body_part = find_main_body_part(robot);
     if (main_body_part != nullptr)
         m_main_body = m_bodies[main_body_part];
 }
@@ -374,6 +385,10 @@ void PhysicsRobot::build_part(const BuildContext &ctx, Part *part) {
         m_bodies[ground] = m_ground_body;
     } else if (auto *sensor = dynamic_cast<Sensor *>(part); sensor != nullptr) {
         // Nothing to do, the sensor has no physics representation.
+        return;
+    } else if (auto *folder = dynamic_cast<FolderPart *>(part); folder != nullptr) {
+        // Nothing to do, the folder has no physics representation.
+        return;
     } else {
         assert(false && "Unknown part type");
     }

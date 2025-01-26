@@ -2,7 +2,6 @@
 
 #include "parser_utils.hpp"
 #include <spdlog/spdlog.h>
-#include <yaml-cpp/yaml.h>
 
 #if 0
 bool load_shape_description(b2World *world, b2Body *body, const YAML::Node &node) {

@@ -11,6 +11,10 @@ void save_robot(const std::shared_ptr<Robot> &robot, const std::string &path) {
 
     auto parts = nlohmann::json::array();
     for (const auto &part: robot->get_parts()) {
+        // Only save top-level parts
+        if (part->get_parent_part() != nullptr)
+            continue;
+
         nlohmann::json part_json;
         part_json["kind"] = part->get_kind_name();
         part->save(part_json);

@@ -6,21 +6,22 @@
 #include <spdlog/spdlog.h>
 
 // Parse a node of the 'parts' section of the Robot YAML document.
-static std::unique_ptr<Part> parse_robot_part(const nlohmann::json &yaml_node) {
-    std::string kind = yaml_node["kind"];
+Part* parse_robot_part(const nlohmann::json &json_object, const std::shared_ptr<Robot> &robot) {
+    std::string kind = json_object["kind"];
     auto *part_meta = PartManager::get_part_meta_info(kind);
     assert(part_meta != nullptr);
 
     auto part = part_meta->create_function();
-    part->load(yaml_node);
-    return part;
+    auto* part_ptr = part.get();
+    robot->add_part(std::move(part));
+    part_ptr->load(json_object);
+    return part_ptr;
 }
 
 // Parse the 'parts' section of the Robot YAML document.
 static void parse_robot_parts(const nlohmann::json &parts, const std::shared_ptr<Robot> &robot) {
     for (const auto &part: parts) {
-        auto node = parse_robot_part(part);
-        robot->add_part(std::move(node));
+        parse_robot_part(part, robot);
     }
 }
 

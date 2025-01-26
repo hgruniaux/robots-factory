@@ -2,7 +2,662 @@
     "name": "spider",
     "parts": [
         {
-            "angle": 16.60372543334961,
+            "color": [
+                0.800000011920929,
+                0.6000000238418579,
+                0.12999999523162842
+            ],
+            "kind": "FolderPart",
+            "name": "Leg",
+            "parts": [
+                {
+                    "color": [
+                        0.800000011920929,
+                        0.6000000238418579,
+                        0.12999999523162842
+                    ],
+                    "kind": "FolderPart",
+                    "name": "Leg Left",
+                    "parts": [
+                        {
+                            "angle": 31.740026473999023,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 0.20000000298023224,
+                            "kind": "RectangleShape",
+                            "name": "thighL",
+                            "position": [
+                                -0.08292079716920853,
+                                0.6360327005386353
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.44999998807907104,
+                                0.029999999329447746
+                            ]
+                        },
+                        {
+                            "angle": 65.87779235839844,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 0.5,
+                            "kind": "RectangleShape",
+                            "name": "calfL",
+                            "position": [
+                                -0.3591021001338959,
+                                0.28702741861343384
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.6000000238418579,
+                                0.019999999552965164
+                            ]
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                -0.2199999988079071,
+                                0.0
+                            ],
+                            "local_anchor_b": [
+                                0.19499999284744263,
+                                0.0
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 1000.0,
+                            "max_motor_torque": 100.0,
+                            "min_motor_speed": -1000.0,
+                            "name": "hipL",
+                            "part_a": "body",
+                            "part_b": "thighL",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                -0.19499999284744263,
+                                0.0
+                            ],
+                            "local_anchor_b": [
+                                0.27000001072883606,
+                                0.0
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 1000.0,
+                            "max_motor_torque": 100.0,
+                            "min_motor_speed": -1000.0,
+                            "name": "kneeL",
+                            "part_a": "thighL",
+                            "part_b": "calfL",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        }
+                    ]
+                },
+                {
+                    "color": [
+                        0.800000011920929,
+                        0.6000000238418579,
+                        0.12999999523162842
+                    ],
+                    "kind": "FolderPart",
+                    "name": "Leg Right",
+                    "parts": [
+                        {
+                            "angle": 336.6010437011719,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 0.20000000298023224,
+                            "kind": "RectangleShape",
+                            "name": "thighR",
+                            "position": [
+                                0.6830567121505737,
+                                0.7887781262397766
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.44999998807907104,
+                                0.029999999329447746
+                            ]
+                        },
+                        {
+                            "angle": 266.1717224121094,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 0.5,
+                            "kind": "RectangleShape",
+                            "name": "calfR",
+                            "position": [
+                                0.8439934849739075,
+                                0.44193997979164124
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.6000000238418579,
+                                0.019999999552965164
+                            ]
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                0.2199999988079071,
+                                0.0
+                            ],
+                            "local_anchor_b": [
+                                -0.19499999284744263,
+                                0.0
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 1000.0,
+                            "max_motor_torque": 100.0,
+                            "min_motor_speed": -1000.0,
+                            "name": "hipR",
+                            "part_a": "body",
+                            "part_b": "thighR",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                0.19499999284744263,
+                                0.0
+                            ],
+                            "local_anchor_b": [
+                                -0.27000001072883606,
+                                0.0
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 1000.0,
+                            "max_motor_torque": 100.0,
+                            "min_motor_speed": -1000.0,
+                            "name": "kneeR",
+                            "part_a": "thighR",
+                            "part_b": "calfR",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "color": [
+                0.800000011920929,
+                0.6000000238418579,
+                0.12999999523162842
+            ],
+            "kind": "FolderPart",
+            "name": "Arm",
+            "parts": [
+                {
+                    "angle": 19.048349380493164,
+                    "color": [
+                        0.0,
+                        0.3137255012989044,
+                        0.7764706015586853,
+                        1.0
+                    ],
+                    "density": 0.6000000238418579,
+                    "friction": 0.20000000298023224,
+                    "kind": "RectangleShape",
+                    "name": "arm1",
+                    "position": [
+                        0.23656770586967468,
+                        0.9731689691543579
+                    ],
+                    "restitution": 0.0,
+                    "restitution_threshold": 1.0,
+                    "size": [
+                        0.03999999910593033,
+                        0.30000001192092896
+                    ]
+                },
+                {
+                    "angle": -25.166427612304688,
+                    "color": [
+                        0.0,
+                        0.315144419670105,
+                        0.7764706015586853,
+                        1.0
+                    ],
+                    "density": 0.6000000238418579,
+                    "friction": 0.20000000298023224,
+                    "kind": "RectangleShape",
+                    "name": "arm2",
+                    "position": [
+                        0.24938780069351196,
+                        1.2138593196868896
+                    ],
+                    "restitution": 0.0,
+                    "restitution_threshold": 1.0,
+                    "size": [
+                        0.03999999910593033,
+                        0.30000001192092896
+                    ]
+                },
+                {
+                    "angle": 100.37477111816406,
+                    "color": [
+                        0.0,
+                        0.3137255012989044,
+                        0.7764706015586853,
+                        1.0
+                    ],
+                    "density": 0.6000000238418579,
+                    "friction": 0.20000000298023224,
+                    "kind": "RectangleShape",
+                    "name": "arm3",
+                    "position": [
+                        0.17691770195960999,
+                        1.3081799745559692
+                    ],
+                    "restitution": 0.0,
+                    "restitution_threshold": 1.0,
+                    "size": [
+                        0.03999999910593033,
+                        0.30000001192092896
+                    ]
+                },
+                {
+                    "angle": 176.85519409179688,
+                    "color": [
+                        0.0,
+                        0.3137255012989044,
+                        0.7764706015586853,
+                        1.0
+                    ],
+                    "density": 0.6000000238418579,
+                    "friction": 0.20000000298023224,
+                    "kind": "RectangleShape",
+                    "name": "arm4",
+                    "position": [
+                        0.041984673589468,
+                        1.154942274093628
+                    ],
+                    "restitution": 0.0,
+                    "restitution_threshold": 1.0,
+                    "size": [
+                        0.03999999910593033,
+                        0.30000001192092896
+                    ]
+                },
+                {
+                    "angle": 0.0,
+                    "is_motor": true,
+                    "kind": "RevoluteJoint",
+                    "limit_enabled": false,
+                    "local_anchor_a": [
+                        0.0,
+                        0.05000000074505806
+                    ],
+                    "local_anchor_b": [
+                        0.0,
+                        -0.12999999523162842
+                    ],
+                    "lower_angle": -119.0,
+                    "max_motor_speed": 20.0,
+                    "max_motor_torque": 25.0,
+                    "min_motor_speed": -20.0,
+                    "name": "shoulder",
+                    "part_a": "body",
+                    "part_b": "arm1",
+                    "position": [
+                        0.0,
+                        0.0
+                    ],
+                    "should_collide": false,
+                    "upper_angle": 0.0
+                },
+                {
+                    "angle": 0.0,
+                    "is_motor": true,
+                    "kind": "RevoluteJoint",
+                    "limit_enabled": false,
+                    "local_anchor_a": [
+                        0.0,
+                        0.12999999523162842
+                    ],
+                    "local_anchor_b": [
+                        0.0,
+                        -0.12999999523162842
+                    ],
+                    "lower_angle": 0.0,
+                    "max_motor_speed": 20.0,
+                    "max_motor_torque": 25.0,
+                    "min_motor_speed": -20.0,
+                    "name": "elbow1",
+                    "part_a": "arm1",
+                    "part_b": "arm2",
+                    "position": [
+                        0.0,
+                        0.0
+                    ],
+                    "should_collide": false,
+                    "upper_angle": 0.0
+                },
+                {
+                    "angle": 0.0,
+                    "is_motor": true,
+                    "kind": "RevoluteJoint",
+                    "limit_enabled": false,
+                    "local_anchor_a": [
+                        0.0,
+                        0.12999999523162842
+                    ],
+                    "local_anchor_b": [
+                        0.0,
+                        -0.12999999523162842
+                    ],
+                    "lower_angle": 0.0,
+                    "max_motor_speed": 20.0,
+                    "max_motor_torque": 25.0,
+                    "min_motor_speed": -20.0,
+                    "name": "elbow2",
+                    "part_a": "arm2",
+                    "part_b": "arm3",
+                    "position": [
+                        0.0,
+                        0.0
+                    ],
+                    "should_collide": false,
+                    "upper_angle": 0.0
+                },
+                {
+                    "angle": 0.0,
+                    "is_motor": true,
+                    "kind": "RevoluteJoint",
+                    "limit_enabled": false,
+                    "local_anchor_a": [
+                        0.0,
+                        0.12999999523162842
+                    ],
+                    "local_anchor_b": [
+                        0.0,
+                        -0.12999999523162842
+                    ],
+                    "lower_angle": 0.0,
+                    "max_motor_speed": 20.0,
+                    "max_motor_torque": 25.0,
+                    "min_motor_speed": -20.0,
+                    "name": "elbow3",
+                    "part_a": "arm3",
+                    "part_b": "arm4",
+                    "position": [
+                        0.0,
+                        0.0
+                    ],
+                    "should_collide": false,
+                    "upper_angle": 0.0
+                },
+                {
+                    "color": [
+                        0.800000011920929,
+                        0.6000000238418579,
+                        0.12999999523162842
+                    ],
+                    "kind": "FolderPart",
+                    "name": "Hand",
+                    "parts": [
+                        {
+                            "angle": -1312.4320068359375,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 0.20000000298023224,
+                            "kind": "RectangleShape",
+                            "name": "fingerL1",
+                            "position": [
+                                0.036866843700408936,
+                                0.9952187538146973
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.009999999776482582,
+                                0.03999999910593033
+                            ]
+                        },
+                        {
+                            "angle": 208.6619415283203,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 20.0,
+                            "kind": "RectangleShape",
+                            "name": "fingerL2",
+                            "position": [
+                                0.03217204287648201,
+                                0.9729111790657043
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.009999999776482582,
+                                0.03999999910593033
+                            ]
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                0.0,
+                                0.014999999664723873
+                            ],
+                            "local_anchor_b": [
+                                0.0,
+                                -0.014999999664723873
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 300.0,
+                            "max_motor_torque": 1000.0,
+                            "min_motor_speed": -300.0,
+                            "name": "fingerLJoint",
+                            "part_a": "fingerL1",
+                            "part_b": "fingerL2",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                -0.014999999664723873,
+                                0.15000000596046448
+                            ],
+                            "local_anchor_b": [
+                                0.0,
+                                -0.014999999664723873
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 300.0,
+                            "max_motor_torque": 1000.0,
+                            "min_motor_speed": -300.0,
+                            "name": "handLJoint",
+                            "part_a": "arm4",
+                            "part_b": "fingerL1",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        },
+                        {
+                            "angle": -1262.9359130859375,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 0.20000000298023224,
+                            "kind": "RectangleShape",
+                            "name": "fingerR1",
+                            "position": [
+                                0.01798451691865921,
+                                0.9910127520561218
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.009999999776482582,
+                                0.03999999910593033
+                            ]
+                        },
+                        {
+                            "angle": 201.9932861328125,
+                            "color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "density": 1.0,
+                            "friction": 20.0,
+                            "kind": "RectangleShape",
+                            "name": "fingerR2",
+                            "position": [
+                                0.02280447818338871,
+                                0.9621321558952332
+                            ],
+                            "restitution": 0.0,
+                            "restitution_threshold": 1.0,
+                            "size": [
+                                0.009999999776482582,
+                                0.03999999910593033
+                            ]
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                0.0,
+                                0.014999999664723873
+                            ],
+                            "local_anchor_b": [
+                                0.0,
+                                -0.014999999664723873
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 300.0,
+                            "max_motor_torque": 1000.0,
+                            "min_motor_speed": -300.0,
+                            "name": "fingerRJoint",
+                            "part_a": "fingerR1",
+                            "part_b": "fingerR2",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        },
+                        {
+                            "angle": 0.0,
+                            "is_motor": true,
+                            "kind": "RevoluteJoint",
+                            "limit_enabled": false,
+                            "local_anchor_a": [
+                                0.014999999664723873,
+                                0.15000000596046448
+                            ],
+                            "local_anchor_b": [
+                                0.0,
+                                -0.014999999664723873
+                            ],
+                            "lower_angle": 0.0,
+                            "max_motor_speed": 300.0,
+                            "max_motor_torque": 1000.0,
+                            "min_motor_speed": -300.0,
+                            "name": "handRJoint",
+                            "part_a": "arm4",
+                            "part_b": "fingerR1",
+                            "position": [
+                                0.0,
+                                0.0
+                            ],
+                            "should_collide": false,
+                            "upper_angle": 0.0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "angle": 16.8566837310791,
             "color": [
                 1.0,
                 1.0,
@@ -14,8 +669,8 @@
             "kind": "RectangleShape",
             "name": "body",
             "position": [
-                0.2932475209236145,
-                0.8021594285964966
+                0.2934989631175995,
+                0.8024211525917053
             ],
             "restitution": 0.0,
             "restitution_threshold": 1.0,
@@ -23,206 +678,6 @@
                 0.5,
                 0.11999999731779099
             ]
-        },
-        {
-            "angle": 31.95659828186035,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "thighL",
-            "position": [
-                -0.0830269604921341,
-                0.6360853314399719
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.44999998807907104,
-                0.029999999329447746
-            ]
-        },
-        {
-            "angle": 337.0814514160156,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "thighR",
-            "position": [
-                0.6836809515953064,
-                0.7890872955322266
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.44999998807907104,
-                0.029999999329447746
-            ]
-        },
-        {
-            "angle": 265.8878479003906,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 0.5,
-            "kind": "RectangleShape",
-            "name": "calfR",
-            "position": [
-                0.8439260125160217,
-                0.4438450336456299
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.6000000238418579,
-                0.019999999552965164
-            ]
-        },
-        {
-            "angle": 65.962158203125,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 0.5,
-            "kind": "RectangleShape",
-            "name": "calfL",
-            "position": [
-                -0.3584563434123993,
-                0.2862916588783264
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.6000000238418579,
-                0.019999999552965164
-            ]
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                -0.2199999988079071,
-                0.0
-            ],
-            "local_anchor_b": [
-                0.19499999284744263,
-                0.0
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 1000.0,
-            "max_motor_torque": 100.0,
-            "min_motor_speed": -1000.0,
-            "name": "hipL",
-            "part_a": "body",
-            "part_b": "thighL",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.2199999988079071,
-                0.0
-            ],
-            "local_anchor_b": [
-                -0.19499999284744263,
-                0.0
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 1000.0,
-            "max_motor_torque": 100.0,
-            "min_motor_speed": -1000.0,
-            "name": "hipR",
-            "part_a": "body",
-            "part_b": "thighR",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                -0.19499999284744263,
-                0.0
-            ],
-            "local_anchor_b": [
-                0.27000001072883606,
-                0.0
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 1000.0,
-            "max_motor_torque": 100.0,
-            "min_motor_speed": -1000.0,
-            "name": "kneeL",
-            "part_a": "thighL",
-            "part_b": "calfL",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.19499999284744263,
-                0.0
-            ],
-            "local_anchor_b": [
-                -0.27000001072883606,
-                0.0
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 1000.0,
-            "max_motor_torque": 100.0,
-            "min_motor_speed": -1000.0,
-            "name": "kneeR",
-            "part_a": "thighR",
-            "part_b": "calfR",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
         },
         {
             "angle": 0.0,
@@ -271,406 +726,6 @@
                 0.0,
                 0.0
             ]
-        },
-        {
-            "angle": 18.97549057006836,
-            "color": [
-                0.0,
-                0.3137255012989044,
-                0.7764706015586853,
-                1.0
-            ],
-            "density": 0.6000000238418579,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "arm1",
-            "position": [
-                0.23668870329856873,
-                0.9730101823806763
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.03999999910593033,
-                0.30000001192092896
-            ]
-        },
-        {
-            "angle": -25.10329818725586,
-            "color": [
-                0.0,
-                0.315144419670105,
-                0.7764706015586853,
-                1.0
-            ],
-            "density": 0.6000000238418579,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "arm2",
-            "position": [
-                0.2495701014995575,
-                1.2136664390563965
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.03999999910593033,
-                0.30000001192092896
-            ]
-        },
-        {
-            "angle": 100.33032989501953,
-            "color": [
-                0.0,
-                0.3137255012989044,
-                0.7764706015586853,
-                1.0
-            ],
-            "density": 0.6000000238418579,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "arm3",
-            "position": [
-                0.17683008313179016,
-                1.308075189590454
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.03999999910593033,
-                0.30000001192092896
-            ]
-        },
-        {
-            "angle": 176.90655517578125,
-            "color": [
-                0.0,
-                0.3137255012989044,
-                0.7764706015586853,
-                1.0
-            ],
-            "density": 0.6000000238418579,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "arm4",
-            "position": [
-                0.0419219434261322,
-                1.1549527645111084
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.03999999910593033,
-                0.30000001192092896
-            ]
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.0,
-                0.05000000074505806
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.12999999523162842
-            ],
-            "lower_angle": -119.0,
-            "max_motor_speed": 20.0,
-            "max_motor_torque": 25.0,
-            "min_motor_speed": -20.0,
-            "name": "shoulder",
-            "part_a": "body",
-            "part_b": "arm1",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.0,
-                0.12999999523162842
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.12999999523162842
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 20.0,
-            "max_motor_torque": 25.0,
-            "min_motor_speed": -20.0,
-            "name": "elbow1",
-            "part_a": "arm1",
-            "part_b": "arm2",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.0,
-                0.12999999523162842
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.12999999523162842
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 20.0,
-            "max_motor_torque": 25.0,
-            "min_motor_speed": -20.0,
-            "name": "elbow2",
-            "part_a": "arm2",
-            "part_b": "arm3",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.0,
-                0.12999999523162842
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.12999999523162842
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 20.0,
-            "max_motor_torque": 25.0,
-            "min_motor_speed": -20.0,
-            "name": "elbow3",
-            "part_a": "arm3",
-            "part_b": "arm4",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": -1312.4920654296875,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "fingerL1",
-            "position": [
-                0.036906372755765915,
-                0.9952287673950195
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.009999999776482582,
-                0.03999999910593033
-            ]
-        },
-        {
-            "angle": 208.5753631591797,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 20.0,
-            "kind": "RectangleShape",
-            "name": "fingerL2",
-            "position": [
-                0.03218204155564308,
-                0.9729228615760803
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.009999999776482582,
-                0.03999999910593033
-            ]
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.0,
-                0.014999999664723873
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.014999999664723873
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 300.0,
-            "max_motor_torque": 1000.0,
-            "min_motor_speed": -300.0,
-            "name": "fingerLJoint",
-            "part_a": "fingerL1",
-            "part_b": "fingerL2",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                -0.014999999664723873,
-                0.15000000596046448
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.014999999664723873
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 300.0,
-            "max_motor_torque": 1000.0,
-            "min_motor_speed": -300.0,
-            "name": "handLJoint",
-            "part_a": "arm4",
-            "part_b": "fingerL1",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": -1263.177490234375,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 0.20000000298023224,
-            "kind": "RectangleShape",
-            "name": "fingerR1",
-            "position": [
-                0.018017679452896118,
-                0.9910038709640503
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.009999999776482582,
-                0.03999999910593033
-            ]
-        },
-        {
-            "angle": 202.04306030273438,
-            "color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "density": 1.0,
-            "friction": 20.0,
-            "kind": "RectangleShape",
-            "name": "fingerR2",
-            "position": [
-                0.02281578630208969,
-                0.9621233344078064
-            ],
-            "restitution": 0.0,
-            "restitution_threshold": 1.0,
-            "size": [
-                0.009999999776482582,
-                0.03999999910593033
-            ]
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.0,
-                0.014999999664723873
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.014999999664723873
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 300.0,
-            "max_motor_torque": 1000.0,
-            "min_motor_speed": -300.0,
-            "name": "fingerRJoint",
-            "part_a": "fingerR1",
-            "part_b": "fingerR2",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
-        },
-        {
-            "angle": 0.0,
-            "is_motor": true,
-            "kind": "RevoluteJoint",
-            "limit_enabled": false,
-            "local_anchor_a": [
-                0.014999999664723873,
-                0.15000000596046448
-            ],
-            "local_anchor_b": [
-                0.0,
-                -0.014999999664723873
-            ],
-            "lower_angle": 0.0,
-            "max_motor_speed": 300.0,
-            "max_motor_torque": 1000.0,
-            "min_motor_speed": -300.0,
-            "name": "handRJoint",
-            "part_a": "arm4",
-            "part_b": "fingerR1",
-            "position": [
-                0.0,
-                0.0
-            ],
-            "should_collide": false,
-            "upper_angle": 0.0
         },
         {
             "angle": 270.0,

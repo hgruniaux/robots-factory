@@ -65,9 +65,6 @@ target_link_libraries(robots_core PUBLIC glad::glad)
 find_package(box2d CONFIG REQUIRED)
 target_link_libraries(robots_core PUBLIC box2d::box2d)
 
-find_package(yaml-cpp CONFIG REQUIRED)
-target_link_libraries(robots_core PUBLIC yaml-cpp::yaml-cpp)
-
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(robots_core PUBLIC glm::glm)
 

@@ -83,6 +83,7 @@ static void ApplyGrayModernTheme(float font_size, ImVec4 accent_color = ImVec4(0
     style.GrabRounding = 0.0f;
     style.WindowRounding = 0.0f;
     style.TabRounding = 0.0f;
+    style.ScrollbarRounding = 0.0f;
     style.ItemSpacing = ImVec2(10.0f, 8.0f);
     style.ScrollbarSize = 12.0f;
     style.FramePadding = ImVec2(8.0f, 4.0f);

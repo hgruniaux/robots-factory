@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include <vector>
-#include <yaml-cpp/yaml.h>
 #include <nlohmann/json.hpp>
 
 #include "IconsFontAwesome6.h"
@@ -12,6 +11,7 @@
 class Robot;
 class Renderer2D;
 class Part;
+class FolderPart;
 
 struct DrawPartContext {
     Part *selected_part = nullptr;
@@ -26,8 +26,22 @@ class Part {
 public:
     virtual ~Part() = default;
 
+    template<typename T>
+    [[nodiscard]] bool is() const { return dynamic_cast<const T *>(this) != nullptr; }
+    template<typename T>
+    [[nodiscard]] T *as() { return dynamic_cast<T *>(this); }
+    template<typename T>
+    [[nodiscard]] const T *as() const { return dynamic_cast<const T *>(this); }
+
     // The owner robot of the part.
     [[nodiscard]] const std::shared_ptr<Robot> &get_robot() const { return m_robot; }
+
+    // The parent part of the part (when inside a folder part).
+    [[nodiscard]] Part* get_parent_part() const { return m_parent_part; }
+
+    // The folder part that contains this part (or nullptr).
+    [[nodiscard]] FolderPart* get_folder_parent() const;
+    [[nodiscard]] bool is_inside_folder() const { return get_folder_parent() != nullptr; }
 
     // The name of the node. Should be unique.
     [[nodiscard]] const std::string &get_name() const { return m_name; }
@@ -49,15 +63,22 @@ public:
     virtual bool show_inspector();
     virtual void draw(Renderer2D &renderer, const DrawPartContext &context);
 
-    // YAML serialization/deserialization.
+    // JSON serialization/deserialization.
     virtual void load(const nlohmann::json &object);
     virtual void save(nlohmann::json &object) const;
 
+protected:
+    virtual void notify_new_robot() {}
+
 private:
     friend class Robot;
+    friend class FolderPart;
 
     // The owner robot of the part.
     std::shared_ptr<Robot> m_robot;
+
+    // If the part is inside a folder part, this is the parent part.
+    Part* m_parent_part = nullptr;
 
     // The name of the part. Should be unique to the robot.
     std::string m_name;
@@ -82,3 +103,32 @@ public:
 
     Ground() { set_name("@ground@"); }
 };// class Ground
+
+class FolderPart : public Part {
+public:
+    DECLARE_PART(FolderPart, ICON_FA_FOLDER);
+
+    // The color of the folder.
+    [[nodiscard]] const glm::vec3 &get_color() const { return m_color; }
+    void set_color(const glm::vec3 &color) { m_color = color; }
+
+    // The parts of the folder.
+    [[nodiscard]] const std::vector<Part*>& get_parts() const { return m_parts; }
+    void add_part(Part *part);
+    void insert_part(int index, Part *part);
+    void remove_part(Part *part);
+    void clear();
+
+    [[nodiscard]] int get_part_index(Part *part) const;
+    void swap_parts(int from_index, int to_index);
+
+    bool show_inspector() override;
+    void draw(Renderer2D &renderer, const DrawPartContext &context) override;
+    void load(const nlohmann::json &object) override;
+    void save(nlohmann::json &object) const override;
+
+private:
+    // Parts are owned by Robot, FolderPart only owns references.
+    std::vector<Part*> m_parts;
+    glm::vec3 m_color = {0.8f, 0.6f, 0.13f}; // orange-yellow
+};// class FolderPart

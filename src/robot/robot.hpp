@@ -24,6 +24,7 @@ public:
     void insert_part(int index, std::unique_ptr<Part> part);
     void insert_part(int index, Part *part) { insert_part(index, std::unique_ptr<Part>(part)); }
     void remove_part(Part *part);
+    Part* release_part(Part *part);
 
     [[nodiscard]] int get_part_index(Part *part) const;
     void swap_parts(int from_index, int to_index);
@@ -38,12 +39,17 @@ public:
     template<class T>
     [[nodiscard]] T *get_part_by_name(const std::string &name) const { return dynamic_cast<T *>(get_part_by_name(name)); }
 
-    // Generate a new unique part name based on the kind name (to be used by the UI).
-    [[nodiscard]] std::string get_new_part_name(const std::string &kind_name) const;
+    // Generate a new unique part name based on the given hint.
+    [[nodiscard]] std::string get_unique_part_name(const std::string &name_hint) const;
 
 private:
     friend class Part;
-    void update_part_name(const std::string &old_name, const std::string &new_name);
+    friend class FolderPart;
+
+    [[nodiscard]] bool is_part_name_available(const std::string &name) const;
+    void register_part_name(const std::string &name, Part *part);
+    void unregister_part_name(const std::string &name);
+    void update_part_name(const std::string &old_name, Part *part);
 
 private:
     std::string m_source_file;
