@@ -61,7 +61,7 @@ private:
 private:
     static constexpr float MIN_RADIUS = 0.0001f;
     static constexpr float MAX_RADIUS = INFINITY;
-    float m_radius = 0.5f;
+    float m_radius = 0.05f;
 };// class CircleShape
 
 /**
@@ -86,7 +86,7 @@ private:
 private:
     static constexpr float MIN_SIZE = 0.0001f;
     static constexpr float MAX_SIZE = INFINITY;
-    glm::vec2 m_size = {1.0f, 1.0f};
+    glm::vec2 m_size = {0.1f, 0.1f};
 };// class RectangleShape
 
 /**

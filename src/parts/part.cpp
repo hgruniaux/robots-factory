@@ -8,6 +8,7 @@
 #include "draw/renderer_2d.hpp"
 #include "parser_utils.hpp"
 #include "robot/robot_parser.hpp"
+#include "eui.hpp"
 
 /*
  * The Part class
@@ -17,20 +18,16 @@ bool Part::show_inspector() {
     bool changed = false;
 
     std::string old_name = m_name;
-    const bool name_changed = ImGui::InputText("Name", &m_name);
+    const bool name_changed = EUI::InputText("Name", m_name);
     changed |= name_changed;
     if (name_changed && m_robot != nullptr)
         m_robot->update_part_name(old_name, this);
 
     if (ImGui::CollapsingHeader("Transform")) {
-        changed |= ImGui::DragFloat2("Position", &m_position[0], 0.01f);
+        changed |= EUI::InputVector("Position", m_position, 0.01f, 0.0f, "%.2f m");
         ImGui::SetItemTooltip("The position of the part in meters.");
-        changed |= ImGui::DragFloat("Rotation", &m_angle, 1.0f);
+        changed |= EUI::InputAngle("Rotation", m_angle, 1.0f);
         ImGui::SetItemTooltip("The rotation of the part in degrees.");
-
-        if (m_angle < 0.0f)
-            m_angle += 360.f;
-        m_angle = std::fmod(m_angle, 360.f);
     }
 
     return changed;
@@ -75,10 +72,12 @@ bool FolderPart::show_inspector() {
     bool changed = false;
 
     std::string old_name = m_name;
-    const bool name_changed = ImGui::InputText("Name", &m_name);
+    const bool name_changed = EUI::InputText("Name", m_name);
     changed |= name_changed;
     if (name_changed && m_robot != nullptr)
         m_robot->update_part_name(old_name, this);
+
+    changed |= EUI::InputColor("Color", m_color);
 
     return changed;
 }

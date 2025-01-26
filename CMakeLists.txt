@@ -47,6 +47,8 @@ add_library(robots_core SHARED
         src/simulation/world_description.cpp
         src/shared_library.hpp
         src/shared_library.cpp
+        src/eui.hpp
+        src/eui.cpp
 )
 target_include_directories(robots_core PUBLIC src)
 

@@ -2,9 +2,7 @@
 #include "draw/renderer_2d.hpp"
 #include "parser_utils.hpp"
 #include "robot/robot.hpp"
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "eui.hpp"
 
 /**
  * A joint part.
@@ -14,10 +12,10 @@ bool Joint::show_inspector() {
     bool changed = Part::show_inspector();
 
     if (ImGui::CollapsingHeader("Joint")) {
-        changed |= ImGui::InputText("Part A", &m_part_a);
+        changed |= EUI::InputText("Part A", m_part_a);
         ImGui::SetItemTooltip("The name of the first part to connect.");
 
-        changed |= ImGui::InputText("Part B", &m_part_b);
+        changed |= EUI::InputText("Part B", m_part_b);
         ImGui::SetItemTooltip("The name of the second part to connect.");
 
         if (ImGui::Button(ICON_FA_ROTATE " Swap parts")) {
@@ -36,9 +34,9 @@ bool Joint::show_inspector() {
         if (m_part_a == m_part_b)
             ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, ICON_FA_TRIANGLE_EXCLAMATION " Part A and B can not be the same!");
 
-        changed |= ImGui::DragFloat2("Local anchor A", &m_local_anchor_a[0], 0.01f);
+        changed |= EUI::InputVector("Local anchor A", m_local_anchor_a, 0.01f, 0.0f, "%.2f m");
         ImGui::SetItemTooltip("The local anchor point relative to part A center in meters.");
-        changed |= ImGui::DragFloat2("Local anchor B", &m_local_anchor_b[0], 0.01f);
+        changed |= EUI::InputVector("Local anchor B", m_local_anchor_b, 0.01f, 0.0f, "%.2f m");
         ImGui::SetItemTooltip("The local anchor point relative to part B center in meters.");
 
         changed |= ImGui::Checkbox("Should collide", &m_should_collide);
@@ -149,15 +147,15 @@ bool DistanceJoint::show_inspector() {
     bool changed = Joint::show_inspector();
 
     if (ImGui::CollapsingHeader("Distance joint")) {
-        changed |= ImGui::DragFloat("Length (in m)", &m_length, 0.01f, m_min_length, m_max_length);
+        changed |= EUI::InputFloat("Length", m_length, 0.01f, m_min_length, m_max_length, "%.2f m");
         ImGui::SetItemTooltip("The desired length of the joint at rest in meters.");
-        changed |= ImGui::DragFloat("Min length (in m)", &m_min_length, 0.01f, 0.f, m_max_length);
+        changed |= EUI::InputFloat("Min length", m_min_length, 0.01f, 0.f, m_max_length, "%.2f m");
         ImGui::SetItemTooltip("The minimum length of the joint in meters.");
-        changed |= ImGui::DragFloat("Max length (in m)", &m_max_length, 0.01f, m_min_length, INFINITY);
+        changed |= EUI::InputFloat("Max length", m_max_length, 0.01f, m_min_length, INFINITY, "%.2f m");
         ImGui::SetItemTooltip("The maximum length of the joint in meters.");
-        changed |= ImGui::DragFloat("Frequency (in Hz)", &m_frequency, 1.f, 0.f, 30.f);
+        changed |= EUI::InputFloat("Frequency", m_frequency, 1.f, 0.f, 30.f, "%.2f Hz");
         ImGui::SetItemTooltip("The frequency of the spring in Hz.");
-        changed |= ImGui::DragFloat("Damping ratio", &m_damping_ratio, 0.01f, 0.0f, 1.0f);
+        changed |= EUI::InputFloat("Damping ratio", m_damping_ratio, 0.01f, 0.0f, 1.0f);
         ImGui::SetItemTooltip("The damping ratio of the spring.");
 
         ensure_constraints();
@@ -244,20 +242,20 @@ bool RevoluteJoint::show_inspector() {
         changed |= ImGui::Checkbox("Limit enabled", &m_limit_enabled);
         ImGui::SetItemTooltip("Whether the joint has a rotation limit.");
         if (m_limit_enabled) {
-            changed |= ImGui::DragFloat("Lower angle (in deg)", &m_lower_angle, 1.0f, -180.f, m_upper_angle);
+            changed |= EUI::InputAngle("Lower angle", m_lower_angle, 1.0f, -180.f, m_upper_angle);
             ImGui::SetItemTooltip("The lower angle limit in degrees.");
-            changed |= ImGui::DragFloat("Upper angle (in deg)", &m_upper_angle, 1.0f, m_lower_angle, 180.f);
+            changed |= EUI::InputAngle("Upper angle", m_upper_angle, 1.0f, m_lower_angle, 180.f);
             ImGui::SetItemTooltip("The upper angle limit in degrees.");
         }
 
         changed |= ImGui::Checkbox("Is motor", &m_is_motor);
         ImGui::SetItemTooltip("Whether the joint is a motor.");
         if (m_is_motor) {
-            changed |= ImGui::DragFloat("Min motor speed (in deg/s)", &m_min_motor_speed, 1.0f, 0.f, m_max_motor_speed);
+            changed |= EUI::InputFloat("Min motor speed", m_min_motor_speed, 1.0f, 0.f, m_max_motor_speed, "%.2f °/s");
             ImGui::SetItemTooltip("The minimum motor speed in degrees per second.");
-            changed |= ImGui::DragFloat("Max motor speed (in deg/s)", &m_max_motor_speed, 1.0f, m_min_motor_speed, INFINITY);
+            changed |= EUI::InputFloat("Max motor speed", m_max_motor_speed, 1.0f, m_min_motor_speed, INFINITY, "%.2f °/s");
             ImGui::SetItemTooltip("The maximum motor speed in degrees per second.");
-            changed |= ImGui::DragFloat("Max motor torque", &m_max_motor_torque, 0.1f, 0.f, INFINITY);
+            changed |= EUI::InputFloat("Max motor torque", m_max_motor_torque, 0.1f, 0.f, INFINITY, "%.2f N*m");
             ImGui::SetItemTooltip("The maximum motor torque in N*m.");
         }
 
@@ -335,15 +333,15 @@ bool PrismaticJoint::show_inspector() {
     bool changed = Joint::show_inspector();
 
     if (ImGui::CollapsingHeader("Prismatic joint")) {
-        changed |= ImGui::DragFloat2("Local axis A", &m_local_axis_a[0], 0.01f);
+        changed |= EUI::InputVector("Local axis A", m_local_axis_a, 0.01f);
         ImGui::SetItemTooltip("The local axis of the joint relative to part A (unit vector).");
 
         changed |= ImGui::Checkbox("Limit enabled", &m_limit_enabled);
         ImGui::SetItemTooltip("Whether the joint has a rotation limit.");
         if (m_limit_enabled) {
-            changed |= ImGui::DragFloat("Lower translation (in m)", &m_lower_translation, 0.01f, -INFINITY, m_upper_translation);
+            changed |= EUI::InputFloat("Lower translation", m_lower_translation, 0.01f, -INFINITY, m_upper_translation, "%.2f m");
             ImGui::SetItemTooltip("The lower translation limit in meters.");
-            changed |= ImGui::DragFloat("Upper translation (in m)", &m_upper_translation, 0.01f, m_lower_translation, INFINITY);
+            changed |= EUI::InputFloat("Upper translation", m_upper_translation, 0.01f, m_lower_translation, INFINITY, "%.2f m");
             ImGui::SetItemTooltip("The upper translation limit in meters.");
         }
 

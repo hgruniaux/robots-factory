@@ -2,7 +2,7 @@
 
 #include "draw/renderer_2d.hpp"
 #include "parser_utils.hpp"
-#include <imgui.h>
+#include "eui.hpp"
 
 constexpr glm::vec4 OUTLINE_COLOR = {1.0f, 1.0f, 0.0f, 1.0f};
 
@@ -14,15 +14,15 @@ bool Shape::show_inspector() {
     bool changed = Part::show_inspector();
 
     if (ImGui::CollapsingHeader("Shape")) {
-        changed |= ImGui::ColorEdit4("Color", &m_color[0]);
+        changed |= EUI::InputColor("Color", m_color);
         ImGui::SetItemTooltip("The color of the shape. Only used for rendering.");
-        changed |= ImGui::DragFloat("Density (in kg/m²)", &m_density, 0.01f, 0.0f, INFINITY);
+        changed |= EUI::InputFloat("Density", m_density, 0.01f, 0.f, INFINITY, "%.2f kg/m²");
         ImGui::SetItemTooltip("The density of the shape in kg/m².");
-        changed |= ImGui::DragFloat("Friction", &m_friction, 0.01f, 0.0f, INFINITY);
+        changed |= EUI::InputFloat("Friction", m_friction, 0.01f, 0.f, INFINITY);
         ImGui::SetItemTooltip("The friction of the shape.");
-        changed |= ImGui::DragFloat("Restitution", &m_restitution, 0.01f, 0.0f, 1.0f);
+        changed |= EUI::InputFloat("Restitution", m_restitution, 0.01f, 0.f, 1.f);
         ImGui::SetItemTooltip("The restitution of the shape.");
-        changed |= ImGui::DragFloat("Restitution threshold", &m_restitution_threshold, 0.01f, 0.0f, INFINITY);
+        changed |= EUI::InputFloat("Restitution threshold", m_restitution_threshold, 0.01f, 0.f, INFINITY);
         ImGui::SetItemTooltip("The restitution threshold of the shape.");
 
         check_constraints();
@@ -68,7 +68,7 @@ bool CircleShape::show_inspector() {
     bool changed = Shape::show_inspector();
 
     if (ImGui::CollapsingHeader("Circle shape")) {
-        changed |= ImGui::DragFloat("Radius (in m)", &m_radius, 0.01f, MIN_RADIUS, MAX_RADIUS);
+        changed |= EUI::InputFloat("Radius", m_radius, 0.01f, MIN_RADIUS, MAX_RADIUS, "%.2f m");
         ImGui::SetItemTooltip("The radius of the circle in meters.");
 
         check_constraints();
@@ -113,10 +113,7 @@ bool RectangleShape::show_inspector() {
     bool changed = Shape::show_inspector();
 
     if (ImGui::CollapsingHeader("Rectangle shape")) {
-        changed |= ImGui::DragFloat("Width (in m)", &m_size[0], 0.01f, MIN_SIZE, MAX_SIZE);
-        ImGui::SetItemTooltip("The width of the rectangle in meters.");
-        changed |= ImGui::DragFloat("Height (in m)", &m_size[1], 0.01f, MIN_SIZE, MAX_SIZE);
-        ImGui::SetItemTooltip("The height of the rectangle in meters.");
+        changed |= EUI::InputVector("Size", m_size, 0.01f, 0.1f, "%.2f m");
 
         check_constraints();
     }

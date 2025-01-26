@@ -2,9 +2,7 @@
 #include "draw/renderer_2d.hpp"
 #include "parser_utils.hpp"
 #include "robot/robot.hpp"
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "eui.hpp"
 
 /*
  * The Sensor class
@@ -37,14 +35,14 @@ bool Sensor::show_inspector() {
     bool changed = Part::show_inspector();
 
     if (ImGui::CollapsingHeader("Sensor")) {
-        changed |= ImGui::InputText("Part", &m_part);
+        changed |= EUI::InputText("Part", m_part);
         ImGui::SetItemTooltip("The name of the part to connect.");
 
         const bool part_exists = get_robot()->get_part_by_name(m_part) != nullptr;
         if (!part_exists)
             ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, ICON_FA_TRIANGLE_EXCLAMATION " Part does not exist!");
 
-        changed |= ImGui::DragFloat2("Local anchor", &m_local_anchor.x, 0.01f);
+        changed |= EUI::InputVector("Local anchor", m_local_anchor, 0.01f);
         ImGui::SetItemTooltip("The local anchor point relative to the part center in meters.");
     }
 
@@ -82,8 +80,8 @@ bool AngleSensor::show_inspector() {
 
     if (ImGui::CollapsingHeader("Angle sensor")) {
         ImGui::Text("Detection angle (in degrees):");
-        changed |= ImGui::DragFloat("Min", &m_min_angle, 1.0f, 0.0f, 360.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
-        changed |= ImGui::DragFloat("Max", &m_max_angle, 1.0f, m_min_angle, 360.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+        changed |= EUI::InputAngle("Min", m_min_angle, 1.0f);
+        changed |= EUI::InputAngle("Max", m_max_angle, 1.0f);
 
         // Enforce constraints if required.
         m_min_angle = std::max(0.0f, std::min(360.0f, m_min_angle));
@@ -116,8 +114,8 @@ bool DistanceSensor::show_inspector() {
 
     if (ImGui::CollapsingHeader("Distance sensor")) {
         ImGui::Text("Detection distance (in meters):");
-        changed |= ImGui::DragFloat("Min", &m_min_distance, 0.1f, 0.0f, m_max_distance, "%.2f", ImGuiSliderFlags_AlwaysClamp);
-        changed |= ImGui::DragFloat("Max", &m_max_distance, 1.0f, m_min_distance, INFINITY, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+        changed |= EUI::InputFloat("Min", m_min_distance, 0.1f);
+        changed |= EUI::InputFloat("Max", m_max_distance, 1.0f);
 
         check_constraints();
     }
