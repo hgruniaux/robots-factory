@@ -281,7 +281,7 @@ let
                         
                         finished = bodyContact and hipLangle >=. 180.0 and hipRangle <=. 180.0 and kneeLangle >=. 180.0 and kneeRangle <=. 180.0;
                         until finished and abs(main_x) >=. 0.8 then Go_Off_Center_Down
-                            | finished and abs(main_x) <=. 0.8 then Center
+                            | abs(main_x) <=. 0.8 then Center
                     state Go_Off_Center_Down
                         var factorL : float; factorR : float; hipOk : bool;
                         do
